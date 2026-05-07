@@ -11,7 +11,7 @@ export default function Trilha(){
     if (!trilha) return <NotFound />;
     return(
         <>
-            <div className="paddingHeader"></div>
+            
             <section className='vertical conteudo'>
                 <SimpleButton path="/trilhas/" type='back'>Voltar para Trilhas</SimpleButton>
 

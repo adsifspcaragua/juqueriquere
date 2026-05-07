@@ -56,15 +56,12 @@ h3{
     gap: 5px;
 }
 
-.btn, .btnDark, .btnNone, button {
+.btn, .btn-dark, .btn-none, button {
     display: flex;
     font-weight: 600;
     width: fit-content;
     gap: 5px;
     align-items: center;
-}
-
-.btn {
     padding: 10px 20px;
     background-color: var(--verdeClaro);
     color: var(--verdeEscuro);
@@ -75,18 +72,14 @@ h3{
         height: 20px;
     }
 }
-.btnDark, button {
-    padding: 10px 20px;
+.btn-dark, .btn-none, button {
     background-color: var(--verdeEscuro);
     color: #fff;
-    border-radius: 20px;
     border: 0;
 }
-.btnNone {
-    padding: 0;
+.btn-none {
+    padding: 0 0;
     background-color: transparent;
-    color: white;
-    border: 0;
 }
 
 section{
@@ -188,7 +181,7 @@ header{
         border: 1px solid rgba(255, 255, 255, 0.3);
         width: 95%;
 
-        .btn{
+        .btn-none{
             flex-direction: row-reverse;
         }
     }
@@ -426,7 +419,7 @@ header{
         background-color: var(--verdeEscuro);
         color: var(--verdeClaro);
     }
-    .btnDark{
+    .btn-dark{
         background-color: var(--verdeClaro);
         color: var(--verdeEscuro);
     }
@@ -439,7 +432,7 @@ header{
         border: 2px solid transparent;
         color: var(--verdeEscuro);
     }
-    .btnDark{
+    .btn-dark{
         background-color: var(--verdeClaro);
         border: 2px solid var(--verdeEscuro);
         color: var(--verdeEscuro);
@@ -453,7 +446,7 @@ header{
         border: 2px solid transparent;
         color: var(--verdeClaro);
     }
-    .btnDark{
+    .btn-dark{
         background-color: var(--verdeEscuro);
         border: 2px solid var(--verdeClaro);
         color: var(--verdeClaro);
@@ -480,7 +473,7 @@ option:checked {
     gap: 15px;
     h1{color: var(--verdeEscuro);}
 
-    .btnDark{width: 100%; border-radius: 10px;}
+    .btn-dark{width: 100%; border-radius: 10px;}
 }
 .back{
     transform: scaleX(-1);

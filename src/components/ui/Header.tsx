@@ -31,6 +31,7 @@ export default function Header() {
             {openScanner && (
                 <Scanner onClose={() => setOpenScanner(false)} />
             )}
+            <div className="paddingHeader"></div>
         </>
     );
 };

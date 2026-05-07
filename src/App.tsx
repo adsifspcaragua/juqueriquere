@@ -1,12 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useState } from "react";
 import Trilha from './pages/Trilhas/Trilha.tsx';
 import NotFound from './pages/NotFound.tsx';
-import Header from './components/ui/Header.tsx';
 import Trilhas from "./pages/Trilhas/Trilhas.tsx";
+import Sobre from "./pages/Sobre.tsx";
+import Header from './components/ui/Header.tsx';
 import Footer from "./components/ui/Footer.tsx";
 import SimpleButton from "./components/ui/buttons/SimpleButton.tsx";
 import Scanner from "./components/Scanner.tsx";
-import { useState } from "react";
 import Logo from './assets/logo.png';
 
 const HomePage = () => {
@@ -14,7 +15,6 @@ const HomePage = () => {
 
 	return (
 		<>
-			<div className="paddingHeader"></div>
 			<section className="conteudo vertical" id="inicio">
 				<div className="vertical">
 					<div className="bannerInicio horizontal">
@@ -71,6 +71,7 @@ export default function App() {
 				<div className="container">
 					<Routes>
 						<Route path="/" element={<HomePage />} />
+            <Route path="/sobre" element={<Sobre />} />
 						<Route path="/trilhas/" element={<Trilhas />} />
 						<Route path="/trilha/:id" element={<Trilha />} />
 						<Route path='*' element={<NotFound />} />
