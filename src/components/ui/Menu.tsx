@@ -15,7 +15,7 @@ export default function Menu( {ativo, onChoice} : menuProps) {
         
         const [trilhasShow, setTrrilhasShow] = useState(false);
         const trilhasList = trilhas.map((trilha) => (
-            <SimpleButton tema='dark' raio="0" path={`/trilha/${trilha.id}` } onClick={onChoice}>
+            <SimpleButton key={trilha.nome + "option"} tema='dark' raio="0" path={`/trilha/${trilha.id}` } onClick={onChoice}>
                 {trilha.nome}
             </SimpleButton>
         )); 
@@ -38,8 +38,8 @@ export default function Menu( {ativo, onChoice} : menuProps) {
         const [pontosShow, setPontosShow] = useState(false);
         const pontosList = trilhas.map((trilha) => (
             trilha.pontos_interesse.map((ponto, index) => (
-                <SimpleButton key={index} icon='none' tema='dark' raio="0" onClick={onChoice}>
-                    <h3>{ponto.planta}</h3>
+                <SimpleButton key={index} icon='none' tema='dark' raio="0">
+                    {ponto.planta}
                 </SimpleButton>
             ))
         ));

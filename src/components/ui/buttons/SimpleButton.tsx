@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { icons } from "../icons";
 interface props {
     path?: string;
@@ -11,6 +11,7 @@ interface props {
 }
 
 export default function SimpleButton({path, children, tema, icon, type, raio, onClick}: props) {
+    const location = useLocation();
     const styleClass = {
         "dark": "btn-dark",
         "none": "btn-none",
@@ -24,7 +25,7 @@ export default function SimpleButton({path, children, tema, icon, type, raio, on
         if(path? true : false) window.scrollTo(0, 0);// scroll to top of the page when the button is clicked and has a path to navigate to
     };
     return(
-            <Link to={path || ''} onClick={handleClick}>
+            <Link to={path || location.pathname} onClick={handleClick}>
                 <div className={tema} style={{borderRadius: raio ? raio + 'px' : '20px'}}>
                     {type == "back" ? imagemSrc && <img src={imagemSrc} alt={icon} className="back"/> : children}
                     {type == "back" ?  children : imagemSrc && <img src={imagemSrc} alt={icon} />}
