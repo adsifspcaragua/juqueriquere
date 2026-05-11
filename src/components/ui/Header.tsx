@@ -29,9 +29,9 @@ export default function Header() {
 
                 </nav>
             </div>
-            {openMenu && (
-                <Menu ativo={openMenu} onChoice={() => setOpenMenu(false)}/>
-            )}
+
+            <Menu ativo={openMenu} onChoice={() => setOpenMenu(false)} />
+                
             {openScanner && (
                 <Scanner onClose={() => setOpenScanner(false)} />
             )}

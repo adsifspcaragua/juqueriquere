@@ -169,6 +169,7 @@ header{
     align-items: end;
     padding: 15px 0;
     background: linear-gradient(to top, var(--verdeEscuro), rgba(0, 0, 0, 0));
+    z-index: 1;
 
     nav{
         height: fit-content;
@@ -239,21 +240,43 @@ header{
 #especies{background-image: linear-gradient(rgba(0, 0, 0, 0.6)), url(./assets/img/especies.jpg);}
 #passaros{background-image: linear-gradient(rgba(0, 0, 0, 0.6)), url(./assets/img/passaros.jpeg);}
 
+.menuOverlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+.menuOverlay.open {
+    background: var(--headerBackground);
+    backdrop-filter: blur(5px);
+    pointer-events: all;
+}
+
 .menuWeb{
     background-color: var(--headerBackground);
     backdrop-filter: blur(20px);
-    border-radius: 50px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
     padding: 20px;
-    height: 100vh;
-    width: 30vh;
+    width: 90vw;
     position: fixed;
-    right: 0;
-    top: 100px;
+    left: 2.5%;
+    bottom: 100px;
+    transform: translateY(50%);
+
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        transform 0.35s ease,
+        opacity 0.25s ease;
+}
+.menuWeb.open {
+    opacity: 1;
+    pointer-events: all;
+
+    transform: translateX(0);
 }
 .menuLista{
-    gap: 0px !important;  
-    margin: 10px;
-    padding: 5px;
     border-radius: 20px;
     width: 100%;
     .btn{
@@ -261,6 +284,39 @@ header{
         justify-content: space-between;
     }
 }
+.MenuGroup{
+    border-radius: 10px;
+    border: 1px solid var(--verdeClaro);
+    overflow: hidden;
+
+    h3{
+        color: var(--verdeEscuro);
+    }
+    .btn{
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .btn-dark{
+        background-color: var(--headerBackground);
+    }
+}
+.children {
+    display: flex;
+    flex-direction: column;
+
+    max-height: 0;
+    overflow: hidden;
+
+    opacity: 0;
+    transform: translateY(-5px);
+
+    transition: all 0.35s ease-in-out;
+}
+.children.open {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .leitorQR{
     width: 100%;
     height: 100%;
@@ -537,6 +593,11 @@ option:checked {
     }
     .menuMobile{
         display: none;
+    }
+    .menuWeb{
+        right: 2.5%;
+        top: 100px;
+        transform: translateY(-50%);
     }
     footer{
         padding-bottom: 30px;

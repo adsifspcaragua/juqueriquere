@@ -8,7 +8,6 @@ interface menuProps {
 }
 
 export default function Menu( {ativo, onChoice} : menuProps) {
-    const displayValue = ativo ? "flex" : "none";
     const trilhas = [...data.trilhas];
     
     const Trilhas = () => {
@@ -21,13 +20,13 @@ export default function Menu( {ativo, onChoice} : menuProps) {
         )); 
         
         return(
-            <div>
-                <SimpleButton tema='dark' icon="none" raio="0" onClick={() => setTrrilhasShow(!trilhasShow)}>
+            <div className='MenuGroup'>
+                <SimpleButton icon="none" raio="0" onClick={() => setTrrilhasShow(!trilhasShow)}>
                     <h3>Trilhas </h3>
                     <h3>{trilhasShow ? '-' : '+'}</h3>
                 </SimpleButton>
-                <div className='children'>
-                    {trilhasShow ? trilhasList : null}
+                <div className={`children ${trilhasShow ? 'open' : ''}`}>
+                    {trilhasList}
                 </div>
             </div>
         )
@@ -45,13 +44,13 @@ export default function Menu( {ativo, onChoice} : menuProps) {
         ));
 
         return(
-            <div>
-                <SimpleButton tema='dark' icon="none" raio="0" onClick={() => setPontosShow(!pontosShow)}>
+            <div className='MenuGroup'>
+                <SimpleButton icon="none" raio="0" onClick={() => setPontosShow(!pontosShow)}>
                     <h3>Pontos </h3>
                     <h3>{pontosShow ? '-' : '+'}</h3>
                 </SimpleButton>
-                <div className='children'>
-                    {pontosShow ? pontosList : null}
+                <div className={`children ${pontosShow ? 'open' : ''}`}>
+                    {pontosList}
                 </div>
             </div>
         )
@@ -59,14 +58,23 @@ export default function Menu( {ativo, onChoice} : menuProps) {
     
     return(
         <>
-            <div className="menuWeb" style={{display : displayValue}}>
-                <section className="menuLista conteudo vertical">
-                    <h1>Menu</h1>
-                    <Trilhas/>
-                    <Pontos />
-                </section>
+            <div
+                className={`menuOverlay ${ativo ? 'open' : ''}`}
+                onClick={onChoice}
+            >
+                <div
+                    className={`menuWeb ${ativo ? 'open' : ''}`}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="menuLista vertical gap5">
+                        <h1>Menu</h1>
+                        <Trilhas />
+                        <Pontos />
+                    </div>
+                </div>
             </div>
             
+
         </>
     )
 }
