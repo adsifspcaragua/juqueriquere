@@ -1,7 +1,6 @@
 export default function NotFound(){
     return(
         <>
-            <div className="paddingHeader"></div>
             <section className='img-fade' id='capivara'>
                 <div className="conteudo">
                     <h1>Ops! Página não encontrada</h1>
