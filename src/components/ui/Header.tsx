@@ -1,21 +1,13 @@
 import { Link } from 'react-router-dom';
 import Scanner from '../Scanner';
 import logo from "../../assets/logo.png";
-import { useState, useCallback, useRef } from "react";
+import { useState} from "react";
 import SimpleButton from './buttons/SimpleButton';
 import Menu from './Menu';
-import { useClickOutside } from './useClickOutside';
 
 export default function Header() {
     const [openScanner, setOpenScanner] = useState(false);
     const [openMenu, setOpenMenu] = useState(false);
-    
-    const menuRef = useRef<HTMLDivElement>(null);
-    const memoizedCallback = useCallback(() => {
-        setOpenMenu(false);
-    }, []);
-    useClickOutside(menuRef, memoizedCallback);
-
     return (
         <>
             <header className="horizontal">
@@ -43,4 +35,4 @@ export default function Header() {
             )}
         </>
     );
-};
+}; 
