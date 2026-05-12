@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import Scanner from '../Scanner';
 import logo from "../../assets/logo.png";
-import { useState} from "react";
+import { useState } from "react";
 import SimpleButton from './buttons/SimpleButton';
 import Menu from './Menu';
 
