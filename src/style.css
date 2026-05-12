@@ -260,9 +260,13 @@ header{
     padding: 20px;
     width: 90vw;
     position: fixed;
-    left: 2.5%;
-    bottom: 100px;
+    left: 4%;
+    bottom: 90px;
     transform: translateY(50%);
+    max-height: 80dvh;
+    overflow: auto;
+    scrollbar-width: none;
+    height: fit-content;
 
     opacity: 0;
     pointer-events: none;
@@ -595,7 +599,9 @@ option:checked {
         display: none;
     }
     .menuWeb{
-        right: 2.5%;
+        left: unset;
+        right: 2.5% !important;
+        width: 20vw;
         top: 100px;
         transform: translateY(-50%);
     }
