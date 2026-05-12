@@ -16,7 +16,7 @@ export default function Header() {
                 </Link>
                 <nav className="horizontal">
                     <div className="navBtn" id="scanner" onClick={() => setOpenScanner(true)}></div>
-                    <div className="navBtn" id="menu"    onClick={() => setOpenMenu(!openMenu)}></div>
+                    <div className={`navBtn ${openMenu == true ? 'active' : ''}`} id="menu"    onClick={() => setOpenMenu(!openMenu)}></div>
                 </nav>
             </header>
 
@@ -24,7 +24,7 @@ export default function Header() {
                 <nav className="horizontal">
                     <SimpleButton path='/' tema='none'  icon='Home' >Início</SimpleButton>
                     <SimpleButton tema='light'          icon='QR'   onClick={() => setOpenScanner(true)}    >Ler QR Code</SimpleButton>
-                    <SimpleButton tema='none'           icon='Menu' onClick={() => setOpenMenu(!openMenu)}       >Menu       </SimpleButton>
+                    <SimpleButton tema='dark'           icon='Menu' onClick={() => setOpenMenu(!openMenu)}       >Menu       </SimpleButton>
                 </nav>
             </div>
 

@@ -151,7 +151,10 @@ header{
             background-size: 60%;
             cursor: pointer;
         }
-
+        .active{
+            background-color: var(--verdeClaro);
+            background-image: url(./assets/icons/X-dark.png) !important;
+        }   
         #scanner{background-image: url(./assets/icons/qr_code_scanner.png);}
         #menu{background-image: url(./assets/icons/Menu.png);}
         #scanner:hover{background-image: url(./assets/icons/QR-hover.png);}
