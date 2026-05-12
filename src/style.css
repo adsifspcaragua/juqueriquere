@@ -217,18 +217,35 @@ option:checked {
     transform: scaleX(-1);
 }
 
-.mapa{
+.mapa, .mapaInterativo{
     width: 100%;
-    padding: 20px;
-    aspect-ratio: 4/3;
+    height: max-content;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: var(--verdeClaro);
     border-radius: 20px;
-    
-    p{color: var(--texto);}
+    overflow: hidden;
 }
+.mapaInterativo{
+    width: 55%;
+
+    p{color: var(--texto);}
+
+    path{
+        stroke-width: 15px;
+        transition: all .3s ease-in-out;
+        cursor: pointer;
+    }
+    path:hover{
+        stroke-width: 23px;
+    }
+    path:hover path:not(:hover){
+        fill-opacity: 0.5;
+    }
+
+}
+
 
 #filtros{
     width: 100%;
@@ -364,7 +381,6 @@ option:checked {
 
     .mapa{
         width: 50%;
-        aspect-ratio: 4/3;
         height: fit-content;
     }
 }

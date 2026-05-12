@@ -9,6 +9,7 @@ import Footer from "./components/ui/Footer.tsx";
 import SimpleButton from "./components/ui/buttons/SimpleButton.tsx";
 import Scanner from "./components/Scanner.tsx";
 import Logo from './assets/logo.png';
+import Mapa from "./pages/Mapa.tsx";
 
 const HomePage = () => {
 	const [openScanner, setOpenScanner] = useState(false);
@@ -76,6 +77,7 @@ export default function App() {
 					<Routes>
 						<Route path="/" element={<HomePage />} />
             			<Route path="/sobre" element={<Sobre />} />
+						<Route path="/mapa" element={<Mapa />} />
 						<Route path="/trilhas/" element={<Trilhas />} />
 						<Route path="/trilha/:id" element={<Trilha />} />
 						<Route path='*' element={<NotFound />} />

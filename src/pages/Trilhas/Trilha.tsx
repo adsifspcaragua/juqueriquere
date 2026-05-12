@@ -3,6 +3,7 @@ import data from '../../data.json';
 import NotFound from '../NotFound';
 import TrilhaInfo, { type Trilha } from './TrilhaInfo';
 import SimpleButton from '../../components/ui/buttons/SimpleButton';
+import TrilhasMap from '../../components/ui/TrilhasMap';
 
 export default function Trilha(){
     let params = useParams();
@@ -19,7 +20,7 @@ export default function Trilha(){
 
                 <div className="vertical conteudo" id='detalheTrilha'>
                     <div className="mapa">
-                        <p>Mapa que a moça do parque não fez até hoje...</p>
+                        {<TrilhasMap id={id}></TrilhasMap>}
                     </div>
                     <div className="vertical conteudo" id='conteudoTrilha'>
                         <div className='vertical gap5'>
