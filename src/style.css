@@ -17,6 +17,7 @@
 :root{
     --verdeEscuro: #008A66;
     --verdeClaro: #CBFFF1;
+    --verdeClaroTransparente: rgba(203, 255, 241, 0.7);
     --headerBackground: #309e819a;
     --texto: #5C5C5C;
 }
@@ -175,49 +176,6 @@ body{
 
 }
 
-.cardTrilha{
-    background-color: var(--verdeClaro);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 20px;
-    width: auto;
-    border-radius: 20px;
-    
-    h3{
-        color: var(--verdeEscuro);
-    }
-
-    a{
-        color: var(--texto);
-        display: flex;
-        width: fit-content;
-    }
-}
-.cardTrilhaInfo{
-    background-color: var(--verdeClaro);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 20px;
-    width: auto;
-    border-radius: 20px;
-    transition: transform .35s ease-in-out;
-    h2{
-        font-family: Inter, Arial, Helvetica, sans-serif;
-        font-size: 20px;
-        font-weight: 800;
-        color: var(--verdeEscuro);
-    }
-
-    p{
-        color: var(--texto);
-        display: flex;
-        width: fit-content;
-    }
-    
-}
-
 .titulo{
     gap: 10px;
     align-items: center;
@@ -277,6 +235,63 @@ option:checked {
         align-items: center;
     }
 }
+
+.linhaPontilhadaDark{
+    border-bottom: 2px dashed var(--verdeEscuro);
+}
+
+.cardTrilhaInfo{
+    background-color: var(--verdeClaro);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    width: auto;
+    border-radius: 20px;
+    transition: transform .35s ease-in-out;
+    h2{
+        font-family: Inter, Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--verdeEscuro);
+    }
+
+    p{
+        color: var(--texto);
+        display: flex;
+        width: fit-content;
+    }
+    
+}
+
+/* Card Trilha */
+.cardTrilha{
+    background-image: url(./assets/img/CardTrilha.png);
+    background-position: center;
+    background-size: cover;
+
+    display: flex;
+    justify-content: end;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--verdeClaro);
+    
+    .info{
+        background-color: var(--verdeClaroTransparente);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        width: 50%;
+        gap: 10px;
+
+        .btn{width: 100%;}
+        p{color: #000; font-weight: 500;}
+        img{width: 24px;}
+    }
+    h2{
+        color: var(--verdeEscuro);
+    }
+}
+/*-------------*/
 
 @media (width > 850px) {
     body{

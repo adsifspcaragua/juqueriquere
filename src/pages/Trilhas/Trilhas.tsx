@@ -3,6 +3,10 @@ import SimpleButton from '../../components/ui/buttons/SimpleButton.tsx';
 import data from '../../data.json';
 import Select from '../../components/ui/form/Select.tsx';
 
+import Dificuldade from '../../assets/icons/Dificuldade.png';
+import Distancia from '../../assets/icons/Distância.png';
+import Tempo from '../../assets/icons/Tempo.png';
+
 export default function Trilhas() {
     const order = {
         "Nome A-Z": (a: any, b: any) => a.nome.localeCompare(b.nome),
@@ -15,10 +19,14 @@ export default function Trilhas() {
 
     const trilhasList = trilhas.map((trilha) => (
         <div className='cardTrilha' key={trilha.id}>
-            <h3>{trilha.nome}</h3>
-            <SimpleButton tema='dark' path={`/trilha/${trilha.id}`}>
-                Ver detalhes
-            </SimpleButton>
+            <div className="info vertical">
+                <h2>{trilha.nome}</h2>
+                <div className="linhaPontilhadaDark"></div>
+                <div className="horizontal gap5"><img src={Dificuldade}/><p>Leve</p></div>
+                <div className="horizontal gap5"><img src={Distancia}/><p>243m</p></div>
+                <div className="horizontal gap5"><img src={Tempo}/><p>12min</p></div>
+                <SimpleButton tema='dark' raio='10' path={`/trilha/${trilha.id}`}>Ver detalhes</SimpleButton>
+            </div>
         </div>
     ));
 
