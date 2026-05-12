@@ -1,6 +1,7 @@
 import data from '../../data.json';
 import SimpleButton from '../../components/ui/buttons/SimpleButton.tsx';
 import { useState } from 'react';
+import './Menu.css';
 
 interface menuProps {
     ativo: boolean;

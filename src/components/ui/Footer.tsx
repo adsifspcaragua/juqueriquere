@@ -1,4 +1,5 @@
 import meioAmbiente from "../../assets/meioAmbiente.png";
+import './Footer.css';
 
 export default function Footer(){
     return (

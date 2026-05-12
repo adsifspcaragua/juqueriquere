@@ -1,0 +1,90 @@
+
+.menuOverlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+.menuOverlay.open {
+    background: var(--headerBackground);
+    backdrop-filter: blur(5px);
+    pointer-events: all;
+}
+.menuWeb{
+    background-color: var(--headerBackground);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 20px;
+    width: 90vw;
+    position: fixed;
+    left: 4%;
+    bottom: 90px;
+    transform: translateY(50%);
+    max-height: 80dvh;
+    overflow: auto;
+    scrollbar-width: none;
+    height: fit-content;
+
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        transform 0.35s ease,
+        opacity 0.25s ease;
+}
+.menuWeb.open {
+    opacity: 1;
+    pointer-events: all;
+
+    transform: translateX(0);
+}
+.menuLista{
+    border-radius: 20px;
+    width: 100%;
+    .btn{
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+.MenuGroup{
+    border-radius: 10px;
+    border: 1px solid var(--verdeClaro);
+    overflow: hidden;
+
+    h3{
+        color: var(--verdeEscuro);
+    }
+    .btn{
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .btn-dark{
+        background-color: var(--headerBackground);
+    }
+}
+.children {
+    display: flex;
+    flex-direction: column;
+
+    max-height: 0;
+    overflow: hidden;
+
+    opacity: 0;
+    transform: translateY(-5px);
+
+    transition: all 0.35s ease-in-out;
+}
+.children.open {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (width > 850px) {
+    .menuWeb{
+        left: unset;
+        right: 2.5% !important;
+        width: 20vw;
+        top: 100px;
+        transform: translateY(-50%);
+    }
+}

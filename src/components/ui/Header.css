@@ -1,0 +1,83 @@
+header{
+    width: 95%;
+    height: 75px;
+    padding: 10px 20px;
+    background-color: var(--headerBackground);
+    backdrop-filter: blur(20px);
+    border-radius: 100px;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    left: 2.5%;
+    top: 15px;
+    z-index: 1;
+    display: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+
+    .logo{
+        height: 90%;
+        img{height: 100%;}
+    }
+
+    nav{
+        height: 100%;
+        align-items: center;
+
+        .navBtn{
+            height: 90%;
+            aspect-ratio: 1/1;
+            padding: 10px;
+            display: flex;
+            border-radius: 100%;
+            transition: .3s ease-in-out;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 60%;
+            cursor: pointer;
+        }
+
+        #scanner{background-image: url(../../assets/icons/qr_code_scanner.png);}
+        #menu{background-image: url(../../assets/icons/Menu.png);}
+        #scanner:hover{background-image: url(../../assets/icons/QR-hover.png);}
+        #menu:hover{background-image: url(../../assets/icons/Menu-hover.png);}
+        .navBtn:hover{background-color: var(--verdeClaro);}
+        
+
+    }
+}
+.menuMobile{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    justify-content: center;
+    align-items: end;
+    padding: 15px 0;
+    background: linear-gradient(to top, var(--verdeEscuro), rgba(0, 0, 0, 0));
+    z-index: 1;
+
+    nav{
+        height: fit-content;
+        background-color: var(--headerBackground);
+        padding: 10px 20px;
+        justify-content: space-around;
+        align-items: center;
+        backdrop-filter: blur(10px);
+        border-radius: 200px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        width: 95%;
+
+        .btn-none{
+            flex-direction: row-reverse;
+        }
+    }
+}
+
+@media (width > 850px) {
+
+    header{
+        display: flex !important;
+    }
+    .menuMobile{
+        display: none;
+    }
+}

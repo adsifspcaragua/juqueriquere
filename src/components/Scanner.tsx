@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import SimpleButton from "./ui/buttons/SimpleButton";
+import './Scanner.css';
 
 export default function Scanner({ onClose }: { onClose: () => void }) {
   const qrRef = useRef<Html5Qrcode | null>(null);
