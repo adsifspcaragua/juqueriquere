@@ -16,7 +16,7 @@ export default function Trilha() {
         <>
             <div className="paddingHeader"></div>
             <section className='vertical conteudo'>
-                <SimpleButton path="/trilhas/" type='back'>Voltar para Trilhas</SimpleButton>
+                <SimpleButton path="/explorar/" type='back'>Voltar para Mapa</SimpleButton>
 
                 <div className="vertical conteudo" id='detalheTrilha'>
                     <div className="mapa">

@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
+import ScrollToTop from "./components/Scroll.tsx";
 import Trilha from './pages/Trilhas/Trilha.tsx';
 import NotFound from './pages/NotFound.tsx';
 import Trilhas from "./pages/Trilhas/Trilhas.tsx";
@@ -17,10 +18,10 @@ const HomePage = () => {
 
 	return (
 		<>
-      <div className="paddingHeader"></div>
+			<div className="paddingHeader"></div>
 			<section className="conteudo vertical" id="inicio">
 				<div className="vertical">
-					
+
 					<div className="bannerInicio horizontal">
 						<div className="conteudo vertical">
 							<img src={Logo} />
@@ -72,12 +73,15 @@ const HomePage = () => {
 export default function App() {
 	return (
 		<>
+
 			<Router>
 				<Header />
 				<div className="container">
+					<ScrollToTop />
+
 					<Routes>
 						<Route path="/" element={<HomePage />} />
-            			<Route path="/sobre" element={<Sobre />} />
+						<Route path="/sobre" element={<Sobre />} />
 						<Route path="/mapa" element={<Mapa />} />
 						<Route path="/trilhas/" element={<Trilhas />} />
 						<Route path="/trilha/:id" element={<Trilha />} />
