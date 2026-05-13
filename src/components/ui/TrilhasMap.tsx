@@ -1,62 +1,127 @@
+import { useMemo } from 'react';
+import { geoMercator, geoPath } from 'd3-geo';
+import { type FeatureCollection, type Geometry } from 'geojson';
 import mapImage from '../../assets/img/map.png';
+import trilhasPontosRaw from '../../data/Trilhas PNMJ/PontosRaw.json'; 
+import trilhasLinhasRaw from '../../data/Trilhas PNMJ/TrilhasRaw.json';
+import data from '../../data.json';
+
+const trilhasPontos = trilhasPontosRaw as unknown as FeatureCollection<Geometry>;
+const trilhasLinhas = trilhasLinhasRaw as unknown as FeatureCollection<Geometry>;
 
 interface MapProps {
-  id?: number[];
-  onHover?: (event : React.MouseEvent<SVGElement>, id : number) => void;
-  onClick?: (id : number) => void;
+  id?: number | number[];
+  onHover?: (event: React.MouseEvent<SVGElement>, id: number) => void;
+  onClick?: (id: number) => void;
   onLeave?: () => void;
 }
 
 export default function Map({ id, onHover, onClick, onLeave }: MapProps) {
+  
+  // Função auxiliar para normalizar nomes e facilitar a busca entre JSONs
+  const normalize = (s: string) => s.toLowerCase().replace('trilha ', '').replace('.', '').trim();
 
-  const pathData = [
-    { id: 1, stroke: "#FF0000", d: "M886 617L926.5 584L950 537L961.5 482L933 434L968.5 386L972 327.5L1011.5 288L1026 211L974.5 179L921.5 194.5L864 187L802 146.5L758.5 102.5L702 88.5L659.5 53.5L604 61.5L525 109L455 93L397 144.5" },
-    { id: 2, stroke: "#FFEA00", d: "M457.5 155L446.5 205L452.5 273.5L442.5 332.5L370.5 412.5L367 487.5L402 530" },
-    { id: 6, stroke: "#00AEFF", d: "M930.5 672L882 649.5L842 607.5L812 558L781.5 518.5L784 456L777 403.5L780.5 346.5L754.5 285L721.5 238.5L610.5 218L557.5 240.5L539 298L520 340L513.5 409.5L530 462.5L536.5 517.5L507 564L454 569L399 588.5L352.5 626L313.5 661" },
-    { id: 5, stroke: "#BCEA00", d: "M464 910L420 955.5L377.5 924L287.5 986L228 969.5L178 993L141 1046L97 1098" },
-    { id: 4, stroke: "#78E678", d: "M464.5 910L433.5 870L415 860.5L390.5 841.5L351 803.5L318 757.5" },
-    { id: 3, stroke: "#00C040", d: "M911.5 744.5L899.5 811L872 857L867 915.5L845 962.5L801.5 1000.5L747 1005.5L681 991L609.5 986L551 997L523 946L464.5 910" }
-  ];
+  const projection = useMemo(() => {
+    const width = 1146;
+    const height = 1146;
+    const margin = 41;
 
-  const targetPathId = id ? id : undefined;
+    return geoMercator().fitExtent(
+      [[margin, margin], [width - margin, height - margin]], 
+      { type: "FeatureCollection", features: [...trilhasPontos.features, ...trilhasLinhas.features] }
+    );
+  }, []);
 
-  const pathsToRender = targetPathId 
-    ? pathData.filter(path => targetPathId.includes(path.id))
-    : pathData;
+  const pathGenerator = geoPath().projection(projection);
+
+  const filteredData = useMemo(() => {
+    const targetIds = Array.isArray(id) ? id : (id ? [id] : null);
+    
+    // 1. Mapeamos as LINHAS (Trilhas) associando-as ao ID do data.json
+    const lines = trilhasLinhas.features.map(feature => {
+
+      const featName = normalize(feature.properties?.name || "");
+      const trailMetadata = data.trilhas.find(t => 
+        normalize(t.nome).includes(featName) || featName.includes(t.nome)
+      );
+      
+      return { feature, trailId: trailMetadata?.id };
+
+    }).filter(item => {
+      if (!item.trailId) return false;
+      return targetIds ? targetIds.includes(item.trailId) : true;
+    });
+
+    // 2. Mapeamos os PONTOS associando-os ao ID da trilha a que pertencem
+    const points = trilhasPontos.features.map(feature => {
+
+      const featName = normalize(feature.properties?.name || "");
+      const trailMetadata = data.trilhas.find(t => 
+        t.pontos_interesse.some(p => normalize(p.planta) === featName)
+      );
+
+      return { feature, trailId: trailMetadata?.id };
+
+    }).filter(item => {
+
+      if (!item.trailId) return false;
+      return targetIds ? targetIds.includes(item.trailId) : true;
+
+    });
+
+    return { lines, points };
+  }, [id]);
 
   return (
-    <svg width="auto" height="auto" viewBox="0 0 1146 1146" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="1146" height="1146" fill="url(#pattern0_4406_1032)" />
-      
-      {pathsToRender.map((path) => (
-        <path
-          key={path.id}
-          d={path.d}
-          stroke={path.stroke}
-          strokeWidth="10"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          onMouseEnter= {(e) => onHover && onHover(e ,path.id)}
-          onMouseLeave={onLeave}
-          onClick=      {() => onClick && onClick(path.id)}
-        />
-      ))}
+    <svg width="100%" height="auto" viewBox="0 0 1146 1146" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <image href={mapImage} width="1146" height="1146" />
 
-      <defs>
-        <pattern 
-          id="pattern0_4406_1032" 
-          patternUnits="userSpaceOnUse" 
-          width="1146" 
-          height="1146"
-        >
-          <image 
-            href={mapImage} 
-            width="1146" 
-            height="1146" 
-            preserveAspectRatio="xMidYMid slice" 
+      {/* Camada de Trilhas */}
+      <g className="trails-layer">
+        {filteredData.lines.map((item, idx) => (
+          <path
+            key={`line-${idx}`}
+            d={pathGenerator(item.feature) || ""}
+            stroke={item.feature.properties?.stroke || "#4CAF50"}
+            strokeWidth="10"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity="0.8"
+            style={{ cursor: 'pointer', transition: '0.3s' }}
+            // Agora passamos o item.trailId (o ID real do data.json)
+            onMouseEnter={(e) => item.trailId && onHover?.(e, item.trailId)}
+            onMouseLeave={onLeave}
+            onClick={() => item.trailId && onClick?.(item.trailId)}
           />
-        </pattern>
-      </defs>
+        ))}
+      </g>
+
+      {/* Camada de Pontos */}
+      <g className="points-layer">
+        {filteredData.points.map((item, idx) => {
+          const coords = (item.feature.geometry as any).coordinates;
+          const [x, y] = projection([coords[0], coords[1]]) || [0, 0];
+
+          return (
+            <circle
+              key={`point-${idx}`}
+              cx={x}
+              cy={y}
+              r="8"
+              fill="#fbc02d"
+              stroke="#ffffff"
+              strokeWidth="2"
+              // Também passamos o item.trailId aqui
+              onMouseEnter={(e) => item.trailId && onHover?.(e, item.trailId)}
+              onMouseLeave={onLeave}
+              onClick={() => item.trailId && onClick?.(item.trailId)}
+              style={{ cursor: 'pointer' }}
+            >
+              <title>{item.feature.properties?.name}</title>
+            </circle>
+          );
+        })}
+      </g>
     </svg>
   );
 }
