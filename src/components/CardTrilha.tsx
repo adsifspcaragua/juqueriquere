@@ -1,8 +1,5 @@
 import { type Trilha } from '../pages/Trilhas/TrilhaInfo';
 import { Link } from "react-router-dom";
-
-
-
 import Dificuldade from '../assets/icons/Dificuldade.png';
 import Distancia from '../assets/icons/Distância.png';
 import Tempo from '../assets/icons/Tempo.png';
@@ -14,8 +11,7 @@ type Props = {
 
 export default function CardTrilha({ trilha }: Props) {
     return (
-        <Link to={`/trilha/${trilha.id}`}>
-        <div className='cardTrilha'>
+        <Link to={`/trilha/${trilha.id}`} className='cardTrilha carrosselCard'>
             <div className="info vertical">
 
                 <h2>{trilha.nome}</h2>
@@ -42,7 +38,6 @@ export default function CardTrilha({ trilha }: Props) {
                 </div>
 
             </div>
-        </div>
         </Link>
     );
 }

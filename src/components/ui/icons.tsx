@@ -6,6 +6,8 @@ import home from '../../assets/icons/Home.png';
 import menu from '../../assets/icons/Menu.png';
 import XDark from '../../assets/icons/X.webp';
 import X from '../../assets/icons/X-dark.png';
+import Explorar from '../../assets/icons/Explorar.png';
+import Sobre from '../../assets/icons/Sobre.png';
 
 export const icons = {
         "default": {
@@ -14,6 +16,8 @@ export const icons = {
             "Home"  : home,
             "Menu"  : menu,
             "X"     : X,
+            "Explorar": Explorar,
+            "Sobre": Sobre
         },
         "dark": {
             "seta"  : setaDark,
@@ -21,6 +25,8 @@ export const icons = {
             "Home"  : home,
             "Menu"  : menu,
             "X"     : XDark,
+            "Explorar": Explorar,
+            "Sobre": Sobre
         },
          "none": {
             "seta"  : setaDark,
@@ -28,5 +34,7 @@ export const icons = {
             "Home"  : home,
             "Menu"  : menu,
             "X"     : XDark,
+            "Explorar": Explorar,
+            "Sobre": Sobre
         }
 } as any;
