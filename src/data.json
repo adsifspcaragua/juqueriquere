@@ -6,7 +6,13 @@
       "id": 1,
       "nome": "Trilha do Esquilo",
       "cor_identificacao": "Vermelho",
-      "descricao": "Uma trilha leve que serpenteia a área central do parque, ideal para observação de pequenos mamíferos e flora nativa variada.",
+      "dificuldade": "Moderada",
+      "extensao": "220 metros",
+      "duracao": "12 minutos",
+      "descricao_curta": "Uma trilha leve que serpenteia a área central do parque, ideal para observação de pequenos mamíferos e flora nativa variada.",
+      "descricao": "A Trilha do Esquilo inicia-se poucos metros após a entrada principal do Parque Natural Municipal do Rio Juqueriquerê, seguindo pelo lado direito em um percurso contínuo, sem bifurcações, até o acesso da doca dos caiaques. Durante a caminhada, o visitante percorre um trecho cercado pela vegetação da Mata Atlântica, com solo coberto por folhas, raízes aparentes e pequenos troncos naturais integrados ao caminho.\nAo longo do trajeto, destacam-se áreas do ecossistema Brejauval, caracterizadas pela umidade do ambiente e vegetação adaptada às áreas alagadiças. Também é possível observar agrupamentos de espécies da família das Piperáceas, como Pimenta-do-macaco, Pimenta-longa e Pariparoba-mansa, distribuídas próximas ao percurso.\nA trilha possui infraestrutura autoguiada, equipada com corrimões de madeira, pequenas pontes de travessia e placas interpretativas sobre biodiversidade e sinalização do percurso. Em determinados pontos, pequenas arvoretas crescem próximas ao leito da trilha, criando obstáculos naturais que reforçam a experiência de contato direto com a floresta.\n\nAlguns outros obstáculos são:\n- Raízes elevadas;\n- Troncos expostos;\n- Pequenas elevações naturais.",
+      "equipamento_recomendado": "Calçados adequados para trilha, roupas leves e claras, repelente, protetor solar e chapéu.",
+      "atencao": "Solo escorregadio em períodos úmidos, presença de raízes expostas, pequenos declives, espinhos e possibilidade de animais peçonhentos.",
       "pontos_interesse": [
         { "planta": "Ingá", "latitude": "", "longitude": "" },
         { "planta": "Brejaúva", "latitude": "", "longitude": "" },
@@ -19,8 +25,14 @@
     {
       "id": 2,
       "nome": "Trilha do Teiú",
-      "cor_identificacao": "Amarelo",
-      "descricao": "Trilha de curta distância focada em áreas de sol, onde é comum avistar répteis como o Teiú.",
+      "cor_identificacao": "Verde",
+      "dificuldade": "Leve",
+      "extensao": "78 metros",
+      "duracao": "5 minutos",
+      "descricao_curta": "Trilha curta às margens do Rio Juqueriquerê, com vegetação fechada, túneis naturais e forte integração ao ambiente ribeirinho.",
+      "descricao": "A Trilha do Teiú inicia-se próxima à doca dos caiaques e acompanha a margem do Rio Juqueriquerê em um percurso curto e linear, sem bifurcações, finalizando nas proximidades do píer. Durante a caminhada, o visitante percorre uma área bastante integrada ao ambiente ribeirinho, com vegetação fechada e cobertura natural formada por folhas e galhos sobre parte do trajeto.\nEm alguns pontos, o caminho se torna mais estreito, exigindo atenção devido às raízes elevadas e às arvoretas próximas ao leito da trilha. Há também trechos em que a vegetação forma túneis naturais baixos, onde visitantes mais altos precisam abaixar-se para continuar o percurso. Outro destaque é a presença de vagens de Mucunã (Olho-de-boi), cujos pelos podem causar irritação na pele em caso de contato.\nAo longo do caminho, podem ser observados exemplares de espécies nativas como Carrapeta e Aroeira, além de placas educativas sobre biodiversidade local. A trilha conta com corrimões de madeira que delimitam e orientam o percurso autoguiado.\n\nAlguns outros obstáculos são:\n- Raízes expostas e elevadas;\n- Caminho estreito em alguns trechos;\n- Vegetação baixa sobre o percurso;\n- Presença de vagens aculeadas de Mucunã.",
+      "equipamento_recomendado": "Calçados adequados, roupas leves e claras, repelente e protetor solar.",
+      "atencao": "Terreno escorregadio, raízes aparentes, pequenos declives e possibilidade de encontro com animais peçonhentos.",
       "pontos_interesse": [
         { "planta": "Carrapeta", "latitude": "", "longitude": "" }
       ],
@@ -28,9 +40,15 @@
     },
     {
       "id": 3,
-      "nome": "Trilha Capivara",
+      "nome": "Trilha da Capivara",
       "cor_identificacao": "Verde Claro",
-      "descricao": "Trilha lateral que percorre o limite da mata densa, apresentando espécies arbóreas de grande porte.",
+      "dificuldade": "Leve",
+      "extensao": "Não informada",
+      "duracao": "Não informada",
+      "descricao_curta": "Trilha principal que percorre áreas de mata densa e conecta os ramais do píer e do rio.",
+      "descricao": "A Trilha da Capivara percorre áreas de mata densa do Parque Natural Municipal do Rio Juqueriquerê, apresentando vegetação típica da Mata Atlântica e servindo como acesso principal para os ramais do Píer e do Rio. Durante o percurso, o visitante atravessa trechos sombreados, com presença de árvores de médio e grande porte, solo coberto por serapilheira e ambientes úmidos característicos da região.\nAo longo do trajeto, podem ser observadas diversas espécies vegetais nativas, além de áreas próximas ao ecossistema ribeirinho do Rio Juqueriquerê. A trilha possui placas educativas e infraestrutura autoguiada que auxilia na orientação dos visitantes.\n\nAlguns outros obstáculos são:\n- Raízes expostas;\n- Solo úmido;\n- Pequenos desníveis naturais.",
+      "equipamento_recomendado": "Calçados adequados para trilha, roupas leves, repelente e protetor solar.",
+      "atencao": "Terreno escorregadio em períodos úmidos, presença de insetos e possibilidade de animais peçonhentos.",
       "pontos_interesse": [
         { "planta": "Jerivá", "latitude": "-23.678115", "longitude": "-45.439887" },
         { "planta": "Ingá", "latitude": "", "longitude": "" },
@@ -42,13 +60,39 @@
     },
     {
       "id": 4,
-      "nome": "Trilha Capivara Rio",
-      "cor_identificacao": "Verde Escuro",
-      "descricao": "Caminho que leva às margens do Rio Juqueriquerê, permitindo uma vista privilegiada do ecossistema fluvial.",
+      "nome": "Trilha da Capivara — Ramal do Rio",
+      "cor_identificacao": "Azul",
+      "dificuldade": "Leve",
+      "extensao": "Não informada",
+      "duracao": "5 a 7 minutos",
+      "descricao_curta": "Ramal integrado ao ambiente ribeirinho que conduz o visitante até a margem do Rio Juqueriquerê.",
+      "descricao": "O ramal do Rio da Trilha da Capivara segue da bifurcação principal em direção à margem do Rio Juqueriquerê, conduzindo o visitante por um trecho mais úmido e integrado ao ambiente ribeirinho. A vegetação torna-se mais fechada em determinados pontos, formando áreas sombreadas e silenciosas, acompanhadas pelo som constante da água e da fauna local.\nO percurso possui solo com grande presença de serapilheira, raízes expostas e áreas suscetíveis a acúmulo de água durante períodos de chuva. Ao final do trajeto, o visitante encontra a antiga área de saída de caiaques e embarcações, próxima à margem do rio, oferecendo contato direto com o ambiente aquático e vista da vegetação ciliar do Juqueriquerê.\n\nAlguns outros obstáculos são:\n- Raízes elevadas;\n- Áreas úmidas;\n- Solo escorregadio;\n- Pequenos trechos alagáveis.",
+      "equipamento_recomendado": "Calçados antiderrapantes, roupas leves, repelente e protetor solar.",
+      "atencao": "Áreas escorregadias, possibilidade de alagamento em períodos chuvosos e presença de insetos e animais peçonhentos.",
       "pontos_interesse": [
         { "planta": "Margaridão (Girassol-mexicano)", "latitude": "-23.678680", "longitude": "-45.440177" }
       ],
       "pontos_no_mapa": [7]
+    },
+     {
+      "id": 5,
+      "nome": "Trilha da Capivara — Ramal do Píer",
+      "cor_identificacao": "Amarelo",
+      "dificuldade": "Leve",
+      "extensao": "Não informada",
+      "duracao": "5 a 7 minutos",
+      "descricao_curta": "Ramal curto que conduz o visitante até um píer panorâmico às margens do Rio Juqueriquerê, passando por áreas sombreadas da Mata Atlântica.",
+      "descricao": "O ramal do Píer segue da bifurcação principal em direção ao deck panorâmico às margens do Rio Juqueriquerê. Durante o trajeto, o visitante percorre áreas cercadas por vegetação densa da Mata Atlântica, observando árvores de médio porte, frutos espalhados pelo solo e trechos de mata mais fechada com forte presença de sombra e umidade.\nAo longo do caminho, placas educativas apresentam informações sobre fauna e flora local, enquanto corrimões e pequenas pontes auxiliam na travessia de áreas mais úmidas. O percurso termina no píer panorâmico, espaço contemplativo que oferece ampla vista do Rio Juqueriquerê e da vegetação ciliar ao redor.\n\nAlguns outros obstáculos são:\n- Raízes expostas;\n- Solo úmido;\n- Pequenos desníveis;\n- Possibilidade de poças d’água.",
+      "equipamento_recomendado": "Calçados adequados para trilha, roupas leves, repelente e protetor solar.",
+      "atencao": "Terreno escorregadio em períodos chuvosos, raízes aparentes e presença de insetos e animais peçonhentos.",
+      "pontos_interesse": [
+        { "planta": "Jerivá", "latitude": "-23.678115", "longitude": "-45.439887" },
+        { "planta": "Ingá", "latitude": "", "longitude": "" },
+        { "planta": "Annona", "latitude": "", "longitude": "" },
+        { "planta": "Margaritaria nobilis", "latitude": "-23.678591", "longitude": "-45.439180" },
+        { "planta": "Pariparoba Mansa", "latitude": "-23.678105", "longitude": "-45.438935" }
+      ],
+      "pontos_no_mapa": [6, 8, 9]
     }
   ]
 }

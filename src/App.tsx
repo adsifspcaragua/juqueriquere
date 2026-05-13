@@ -10,6 +10,7 @@ import SimpleButton from "./components/ui/buttons/SimpleButton.tsx";
 import Scanner from "./components/Scanner.tsx";
 import Logo from './assets/logo.png';
 import Mapa from "./pages/Mapa.tsx";
+import Explorar from "./pages/Explorar.tsx";
 
 const HomePage = () => {
 	const [openScanner, setOpenScanner] = useState(false);
@@ -80,6 +81,7 @@ export default function App() {
 						<Route path="/mapa" element={<Mapa />} />
 						<Route path="/trilhas/" element={<Trilhas />} />
 						<Route path="/trilha/:id" element={<Trilha />} />
+						<Route path="/explorar" element={<Explorar />} />
 						<Route path='*' element={<NotFound />} />
 					</Routes>
 				</div>

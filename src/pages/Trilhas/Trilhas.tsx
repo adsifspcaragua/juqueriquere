@@ -1,35 +1,26 @@
 import { useState } from 'react';
-import SimpleButton from '../../components/ui/buttons/SimpleButton.tsx';
 import data from '../../data.json';
 import Select from '../../components/ui/form/Select.tsx';
+import CardTrilha from '../../components/CardTrilha.tsx';
 
-import Dificuldade from '../../assets/icons/Dificuldade.png';
-import Distancia from '../../assets/icons/Distância.png';
-import Tempo from '../../assets/icons/Tempo.png';
+
+
+
 
 export default function Trilhas() {
     const order = {
         "Nome A-Z": (a: any, b: any) => a.nome.localeCompare(b.nome),
         "Nome Z-A": (a: any, b: any) => b.nome.localeCompare(a.nome),
     } as const;
+
+
     type OrderKey = keyof typeof order;
     
     const [orderKey, setOrderKey] = useState<OrderKey>("Nome A-Z");
     const trilhas = [...data.trilhas].sort(order[orderKey]);
 
     const trilhasList = trilhas.map((trilha) => (
-        <div className='cardTrilha' key={trilha.id}>
-            <div className="info vertical">
-                <h2>{trilha.nome}</h2>
-                <div className="linhaPontilhadaDark"></div>
-                <div className="vertical gap5">
-                    <div className="horizontal gap5"><img src={Dificuldade}/><p>Leve</p></div>
-                    <div className="horizontal gap5"><img src={Distancia}/><p>243m</p></div>
-                    <div className="horizontal gap5"><img src={Tempo}/><p>12min</p></div>
-                </div>
-                <SimpleButton tema='dark' raio='10' path={`/trilha/${trilha.id}`}>Ver detalhes</SimpleButton>
-            </div>
-        </div>
+        <CardTrilha key={trilha.id} trilha={trilha}/>
     ));
 
     return (

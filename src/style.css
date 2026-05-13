@@ -287,35 +287,7 @@ option:checked {
 }
 
 /* Card Trilha */
-.cardTrilha{
-    background-image: url(./assets/img/CardTrilha.png);
-    background-position: center;
-    background-size: cover;
 
-    display: flex;
-    justify-content: end;
-    border-radius: 20px;
-    overflow: hidden;
-    border: 1px solid var(--verdeClaro);
-    
-    .info{
-        background-color: var(--verdeClaroTransparente);
-        backdrop-filter: blur(10px);
-        padding: 20px;
-        width: 55%;
-        gap: 10px;
-
-        .btn{width: 100%;}
-        p{color: #000; font-weight: 500;}
-        img{width: 24px;}
-        .horizontal{
-            align-items: center;
-        }
-    }
-    h2{
-        color: var(--verdeEscuro);
-    }
-}
 /*-------------*/
 
 @media (width > 850px) {
