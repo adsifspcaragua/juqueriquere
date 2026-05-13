@@ -1,5 +1,5 @@
-![Imagem da tilha](readme.png)
 <h1 align="center">
+    <img src="Readme.png" alt="Banner do Projeto" />
     <img src="src/assets/logo.png"/>
 </h1>
 
