@@ -64,6 +64,7 @@ section{
 
 body{
     background-color: var(--verdeEscuro);
+    background: linear-gradient(173deg,rgba(0, 138, 102, 1) 0%, rgba(65, 181, 150, 1) 50%, rgba(0, 138, 102, 1) 100%);
     overflow-x: hidden;
     gap: 15px;
     scroll-behavior: smooth;
@@ -165,11 +166,12 @@ body{
 }
 
 .img-fade{
-    background-size: 90%;
+    height: 400px;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: center top;
-
-    padding-top: 85%;
+    border-radius: 20px;
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
 }
 
 #capivara{
@@ -226,13 +228,17 @@ option:checked {
 
 .mapa, .mapaInterativo{
     width: 100%;
-    height: max-content;
+    aspect-ratio: 1/1;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: var(--verdeClaro);
     border-radius: 20px;
     overflow: hidden;
+
+    p{
+        color: var(--texto);
+    }
 }
 .mapaInterativo{
     width: 55%;
@@ -293,10 +299,6 @@ option:checked {
     
 }
 
-/* Card Trilha */
-
-/*-------------*/
-
 @media (width > 850px) {
     body{
         padding-top: 0;
@@ -315,20 +317,7 @@ option:checked {
         }
     }
     .img-fade{
-        min-height: 100dvh;
-        background-size: cover;
-        background-position: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-
-        margin-top: 0;
-        padding-top: 120px;
-        padding-bottom: 30px;
-
-        .conteudo{
-            width: 40%;
-        }
+        display: none;
     }
     #paddingImgFade{
         display: none;
