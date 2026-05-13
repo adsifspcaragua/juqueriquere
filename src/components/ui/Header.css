@@ -58,7 +58,7 @@ header{
     nav{
         height: fit-content;
         background-color: var(--headerBackground);
-        padding: 10px 20px;
+        padding: 5px 20px;
         justify-content: space-around;
         align-items: center;
         backdrop-filter: blur(10px);
@@ -66,8 +66,26 @@ header{
         border: 1px solid rgba(255, 255, 255, 0.3);
         width: 95%;
 
+        img{
+            width: 30px;
+            height: 30px;
+        }
         .btn-none{
             flex-direction: row-reverse;
+        }
+        :nth-child(3){
+            .btn{
+                aspect-ratio: 1/1;
+                border-radius: 100% !important;
+                padding: 12px;
+                width: 60px;
+                justify-content: center;
+
+                img{
+                    width: 100%;
+                    height: 100%;
+                }
+            }
         }
     }
 }

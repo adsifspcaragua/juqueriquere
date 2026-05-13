@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Scanner from '../Scanner';
 import logo from "../../assets/logo.png";
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import SimpleButton from './buttons/SimpleButton';
 import Menu from './Menu';
 import './Header.css';
@@ -9,6 +10,7 @@ import './Header.css';
 export default function Header() {
     const [openScanner, setOpenScanner] = useState(false);
     const [openMenu, setOpenMenu] = useState(false);
+    const location = useLocation();
 
     useEffect(() => {
         if (openMenu) {
@@ -29,6 +31,10 @@ export default function Header() {
             };
         }
     }, [openMenu]);
+
+    useEffect(() => {
+        setOpenMenu(false);
+    }, [location.pathname]);
 
     return (
         <>
@@ -54,25 +60,35 @@ export default function Header() {
 
             <div className="menuMobile horizontal">
                 <nav className="horizontal">
-                    <SimpleButton path='/' tema='none' icon='Home'>
-                        Início
-                    </SimpleButton>
+                    <SimpleButton
+                        path='/'
+                        tema='none'
+                        icon='Home'
+                    />
+
+                    <SimpleButton
+                        path='/explorar/'
+                        tema='none'
+                        icon='Explorar'
+                    />
 
                     <SimpleButton
                         tema='light'
                         icon='QR'
                         onClick={() => setOpenScanner(true)}
-                    >
-                        Ler QR Code
-                    </SimpleButton>
+                    />
+
+                    <SimpleButton
+                        path='/'
+                        tema='none'
+                        icon='Sobre'
+                    />
 
                     <SimpleButton
                         tema='none'
                         icon='Menu'
                         onClick={() => setOpenMenu(!openMenu)}
-                    >
-                        Menu
-                    </SimpleButton>
+                    />
                 </nav>
             </div>
 
