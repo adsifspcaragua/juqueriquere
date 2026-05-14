@@ -1,4 +1,3 @@
-import "./CardPonto.css"
 
 interface Ponto {
     planta?: string;
@@ -15,7 +14,7 @@ interface Props {
 
 export default function CardPonto({ ponto, trilha: _trilha  /*Temporário*/ }: Props) {
     return (
-        <div className='cardTrilha'>
+        <div className='cardTrilha carrosselCard'>
             <div className="info vertical">
             <h2>{ponto.planta || ponto.misc || ponto.Caminho}</h2>
             </div>

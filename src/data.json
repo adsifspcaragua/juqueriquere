@@ -14,13 +14,38 @@
       "equipamento_recomendado": "Calçados adequados para trilha, roupas leves e claras, repelente, protetor solar e chapéu.",
       "atencao": "Solo escorregadio em períodos úmidos, presença de raízes expostas, pequenos declives, espinhos e possibilidade de animais peçonhentos.",
       "pontos_interesse": [
-        { "planta": "Ingá", "latitude": "", "longitude": "" },
-        { "planta": "Brejaúva", "latitude": "", "longitude": "" },
-        { "planta": "Jacarandá", "latitude": "", "longitude": "" },
-        { "planta": "Pitanga", "latitude": "", "longitude": "" },
-        { "planta": "Araçá", "latitude": "", "longitude": "" }
+        {
+          "planta": "Ingá",
+          "latitude": "",
+          "longitude": ""
+        },
+        {
+          "planta": "Brejaúva",
+          "latitude": "",
+          "longitude": ""
+        },
+        {
+          "planta": "Jacarandá",
+          "latitude": "",
+          "longitude": ""
+        },
+        {
+          "planta": "Pitanga",
+          "latitude": "",
+          "longitude": ""
+        },
+        {
+          "planta": "Araçá",
+          "latitude": "",
+          "longitude": ""
+        }
       ],
-      "pontos_no_mapa": [1, 2, 3, 4]
+      "pontos_no_mapa": [
+        1,
+        2,
+        3,
+        4
+      ]
     },
     {
       "id": 2,
@@ -34,9 +59,15 @@
       "equipamento_recomendado": "Calçados adequados, roupas leves e claras, repelente e protetor solar.",
       "atencao": "Terreno escorregadio, raízes aparentes, pequenos declives e possibilidade de encontro com animais peçonhentos.",
       "pontos_interesse": [
-        { "planta": "Carrapeta", "latitude": "", "longitude": "" }
+        {
+          "planta": "Carrapeta",
+          "latitude": "",
+          "longitude": ""
+        }
       ],
-      "pontos_no_mapa": [5]
+      "pontos_no_mapa": [
+        5
+      ]
     },
     {
       "id": 3,
@@ -44,61 +75,55 @@
       "cor_identificacao": "Verde Claro",
       "dificuldade": "Leve",
       "extensao": "243 metros",
-      "duracao": "12 minutos",
-      "descricao_curta": "Trilha principal que percorre áreas de mata densa e conecta os ramais do píer e do rio.",
-      "descricao": "A Trilha da Capivara percorre áreas de mata densa do Parque Natural Municipal do Rio Juqueriquerê, apresentando vegetação típica da Mata Atlântica e servindo como acesso principal para os ramais do Píer e do Rio. Durante o percurso, o visitante atravessa trechos sombreados, com presença de árvores de médio e grande porte, solo coberto por serapilheira e ambientes úmidos característicos da região.\nAo longo do trajeto, podem ser observadas diversas espécies vegetais nativas, além de áreas próximas ao ecossistema ribeirinho do Rio Juqueriquerê. A trilha possui placas educativas e infraestrutura autoguiada que auxilia na orientação dos visitantes.\n\nAlguns outros obstáculos são:\n- Raízes expostas;\n- Solo úmido;\n- Pequenos desníveis naturais.",
-      "equipamento_recomendado": "Calçados adequados para trilha, roupas leves, repelente e protetor solar.",
-      "atencao": "Terreno escorregadio em períodos úmidos, presença de insetos e possibilidade de animais peçonhentos.",
+      "duracao": "20 minutos",
+      "descricao_curta": "Trilha principal que percorre áreas de Mata Atlântica e integra os ramais do Rio e do Píer, conduzindo o visitante por ambientes ribeirinhos e áreas contemplativas às margens do Rio Juqueriquerê.",
+      "descricao": "A Trilha da Capivara percorre áreas de mata densa do Parque Natural Municipal do Rio Juqueriquerê, funcionando como o principal eixo de conexão entre os ramais do Rio e do Píer. Durante o percurso, o visitante atravessa ambientes típicos da Mata Atlântica, com vegetação de médio e grande porte, solo coberto por serapilheira, raízes expostas e trechos naturalmente úmidos.\n\nAo longo da caminhada, é possível observar diversas espécies vegetais nativas, além de áreas sombreadas e silenciosas integradas ao ecossistema ribeirinho do Rio Juqueriquerê. O trajeto apresenta placas educativas, pequenas pontes, corrimões em áreas úmidas e infraestrutura autoguiada que auxilia na orientação dos visitantes.\n\nA partir da bifurcação principal, a trilha permite acesso ao Ramal do Rio, que conduz o visitante até a antiga área de saída de caiaques e embarcações às margens do rio, oferecendo contato direto com o ambiente aquático e a vegetação ciliar do Juqueriquerê. Também conecta o Ramal do Píer, que leva ao deck panorâmico com ampla vista do rio e das áreas preservadas ao redor.\n\nDurante o percurso, podem ser encontrados ambientes mais fechados e úmidos, além de pontos sujeitos ao acúmulo de água em períodos chuvosos.\n\nAlguns outros obstáculos são:\n- Raízes expostas e elevadas;\n- Solo úmido e escorregadio;\n- Pequenos desníveis naturais;\n- Áreas suscetíveis a alagamento;\n- Possibilidade de poças d’água.",
+      "equipamento_recomendado": "Calçados antiderrapantes adequados para trilha, roupas leves, repelente e protetor solar.",
+      "atencao": "Terreno escorregadio em períodos úmidos ou chuvosos, presença de raízes aparentes, áreas alagáveis, insetos e possibilidade de animais peçonhentos.",
       "pontos_interesse": [
-        { "planta": "Jerivá", "latitude": "-23.678115", "longitude": "-45.439887" },
-        { "planta": "Ingá", "latitude": "", "longitude": "" },
-        { "planta": "Annona", "latitude": "", "longitude": "" },
-        { "planta": "Margaritaria nobilis", "latitude": "-23.678591", "longitude": "-45.439180" },
-        { "planta": "Pariparoba Mansa", "latitude": "-23.678105", "longitude": "-45.438935" },
-        { "Caminho" : "Bifurcação"}
+        {
+          "planta": "Jerivá",
+          "latitude": "-23.678115",
+          "longitude": "-45.439887"
+        },
+        {
+          "planta": "Ingá",
+          "latitude": "",
+          "longitude": ""
+        },
+        {
+          "planta": "Annona",
+          "latitude": "",
+          "longitude": ""
+        },
+        {
+          "planta": "Margaritaria nobilis",
+          "latitude": "-23.678591",
+          "longitude": "-45.439180"
+        },
+        {
+          "planta": "Pariparoba Mansa",
+          "latitude": "-23.678105",
+          "longitude": "-45.438935"
+        },
+        {
+          "planta": "Margaridão (Girassol-mexicano)",
+          "latitude": "-23.678680",
+          "longitude": "-45.440177"
+        },
+        {
+          "caminho": "Bifurcação"
+        }
       ],
-      "pontos_no_mapa": [6, 8, 9]
+      "pontos_no_mapa": [
+        6,
+        7,
+        8,
+        9
+      ]
     },
     {
       "id": 4,
-      "nome": "Trilha da Capivara — Ramal do Rio",
-      "cor_identificacao": "Azul",
-      "dificuldade": "Leve",
-      "extensao": "Não informada",
-      "duracao": "5 a 7 minutos",
-      "descricao_curta": "Ramal integrado ao ambiente ribeirinho que conduz o visitante até a margem do Rio Juqueriquerê.",
-      "descricao": "O ramal do Rio da Trilha da Capivara segue da bifurcação principal em direção à margem do Rio Juqueriquerê, conduzindo o visitante por um trecho mais úmido e integrado ao ambiente ribeirinho. A vegetação torna-se mais fechada em determinados pontos, formando áreas sombreadas e silenciosas, acompanhadas pelo som constante da água e da fauna local.\nO percurso possui solo com grande presença de serapilheira, raízes expostas e áreas suscetíveis a acúmulo de água durante períodos de chuva. Ao final do trajeto, o visitante encontra a antiga área de saída de caiaques e embarcações, próxima à margem do rio, oferecendo contato direto com o ambiente aquático e vista da vegetação ciliar do Juqueriquerê.\n\nAlguns outros obstáculos são:\n- Raízes elevadas;\n- Áreas úmidas;\n- Solo escorregadio;\n- Pequenos trechos alagáveis.",
-      "equipamento_recomendado": "Calçados antiderrapantes, roupas leves, repelente e protetor solar.",
-      "atencao": "Áreas escorregadias, possibilidade de alagamento em períodos chuvosos e presença de insetos e animais peçonhentos.",
-      "pontos_interesse": [
-        { "planta": "Margaridão (Girassol-mexicano)", "latitude": "-23.678680", "longitude": "-45.440177" },
-        { "Caminho" : "Bifurcação"}
-      ],
-      "pontos_no_mapa": [7]
-    },
-    {
-      "id": 5,
-      "nome": "Trilha da Capivara — Ramal do Píer",
-      "cor_identificacao": "Amarelo",
-      "dificuldade": "Leve",
-      "extensao": "Não informada",
-      "duracao": "5 a 7 minutos",
-      "descricao_curta": "Ramal curto que conduz o visitante até um píer panorâmico às margens do Rio Juqueriquerê, passando por áreas sombreadas da Mata Atlântica.",
-      "descricao": "O ramal do Píer segue da bifurcação principal em direção ao deck panorâmico às margens do Rio Juqueriquerê. Durante o trajeto, o visitante percorre áreas cercadas por vegetação densa da Mata Atlântica, observando árvores de médio porte, frutos espalhados pelo solo e trechos de mata mais fechada com forte presença de sombra e umidade.\nAo longo do caminho, placas educativas apresentam informações sobre fauna e flora local, enquanto corrimões e pequenas pontes auxiliam na travessia de áreas mais úmidas. O percurso termina no píer panorâmico, espaço contemplativo que oferece ampla vista do Rio Juqueriquerê e da vegetação ciliar ao redor.\n\nAlguns outros obstáculos são:\n- Raízes expostas;\n- Solo úmido;\n- Pequenos desníveis;\n- Possibilidade de poças d’água.",
-      "equipamento_recomendado": "Calçados adequados para trilha, roupas leves, repelente e protetor solar.",
-      "atencao": "Terreno escorregadio em períodos chuvosos, raízes aparentes e presença de insetos e animais peçonhentos.",
-      "pontos_interesse": [
-        { "planta": "Jerivá", "latitude": "-23.678115", "longitude": "-45.439887" },
-        { "planta": "Ingá", "latitude": "", "longitude": "" },
-        { "planta": "Annona", "latitude": "", "longitude": "" },
-        { "planta": "Margaritaria nobilis", "latitude": "-23.678591", "longitude": "-45.439180" },
-        { "planta": "Pariparoba Mansa", "latitude": "-23.678105", "longitude": "-45.438935" },
-        { "Caminho" : "Bifurcação"}
-      ],
-      "pontos_no_mapa": [6, 8, 9]
-    },
-    {
-      "id": 6,
       "nome": "Trilha Acessível",
       "cor_identificacao": "Azul",
       "dificuldade": "Leve",
@@ -109,9 +134,19 @@
       "equipamento_recomendado": "Calçados adequados para trilha, roupas leves, repelente e protetor solar.",
       "atencao": "Terreno escorregadio em períodos chuvosos, presença de insetos e animais peçonhentos.",
       "pontos_interesse": [
-        { "misc" : "Observatório", "latitude": "-23.67783", "longitude": "-45.439445"}
+        {
+          "misc": "Observatório",
+          "latitude": "-23.67783",
+          "longitude": "-45.439445"
+        }
       ],
-      "pontos_no_mapa": [6, 8, 9]
+      "pontos_no_mapa": [
+        6,
+        8,
+        9
+      ]
     }
+
+    
   ]
 }

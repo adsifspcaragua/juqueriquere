@@ -28,7 +28,7 @@ export default function TrilhaInfo({trilha}: TrilhaProps){
     const Pontos = () => {
         const rendderPontos = trilha.pontos_interesse.map((ponto, index) => (
             <SimpleButton key={index} icon='none' tema='dark'>
-                <h3>{ponto.planta}</h3>
+                <h3>{ponto.planta || ponto.misc || ponto.caminho}</h3>
             </SimpleButton>
         ));
         return(
