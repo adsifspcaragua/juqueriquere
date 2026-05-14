@@ -14,10 +14,11 @@ interface MapProps {
   onHover?: (event: React.MouseEvent<SVGElement>, id: number) => void;
   onClick?: (id: number) => void;
   onLeave?: () => void;
+  highlight?: number | number[]; // IDs das trilhas a destacar
 }
 
-export default function Map({ id, onHover, onClick, onLeave }: MapProps) {
-  
+export default function Map({ id, onHover, onClick, onLeave, highlight }: MapProps) {
+
   // Função auxiliar para normalizar nomes e facilitar a busca entre JSONs
   const normalize = (s: string) => s.toLowerCase().replace('trilha ', '').replace('.', '').trim();
 
@@ -85,6 +86,7 @@ export default function Map({ id, onHover, onClick, onLeave }: MapProps) {
       <g className="trails-layer">
         {filteredData.lines.map((item, idx) => (
           <path
+            className={!highlight || (item.trailId && (Array.isArray(highlight) ? highlight.includes(item.trailId) : highlight === item.trailId)) ? 'highlighted' : 'not-highlighted'}
             key={`line-${idx}`}
             d={pathGenerator(item.feature) || ""}
             stroke={item.feature.properties?.stroke || "#4CAF50"}

@@ -1,59 +1,67 @@
 import { useState } from 'react';
-
 import data from '../data.json';
 
 import CardTrilha from '../components/CardTrilha.tsx';
 import CardPonto from '../components/CardPonto.tsx';
+import TrilhasMap from '../components/ui/TrilhasMap.tsx';
+import DraggableCarousel from '../components/ui/DraggableCarousel.tsx';
 
 export default function Explorar() {
+    const trilhas = data.trilhas;
+    
+    // 1. Inicialize com o ID da primeira trilha (ID 1), não com 0
+    const [trilhaSelecionada, setTrilhaSelecionada] = useState(trilhas[0].id);
 
-    const trilhas = [...data.trilhas];
-
-    const [trilhaSelecionada, setTrilhaSelecionada] = useState(trilhas[0]);
+    // 2. BUSCA SEGURA: Encontre o objeto da trilha pelo ID
+    // Isso evita o erro de 'undefined' ao usar o ID como index
+    const trilhaAtual = trilhas.find(t => t.id === trilhaSelecionada) || trilhas[0];
 
     const trilhasList = trilhas.map((trilha) => (
         <CardTrilha
+            id={trilha.id} // O Carousel usa este ID para o onChange
             key={trilha.id}
             trilha={trilha}
         />
     ));
 
-    const pontosList = trilhaSelecionada.pontos_interesse.map((ponto, index) => (
+    // 3. Use 'trilhaAtual' para mapear os pontos
+    const pontosList = trilhaAtual.pontos_interesse.map((ponto, index) => (
         <CardPonto
             key={index}
             ponto={ponto}
-            trilha={trilhaSelecionada.nome}
+            trilha={trilhaAtual.nome}
         />
     ));
-
+    
     return (
         <>
             <div className="paddingHeader"></div>
             <section className="conteudo vertical">
                 
                 <div className="mapa">
-                    <p>O mapa vai aqui</p>
+                    {/* Repasse o ID para o mapa */}
+                    <TrilhasMap highlight={trilhaSelecionada} onClick={(id) => setTrilhaSelecionada(id)}/>
                 </div>
 
                 <div className="vertical gap5">
                     <h1>Trilhas</h1>
-                    <div className='carrossel horizontal'>
-                        {trilhasList}
-                    </div>
+                    <DraggableCarousel 
+                        items={trilhasList} 
+                        cardWidth={400} 
+                        activeId={trilhaSelecionada}
+                        // O 'id' vem do componente CardTrilha.props.id
+                        onChange={(id) => setTrilhaSelecionada(Number(id))}
+                    />
                 </div>
 
-                <div className="lista vertical">
+                <div className="vertical gap5">
                     <h1>Pontos de interesse</h1>
-                    <div className="horizontal gap5">
+                    <div className="horizontal gap5 scroll">
                         {trilhas.map((trilha) => (
                             <button
                                 key={trilha.id}
-                                onClick={() => setTrilhaSelecionada(trilha)}
-                                className={
-                                    trilhaSelecionada.id === trilha.id
-                                        ? 'ativo'
-                                        : ''
-                                }
+                                onClick={() => setTrilhaSelecionada(trilha.id)}
+                                className={trilhaSelecionada === trilha.id ? 'ativo' : ''}
                             >
                                 {trilha.nome}
                             </button>

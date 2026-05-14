@@ -25,3 +25,9 @@ svg:has(path:hover) path:not(:hover) {
   fill-opacity: 0.2;
 }
 
+.not-highlighted {
+  opacity: 0.3 !important;
+  fill-opacity: 0.2 !important;
+}
+
+
