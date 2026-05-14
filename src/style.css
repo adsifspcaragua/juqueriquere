@@ -22,7 +22,7 @@
     --texto: #5C5C5C;
 }
 
-h1, h2, h3, p, a {
+h1, h2, h3, p, a, li {
     color: #fff;
 }
 h1, h2 {
@@ -32,7 +32,7 @@ h1, h2 {
 h1 {
     font-size: 24px;
 }
-p, a, h3 {
+p, a, h3, li {
     font-family: Inter, Arial, Helvetica, sans-serif;
 }
 p, a {
@@ -53,6 +53,9 @@ h3 {
 }
 .gap5{
     gap: 5px;
+}
+.gap15{
+    gap: 15px;
 }
 
 section{
@@ -102,39 +105,51 @@ body{
   display: none;
 }
 .carrossel{
+    display: flex;
+    gap: 10px;
     margin: 0 -30px;
     padding: 0 30px;
-    gap: 10px;
-    overflow-x: scroll;
+    overflow-x: auto;
     scroll-snap-type: x mandatory;
+    scroll-snap-stop: always;
     scroll-padding: 30px;
     scroll-behavior: smooth;
-
-    img {
-        width: 100%;
-        aspect-ratio: 4/3;
-        object-fit: cover;
-        border-radius: 20px;
-    }
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px !important;
+    user-select: none;
+    scrollbar-width: none;
 }
+
+.carrossel::-webkit-scrollbar{
+    display: none;
+}
+
 .carrosselCard{
     width: 100%;
     min-width: 100%;
-    background-size: cover;
-    justify-content: end;
-    padding: 20px;
-    padding-top: 100px;
-    border-radius: 20px;
+    flex-shrink: 0;
     scroll-snap-align: start;
-
-    .btn{
-        margin-top: 5px;
-        border-radius: 10px;
-    }
+    padding: 20px;
+    border-radius: 20px;
+    justify-content: end;
 }
+
 #trilhas{background-image: linear-gradient(rgba(0, 0, 0, 0.6)), url(./assets/img/trilha.webp);}
 #especies{background-image: linear-gradient(rgba(0, 0, 0, 0.6)), url(./assets/img/especies.jpg);}
 #passaros{background-image: linear-gradient(rgba(0, 0, 0, 0.6)), url(./assets/img/passaros.jpeg);}
+
+.card{
+    padding: 20px;
+    gap: 15px;
+    border-radius: 20px;
+    background-size: cover;
+    background-position: center bottom;
+    h1{color: var(--verdeEscuro);}
+    p{color: var(--texto);}
+}
+#cardEndereco{background-image: url(assets/img/enderecoBg.png);}
+#cardHorario{background-image: url(assets/img/horarioBg.png);}
+#cardGrupo{background-image: url(assets/img/gruposBg.png);}
 
 #scannercard{
     background-image: url(./assets/img/QrCardBg.png);
@@ -274,6 +289,14 @@ option:checked {
 .linhaPontilhadaDark{
     border-bottom: 2px dashed var(--verdeEscuro);
 }
+.linhaPontilhadaLight{
+    border-bottom: 2px dashed var(--verdeClaro)
+}
+ul{
+    padding-left: 15px;
+    li::marker{color: #fff;}
+    li{margin-bottom: 5px;}
+}
 
 .cardTrilhaInfo{
     background-color: var(--verdeClaro);
@@ -297,6 +320,47 @@ option:checked {
         width: fit-content;
     }
     
+}
+
+.scroll{
+    overflow-x: scroll;
+    margin: 0 -5%;
+    padding: 0 5%;
+    padding-bottom: 5px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--verdeClaroTransparente) transparent;
+
+    button{
+        white-space: nowrap;
+        background-color: transparent;
+        font-size: 16px;
+        font-weight: 400;
+        transition: all .3s ease;
+        cursor: pointer;
+    }
+    button:hover{
+        background-color: var(--verdeClaroTransparente);
+        color: var(--verdeEscuro);
+    }
+    .ativo{
+        background-color: var(--verdeClaro);
+        color: var(--verdeEscuro);
+        font-weight: bold;
+    }
+}
+
+.logo{
+    width: 60%;
+}
+
+.galeria{
+    .carrosselCard{
+        padding: 0;
+    }
+}
+
+.carrosselCard:has(.cardTrilha.carrosselCard){
+    padding: 0;
 }
 
 @media (width > 850px) {
@@ -333,8 +397,6 @@ option:checked {
         width: 70%;
         justify-content: space-between;
         overflow: hidden;
-
-
     }
     .carrosselCard{
         min-width: none;

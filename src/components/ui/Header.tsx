@@ -79,7 +79,7 @@ export default function Header() {
                     />
 
                     <SimpleButton
-                        path='/'
+                        path='/sobre'
                         tema='none'
                         icon='Sobre'
                     />
