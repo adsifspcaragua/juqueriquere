@@ -27,39 +27,32 @@ const NativeCarousel = ({
     if (activeId === undefined) return;
 
     const index = items.findIndex((item) => {
-
       if (isValidElement(item)) {
-
         const props = item.props as {
           id?: string | number
         };
-
         return props.id === activeId;
       }
-
       return false;
     });
 
     if (index === -1) return;
 
     const container = containerRef.current;
-
     if (!container) return;
 
-    const firstCard =
-  container.children[0] as HTMLElement;
+    const firstCard = container.children[0] as HTMLElement;
+    if (!firstCard) return;
 
-if (!firstCard) return;
+    const gap = 10;
 
-const gap = 10;
+    const cardWidth =
+      firstCard.offsetWidth + gap;
 
-const cardWidth =
-  firstCard.offsetWidth + gap;
-
-container.scrollTo({
-  left: index * cardWidth,
-  behavior: 'smooth'
-});
+    container.scrollTo({
+      left: index * cardWidth,
+      behavior: 'smooth'
+    });
 
   }, [activeId]);
 

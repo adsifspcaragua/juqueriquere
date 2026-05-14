@@ -5,11 +5,11 @@ import TrilhaInfo, { type Trilha } from './TrilhaInfo';
 import SimpleButton from '../../components/ui/buttons/SimpleButton';
 import TrilhasMap from '../../components/ui/TrilhasMap';
 import DraggableCarousel from '../../components/ui/DraggableCarousel.tsx';
-import { icons } from '../../components/ui/icons';
+import { icons } from '../../components/ui/icons.tsx';
 import CardPonto from '../../components/ui/CardPonto';
 
 export default function Trilha() {
-    const { distancia, tempo, dificuldade } = icons.default;
+    const { Distancia, Tempo, Dificuldade } = icons.default;
     let params = useParams();
     let id = parseInt(params.id || ``);
 
@@ -48,7 +48,7 @@ export default function Trilha() {
                         <div className="horizontal destaquesTrilha">
                             <div className="vertical gap5">
                                 <div className="horizontal gap5">
-                                    <img src={distancia}/>
+                                    <img src={Distancia}/>
                                     <p>Distância</p>
                                 </div>
                                 <p>{trilha.extensao}</p>
@@ -56,7 +56,7 @@ export default function Trilha() {
                             <div className="linhaVertical"></div>
                             <div className="vertical gap5">
                                 <div className="horizontal gap5">
-                                    <img src={tempo}/>
+                                    <img src={Tempo}/>
                                     <p>Duração</p>
                                 </div>
                                 <p>{trilha.duracao}</p>
@@ -64,7 +64,7 @@ export default function Trilha() {
                             <div className="linhaVertical"></div>
                             <div className="vertical gap5">
                                 <div className="horizontal gap5">
-                                    <img src={dificuldade}/>
+                                    <img src={Dificuldade}/>
                                     <p>Dificuldade</p>
                                 </div>
                                 <p>{trilha.dificuldade}</p>

@@ -8,9 +8,9 @@ import XDark        from '../../assets/icons/X.webp';
 import X            from '../../assets/icons/X-dark.png';
 import Explorar     from '../../assets/icons/Explorar.png';
 import Sobre        from '../../assets/icons/Sobre.png';
-import Dificuldade  from '../../assets/icons/Dificuldade.png';
-import Distancia    from '../../assets/icons/Distância.png';
-import Tempo        from '../../assets/icons/Tempo.png';
+import Dificuldade  from '../../assets/icons/Dificuldade-light.png';
+import Distancia    from '../../assets/icons/Distancia-light.png';
+import Tempo        from '../../assets/icons/Tempo-light.png';
 
 export const icons = {
         "default": {
