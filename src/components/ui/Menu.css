@@ -62,6 +62,17 @@
         background-color: var(--headerBackground);
     }
 }
+.dark{
+    h3{
+        color: white;
+    }
+    .btn{
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .btn-dark{
+        background-color: var(--verdeEscuro);
+    }
+}
 .children {
     display: flex;
     flex-direction: column;

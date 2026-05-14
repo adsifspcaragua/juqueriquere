@@ -3,6 +3,7 @@ import { type Trilha } from '../../pages/Trilhas/TrilhaInfo.tsx';
 import SimpleButton from '../../components/ui/buttons/SimpleButton.tsx';
 import { useState } from 'react';
 import './Menu.css';
+import { icons } from './icons.tsx';
 
 interface menuProps {
     ativo: boolean;
@@ -10,10 +11,27 @@ interface menuProps {
 }
 
 export default function Menu({ ativo, onChoice }: menuProps) {
+    const { Explorar, Sobre, Home } = icons.default;
 
     const trilhas: Trilha[] = [...data.trilhas];
     const [trilhasShow, setTrilhasShow] = useState(false);
     const [pontosShow, setPontosShow] = useState(false);
+
+    const buttonMenuDark = (path?: string, title?: string, icon?: string) => {
+        return (
+            <div className='MenuGroup dark'>
+                <SimpleButton
+                    tema='dark'
+                    icon="none"
+                    raio="0"
+                    path={`/${path}`}
+                >
+                    <h3>{title}</h3>
+                    <img src={icon}/>
+                </SimpleButton>
+            </div>
+        );
+    }
 
     return (
         <div
@@ -29,6 +47,11 @@ export default function Menu({ ativo, onChoice }: menuProps) {
 
                     <h1>Menu</h1>
 
+                    {/*fazer renderização condicional dps, apenas para web*/}
+                    {buttonMenuDark("", "Início", Home)}
+                    {buttonMenuDark("sobre", "Sobre", Sobre)}
+                    {buttonMenuDark("explorar", "Mapa", Explorar)}
+                    
                     {/* TRILHAS */}
                     <div className='MenuGroup'>
 
@@ -60,7 +83,6 @@ export default function Menu({ ativo, onChoice }: menuProps) {
 
                     {/* PONTOS */}
                     <div className='MenuGroup'>
-
                         <SimpleButton
                             icon="none"
                             raio="0"

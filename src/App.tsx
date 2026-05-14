@@ -49,7 +49,7 @@ const HomePage = () => {
 								Localizado às margens do Rio Juqueriquerê, o Parque Natural Municipal do Juqueriquerê é a primeira unidade de conservação de proteção integral municipal, cujos objetivos básicos são a preservação dos ecossistemas e biodiversidade e a realização de pesquisa científica.
 							</p>
 
-							<SimpleButton raio="10">
+							<SimpleButton raio="10" path="/sobre/">
 								Mais informações
 							</SimpleButton>
 						</div>
