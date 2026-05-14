@@ -58,11 +58,13 @@ h3 {
     gap: 15px;
 }
 
+.wrap{
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 section{
     padding: 0 5%;
-}
-.container{
-    min-height: 100vh;
 }
 
 body{
@@ -101,9 +103,6 @@ body{
     }
 }
 
-.carrossel::-webkit-scrollbar {
-  display: none;
-}
 .carrossel{
     display: flex;
     gap: 10px;
@@ -117,11 +116,8 @@ body{
     -webkit-overflow-scrolling: touch;
     padding-bottom: 10px !important;
     user-select: none;
-    scrollbar-width: none;
-}
-
-.carrossel::-webkit-scrollbar{
-    display: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--verdeClaroTransparente) transparent;
 }
 
 .carrosselCard{
