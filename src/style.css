@@ -103,33 +103,6 @@ body{
     }
 }
 
-.carrossel{
-    display: flex;
-    gap: 10px;
-    margin: 0 -30px;
-    padding: 0 30px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-snap-stop: always;
-    scroll-padding: 30px;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 10px !important;
-    user-select: none;
-    scrollbar-width: thin;
-    scrollbar-color: var(--verdeClaroTransparente) transparent;
-}
-
-.carrosselCard{
-    width: 100%;
-    min-width: 100%;
-    flex-shrink: 0;
-    scroll-snap-align: start;
-    padding: 20px;
-    border-radius: 20px;
-    justify-content: end;
-}
-
 #trilhas{background-image: linear-gradient(rgba(0, 0, 0, 0.6)), url(./assets/img/trilha.webp);}
 #especies{background-image: linear-gradient(rgba(0, 0, 0, 0.6)), url(./assets/img/especies.jpg);}
 #passaros{background-image: linear-gradient(rgba(0, 0, 0, 0.6)), url(./assets/img/passaros.jpeg);}
@@ -349,15 +322,45 @@ ul{
     width: 60%;
 }
 
+/* -- CARROSSEL -- */
+.carrossel{
+    display: flex;
+    gap: 10px;
+    margin: 0 -30px;
+    padding: 0 30px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-snap-stop: always;
+    scroll-padding: 30px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px !important;
+    user-select: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--verdeClaroTransparente) transparent;
+}
+.carrosselCard{
+    width: 100%;
+    height: 250px;
+    min-width: 100%;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    padding: 20px;
+    border-radius: 20px;
+    justify-content: end;
+}
 .galeria{
     .carrosselCard{
+        aspect-ratio: 4/3 !important;
+        height: auto;
+        object-fit: cover;
         padding: 0;
     }
 }
-
 .carrosselCard:has(.cardTrilha.carrosselCard){
     padding: 0;
 }
+/* -- --------- -- */
 
 @media (width > 850px) {
     body{
