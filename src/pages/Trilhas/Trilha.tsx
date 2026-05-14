@@ -4,6 +4,9 @@ import NotFound from '../NotFound';
 import TrilhaInfo, { type Trilha } from './TrilhaInfo';
 import SimpleButton from '../../components/ui/buttons/SimpleButton';
 import TrilhasMap from '../../components/ui/TrilhasMap';
+import distancia from '../../assets/icons/Distancia-light.png';
+import dificuldade from '../../assets/icons/Dificuldade-light.png';
+import tempo from '../../assets/icons/Tempo-light.png';
 
 export default function Trilha() {
     let params = useParams();
@@ -30,9 +33,33 @@ export default function Trilha() {
                             <p>{trilha.descricao_curta}</p>
 
                         </div>
-                        <p>{trilha.extensao}</p>
-                        <p>{trilha.duracao}</p>
-                        <p>{trilha.dificuldade}</p>
+
+                        <div className="horizontal destaquesTrilha">
+                            <div className="vertical gap5">
+                                <div className="horizontal gap5">
+                                    <img src={distancia}/>
+                                    <p>Distância</p>
+                                </div>
+                                <p>{trilha.extensao}</p>
+                            </div>
+                            <div className="linhaVertical"></div>
+                            <div className="vertical gap5">
+                                <div className="horizontal gap5">
+                                    <img src={tempo}/>
+                                    <p>Duração</p>
+                                </div>
+                                <p>{trilha.duracao}</p>
+                            </div>
+                            <div className="linhaVertical"></div>
+                            <div className="vertical gap5">
+                                <div className="horizontal gap5">
+                                    <img src={dificuldade}/>
+                                    <p>Dificuldade</p>
+                                </div>
+                                <p>{trilha.dificuldade}</p>
+                            </div>
+                        </div>
+
 
                         <div className="vertical gap5">
                             <p>{trilha.descricao}</p>

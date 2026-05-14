@@ -362,6 +362,18 @@ ul{
 }
 /* -- --------- -- */
 
+.destaquesTrilha{
+    border: 2px solid var(--verdeClaro);
+    border-radius: 20px;
+    padding: 10px;
+    justify-content: space-around;
+
+    .vertical{align-items: center;}
+    .horizontal{align-items: center; font-weight: bold;}
+    img{width: 22px;}
+}
+.linhaVertical{min-height: 100%;width: 1px !important;border-right: 1px solid var(--verdeClaro);}
+
 @media (width > 850px) {
     body{
         padding-top: 0;
