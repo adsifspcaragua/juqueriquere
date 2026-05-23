@@ -1,4 +1,4 @@
-import Trilha from '../../pages/Trilhas/TrilhaInfo';
+import type Trilha from '../../pages/Trilhas/TrilhaInfo';
 import { Link } from "react-router-dom";
 import { icons } from './icons';
 import './CardTrilha.css'
