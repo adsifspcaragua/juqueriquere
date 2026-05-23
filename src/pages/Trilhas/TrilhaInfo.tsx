@@ -1,4 +1,3 @@
-import SimpleButton from '../../components/ui/buttons/SimpleButton';
 interface PontoInteresse {
     planta?: string;
     caminho?: string;
@@ -6,7 +5,7 @@ interface PontoInteresse {
     latitude?: string;
     longitude?: string;
 }
-export interface Trilha {
+export default interface Trilha {
     id: number;
     nome: string;
     cor_identificacao: string;
@@ -19,7 +18,4 @@ export interface Trilha {
     equipamento_recomendado: string;
     atencao: string;
     pontos_no_mapa: number[];
-}
-interface TrilhaProps {
-    trilha: Trilha;
 }
