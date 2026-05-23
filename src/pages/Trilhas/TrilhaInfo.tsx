@@ -23,27 +23,3 @@ export interface Trilha {
 interface TrilhaProps {
     trilha: Trilha;
 }
-
-export default function TrilhaInfo({trilha}: TrilhaProps){
-    const Pontos = () => {
-        const rendderPontos = trilha.pontos_interesse.map((ponto, index) => (
-            <SimpleButton key={index} icon='none' tema='dark'>
-                <h3>{ponto.planta || ponto.misc || ponto.caminho}</h3>
-            </SimpleButton>
-        ));
-        return(
-            <div className="pontosTrilha vertical">
-                <h2>Pontos de interesse em {trilha.nome}:</h2>
-                <div className="vertical gap5">{rendderPontos}</div>
-            </div>
-        )
-    }
-
-    return(
-        <>
-            <div className="cardTrilhaInfo conteudo">
-                <Pontos />
-            </div>
-        </>
-    )
-}
