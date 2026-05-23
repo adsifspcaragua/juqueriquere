@@ -1,5 +1,5 @@
 import data from '../../data.json';
-import Trilha from '../../pages/Trilhas/TrilhaInfo.tsx';
+import type Trilha from '../../pages/Trilhas/TrilhaInfo.tsx';
 import SimpleButton from '../../components/ui/buttons/SimpleButton.tsx';
 import { useState } from 'react';
 import './Menu.css';
