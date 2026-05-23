@@ -1,0 +1,429 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+@font-face {
+    font-family: Heavitas; src: url(/fonts/Heavitas.ttf);
+    ascent-override: 100%;
+    descent-override: 25%;
+    line-gap-override: 0%;
+}
+
+:root{
+    --verdeEscuro: #008A66;
+    --verdeClaro: #CBFFF1;
+    --verdeClaroTransparente: rgba(203, 255, 241, 0.7);
+    --headerBackground: #309e819a;
+    --texto: #5C5C5C;
+}
+
+h1, h2, h3, p, a, li {
+    color: #fff;
+}
+h1, h2 {
+    font-family: Heavitas, sans-serif;
+    font-weight: 400;
+}
+h1 {
+    font-size: 24px;
+}
+p, a, h3, li {
+    font-family: Inter, Arial, Helvetica, sans-serif;
+}
+p, a {
+    font-size: 14px;
+    text-decoration: none;
+}
+h3 {
+    font-weight: 700;
+}
+
+.horizontal{
+    display: flex;
+    flex-direction: row;
+}
+.vertical{
+    display: flex;
+    flex-direction: column;
+}
+.gap5{
+    gap: 5px;
+}
+.gap15{
+    gap: 15px;
+}
+
+.wrap{
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+section{
+    padding: 0 5%;
+}
+
+body{
+    background-color: var(--verdeEscuro);
+    background: linear-gradient(173deg,rgba(0, 138, 102, 1) 0%, rgba(65, 181, 150, 1) 50%, rgba(0, 138, 102, 1) 100%);
+    overflow-x: hidden;
+    gap: 15px;
+    scroll-behavior: smooth;
+}
+#root{
+    overflow-x: hidden;
+}
+
+.paddingHeader{
+    height: 20px;
+}
+
+.bannerInicio{
+    background:  linear-gradient(rgba(0, 0, 0, 0.6)), url(assets/img/inicio-bg.webp);
+    background-size: cover;
+    background-position: center;
+    align-items: end;
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+
+    .conteudo{
+        width: 100%;
+        margin-top: 150px;
+        padding: 0;
+
+        >img{
+            width: 80%;
+            max-width: 300px;
+        }
+    }
+}
+
+#trilhas{background-image: linear-gradient(rgba(0, 0, 0, 0.6)), url(./assets/img/trilha.webp);}
+#especies{background-image: linear-gradient(rgba(0, 0, 0, 0.6)), url(./assets/img/especies.jpg);}
+#passaros{background-image: linear-gradient(rgba(0, 0, 0, 0.6)), url(./assets/img/passaros.jpeg);}
+
+.card{
+    padding: 20px;
+    gap: 15px;
+    border-radius: 20px;
+    background-size: cover;
+    background-position: center bottom;
+    h1{color: var(--verdeEscuro);}
+    p{color: var(--texto);}
+}
+#cardEndereco{background-image: url(assets/img/enderecoBg.png);}
+#cardHorario{background-image: url(assets/img/horarioBg.png);}
+#cardGrupo{background-image: url(assets/img/gruposBg.png);}
+
+#scannercard{
+    background-image: url(./assets/img/QrCardBg.png);
+    background-size: cover;
+    background-position: center bottom;
+
+    padding: 20px;
+    gap: 15px;
+    border-radius: 20px;
+
+    h1{color: var(--verdeEscuro);}
+    p{color: var(--texto);}
+
+    .vertical{
+        gap: 5px;
+    }
+    a{
+        width: fit-content;
+    }
+    .btn{
+        border-radius: 10px;
+    }
+}
+
+#linksSugeridos{
+    nav{
+        gap: 10px;
+    }
+}
+
+.img-fade{
+    height: 400px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center top;
+    border-radius: 20px;
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+}
+
+#capivara{
+    background-image: url(./assets/img/CapivaraMobile.webp);
+}
+
+.lista{
+    gap: 10px;
+}
+.conteudo{
+    gap: 20px;
+    padding-bottom: 30px;
+
+}
+
+.titulo{
+    gap: 10px;
+    align-items: center;
+
+    a, img{
+        width: 26px;
+        height: 26px;
+    }
+}
+
+.orderByList{
+    margin-bottom: 20px;
+}
+
+.dropdown-none {
+  color: #fff;
+  border: 0px transparent;
+  background: transparent;
+  padding: 5px;
+  font-size: 14px;
+  transition: 0.4s;
+}
+option{
+    color: var(--texto);
+}
+option:checked {
+    font-weight: bold;
+}
+
+.pontosTrilha{
+    gap: 15px;
+    h1{color: var(--verdeEscuro);}
+
+    .btn-dark{width: 100%; border-radius: 10px;}
+}
+.back{
+    transform: scaleX(-1);
+}
+
+.mapa, .mapaInterativo{
+    width: 100%;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--verdeClaro);
+    border-radius: 20px;
+    overflow: hidden;
+
+    p{
+        color: var(--texto);
+    }
+}
+.mapaInterativo{
+    width: 55%;
+
+    p{color: var(--texto);}
+
+    path{
+        stroke-width: 15px;
+        transition: all .3s ease-in-out;
+        cursor: pointer;
+    }
+    path:hover{
+        stroke-width: 23px;
+    }
+    path:hover path:not(:hover){
+        fill-opacity: 0.5;
+    }
+
+}
+
+
+#filtros{
+    width: 100%;
+    justify-content: space-between;
+ 
+    align-items: center;
+
+    .horizontal{
+        align-items: center;
+    }
+}
+
+.linhaPontilhadaDark{
+    border-bottom: 2px dashed var(--verdeEscuro);
+}
+.linhaPontilhadaLight{
+    border-bottom: 2px dashed var(--verdeClaro)
+}
+ul{
+    padding-left: 15px;
+    li::marker{color: #fff;}
+    li{margin-bottom: 5px;}
+}
+
+.cardTrilhaInfo{
+    background-color: var(--verdeClaro);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    width: auto;
+    border-radius: 20px;
+    transition: transform .35s ease-in-out;
+    h2{
+        font-family: Inter, Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--verdeEscuro);
+    }
+
+    p{
+        color: var(--texto);
+        display: flex;
+        width: fit-content;
+    }
+    
+}
+
+.scroll{
+    overflow-x: scroll;
+    margin: 0 -5%;
+    padding: 0 5%;
+    padding-bottom: 5px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--verdeClaroTransparente) transparent;
+
+    button{
+        white-space: nowrap;
+        background-color: transparent;
+        font-size: 16px;
+        font-weight: 400;
+        transition: all .3s ease;
+        cursor: pointer;
+    }
+    button:hover{
+        background-color: var(--verdeClaroTransparente);
+        color: var(--verdeEscuro);
+    }
+    .ativo{
+        background-color: var(--verdeClaro);
+        color: var(--verdeEscuro);
+        font-weight: bold;
+    }
+}
+
+.logo{
+    width: 60%;
+}
+
+/* -- CARROSSEL -- */
+.carrossel{
+    display: flex;
+    gap: 10px;
+    margin: 0 -30px;
+    padding: 0 30px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-snap-stop: always;
+    scroll-padding: 30px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px !important;
+    user-select: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--verdeClaroTransparente) transparent;
+}
+.carrosselCard{
+    width: 100%;
+    height: 250px;
+    min-width: 100%;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    padding: 20px;
+    border-radius: 20px;
+    justify-content: end;
+}
+.galeria{
+    .carrosselCard{
+        aspect-ratio: 4/3 !important;
+        height: auto;
+        object-fit: cover;
+        padding: 0;
+    }
+}
+.carrosselCard:has(.cardTrilha.carrosselCard){
+    padding: 0;
+}
+/* -- --------- -- */
+
+.destaquesTrilha{
+    border: 2px solid var(--verdeClaro);
+    border-radius: 20px;
+    padding: 10px;
+    justify-content: space-around;
+
+    .vertical{align-items: center;}
+    .horizontal{align-items: center; font-weight: bold;}
+    img{width: 22px;}
+}
+.linhaVertical{min-height: 100%;width: 1px !important;border-right: 1px solid var(--verdeClaro);}
+
+@media (width > 850px) {
+    body{
+        padding-top: 0;
+    }
+    .paddingHeader{
+        height: 120px;
+    }
+    #inicio{
+        flex-direction: row;
+    }
+    .bannerInicio{
+        align-items: center;
+        .conteudo {
+            width: 50%;
+            margin: 50px 0;
+        }
+    }
+    .img-fade{
+        display: none;
+    }
+    #paddingImgFade{
+        display: none;
+    }
+    #capivara{
+        background-image: url(./assets/img/CapivaraDesktop.webp);
+    }
+    .carrossel{
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        gap: 20px;
+        width: 70%;
+        justify-content: space-between;
+        overflow: hidden;
+    }
+    .carrosselCard{
+        min-width: none;
+        min-width: 30%;
+    }
+
+    #detalheTrilha{
+        flex-direction: row;
+    }
+
+    #conteudoTrilha{
+        width: 50%;
+    }
+
+    .mapa{
+        width: 50%;
+        height: fit-content;
+    }
+}

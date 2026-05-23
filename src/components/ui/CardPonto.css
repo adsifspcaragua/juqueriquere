@@ -1,0 +1,16 @@
+.carrossel{
+    margin: 0 -5%;
+    padding: 0 5%;
+    scroll-padding: 5vw;
+    height: fit-content !important;
+}
+.cardPonto.carrosselCard{
+    height: 150px !important;
+    .info{
+        justify-content: center;
+    }
+}
+.carrosselCard:has(.cardPonto.carrosselCard){
+    padding: 0;
+    height: fit-content;
+}

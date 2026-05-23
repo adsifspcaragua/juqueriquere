@@ -1,0 +1,24 @@
+
+.path{
+  transition: all .3s ease;
+}
+
+svg:has(.path:hover) .path:not(:hover) {
+  opacity: 0.3;
+  fill-opacity: 0.2;
+}
+.path:hover{
+  opacity: 1;
+  stroke-width: 20px;
+}
+.not-highlighted {
+  opacity: 0.3 !important;
+  fill-opacity: 0.2 !important;
+  stroke-width: 15px;
+}
+.highlighted {
+  stroke-width: 20px;
+}
+
+
+

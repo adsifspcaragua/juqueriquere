@@ -1,0 +1,152 @@
+{
+  "parque": "Parque Natural Municipal do Juqueriquerê",
+  "localizacao": "Caraguatatuba, SP",
+  "trilhas": [
+    {
+      "id": 1,
+      "nome": "Trilha do Esquilo",
+      "cor_identificacao": "Vermelho",
+      "dificuldade": "Moderada",
+      "extensao": "220 metros",
+      "duracao": "12 minutos",
+      "descricao_curta": "Uma trilha leve que serpenteia a área central do parque, ideal para observação de pequenos mamíferos e flora nativa variada.",
+      "descricao": "A Trilha do Esquilo inicia-se poucos metros após a entrada principal do Parque Natural Municipal do Rio Juqueriquerê, seguindo pelo lado direito em um percurso contínuo, sem bifurcações, até o acesso da doca dos caiaques. Durante a caminhada, o visitante percorre um trecho cercado pela vegetação da Mata Atlântica, com solo coberto por folhas, raízes aparentes e pequenos troncos naturais integrados ao caminho.\nAo longo do trajeto, destacam-se áreas do ecossistema Brejauval, caracterizadas pela umidade do ambiente e vegetação adaptada às áreas alagadiças. Também é possível observar agrupamentos de espécies da família das Piperáceas, como Pimenta-do-macaco, Pimenta-longa e Pariparoba-mansa, distribuídas próximas ao percurso.\nA trilha possui infraestrutura autoguiada, equipada com corrimões de madeira, pequenas pontes de travessia e placas interpretativas sobre biodiversidade e sinalização do percurso. Em determinados pontos, pequenas arvoretas crescem próximas ao leito da trilha, criando obstáculos naturais que reforçam a experiência de contato direto com a floresta.\n\nAlguns outros obstáculos são:\n- Raízes elevadas;\n- Troncos expostos;\n- Pequenas elevações naturais.",
+      "equipamento_recomendado": "Calçados adequados para trilha, roupas leves e claras, repelente, protetor solar e chapéu.",
+      "atencao": "Solo escorregadio em períodos úmidos, presença de raízes expostas, pequenos declives, espinhos e possibilidade de animais peçonhentos.",
+      "pontos_interesse": [
+        {
+          "planta": "Ingá",
+          "latitude": "",
+          "longitude": ""
+        },
+        {
+          "planta": "Brejaúva",
+          "latitude": "",
+          "longitude": ""
+        },
+        {
+          "planta": "Jacarandá",
+          "latitude": "",
+          "longitude": ""
+        },
+        {
+          "planta": "Pitanga",
+          "latitude": "",
+          "longitude": ""
+        },
+        {
+          "planta": "Araçá",
+          "latitude": "",
+          "longitude": ""
+        }
+      ],
+      "pontos_no_mapa": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "Trilha do Teiú",
+      "cor_identificacao": "Verde",
+      "dificuldade": "Leve",
+      "extensao": "78 metros",
+      "duracao": "5 minutos",
+      "descricao_curta": "Trilha curta às margens do Rio Juqueriquerê, com vegetação fechada, túneis naturais e forte integração ao ambiente ribeirinho.",
+      "descricao": "A Trilha do Teiú inicia-se próxima à doca dos caiaques e acompanha a margem do Rio Juqueriquerê em um percurso curto e linear, sem bifurcações, finalizando nas proximidades do píer. Durante a caminhada, o visitante percorre uma área bastante integrada ao ambiente ribeirinho, com vegetação fechada e cobertura natural formada por folhas e galhos sobre parte do trajeto.\nEm alguns pontos, o caminho se torna mais estreito, exigindo atenção devido às raízes elevadas e às arvoretas próximas ao leito da trilha. Há também trechos em que a vegetação forma túneis naturais baixos, onde visitantes mais altos precisam abaixar-se para continuar o percurso. Outro destaque é a presença de vagens de Mucunã (Olho-de-boi), cujos pelos podem causar irritação na pele em caso de contato.\nAo longo do caminho, podem ser observados exemplares de espécies nativas como Carrapeta e Aroeira, além de placas educativas sobre biodiversidade local. A trilha conta com corrimões de madeira que delimitam e orientam o percurso autoguiado.\n\nAlguns outros obstáculos são:\n- Raízes expostas e elevadas;\n- Caminho estreito em alguns trechos;\n- Vegetação baixa sobre o percurso;\n- Presença de vagens aculeadas de Mucunã.",
+      "equipamento_recomendado": "Calçados adequados, roupas leves e claras, repelente e protetor solar.",
+      "atencao": "Terreno escorregadio, raízes aparentes, pequenos declives e possibilidade de encontro com animais peçonhentos.",
+      "pontos_interesse": [
+        {
+          "planta": "Carrapeta",
+          "latitude": "",
+          "longitude": ""
+        }
+      ],
+      "pontos_no_mapa": [
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "nome": "Trilha da Capivara",
+      "cor_identificacao": "Verde Claro",
+      "dificuldade": "Leve",
+      "extensao": "243 metros",
+      "duracao": "20 minutos",
+      "descricao_curta": "Trilha principal que percorre áreas de Mata Atlântica e integra os ramais do Rio e do Píer, conduzindo o visitante por ambientes ribeirinhos e áreas contemplativas às margens do Rio Juqueriquerê.",
+      "descricao": "A Trilha da Capivara percorre áreas de mata densa do Parque Natural Municipal do Rio Juqueriquerê, funcionando como o principal eixo de conexão entre os ramais do Rio e do Píer. Durante o percurso, o visitante atravessa ambientes típicos da Mata Atlântica, com vegetação de médio e grande porte, solo coberto por serapilheira, raízes expostas e trechos naturalmente úmidos.\n\nAo longo da caminhada, é possível observar diversas espécies vegetais nativas, além de áreas sombreadas e silenciosas integradas ao ecossistema ribeirinho do Rio Juqueriquerê. O trajeto apresenta placas educativas, pequenas pontes, corrimões em áreas úmidas e infraestrutura autoguiada que auxilia na orientação dos visitantes.\n\nA partir da bifurcação principal, a trilha permite acesso ao Ramal do Rio, que conduz o visitante até a antiga área de saída de caiaques e embarcações às margens do rio, oferecendo contato direto com o ambiente aquático e a vegetação ciliar do Juqueriquerê. Também conecta o Ramal do Píer, que leva ao deck panorâmico com ampla vista do rio e das áreas preservadas ao redor.\n\nDurante o percurso, podem ser encontrados ambientes mais fechados e úmidos, além de pontos sujeitos ao acúmulo de água em períodos chuvosos.\n\nAlguns outros obstáculos são:\n- Raízes expostas e elevadas;\n- Solo úmido e escorregadio;\n- Pequenos desníveis naturais;\n- Áreas suscetíveis a alagamento;\n- Possibilidade de poças d’água.",
+      "equipamento_recomendado": "Calçados antiderrapantes adequados para trilha, roupas leves, repelente e protetor solar.",
+      "atencao": "Terreno escorregadio em períodos úmidos ou chuvosos, presença de raízes aparentes, áreas alagáveis, insetos e possibilidade de animais peçonhentos.",
+      "pontos_interesse": [
+        {
+          "planta": "Jerivá",
+          "latitude": "-23.678115",
+          "longitude": "-45.439887"
+        },
+        {
+          "planta": "Ingá",
+          "latitude": "",
+          "longitude": ""
+        },
+        {
+          "planta": "Annona",
+          "latitude": "",
+          "longitude": ""
+        },
+        {
+          "planta": "Margaritaria nobilis",
+          "latitude": "-23.678591",
+          "longitude": "-45.439180"
+        },
+        {
+          "planta": "Pariparoba Mansa",
+          "latitude": "-23.678105",
+          "longitude": "-45.438935"
+        },
+        {
+          "planta": "Margaridão (Girassol-mexicano)",
+          "latitude": "-23.678680",
+          "longitude": "-45.440177"
+        },
+        {
+          "caminho": "Bifurcação"
+        }
+      ],
+      "pontos_no_mapa": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "nome": "Trilha Acessível",
+      "cor_identificacao": "Azul",
+      "dificuldade": "Leve",
+      "extensao": "Não informada",
+      "duracao": "5 a 7 minutos",
+      "descricao_curta": "Trilha adaptada para acessibilidade, proporcionando contato com a natureza para pessoas com mobilidade reduzida.",
+      "descricao": "Trilha Acessivel",
+      "equipamento_recomendado": "Calçados adequados para trilha, roupas leves, repelente e protetor solar.",
+      "atencao": "Terreno escorregadio em períodos chuvosos, presença de insetos e animais peçonhentos.",
+      "pontos_interesse": [
+        {
+          "misc": "Observatório",
+          "latitude": "-23.67783",
+          "longitude": "-45.439445"
+        }
+      ],
+      "pontos_no_mapa": [
+        6,
+        8,
+        9
+      ]
+    }
+
+    
+  ]
+}
