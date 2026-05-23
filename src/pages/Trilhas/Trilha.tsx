@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import data from '../../data.json';
 import NotFound from '../NotFound';
-import TrilhaInfo, { type Trilha } from './TrilhaInfo';
+import Trilha from './TrilhaInfo';
 import SimpleButton from '../../components/ui/buttons/SimpleButton';
 import TrilhasMap from '../../components/ui/TrilhasMap';
 import DraggableCarousel from '../../components/ui/DraggableCarousel.tsx';
