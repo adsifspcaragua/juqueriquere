@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import data from '../../data.json';
 import NotFound from '../NotFound';
-import type Trilha from './TrilhaInfo';
+import type TrilhaType from './TrilhaInfo';
 import SimpleButton from '../../components/ui/buttons/SimpleButton';
 import TrilhasMap from '../../components/ui/TrilhasMap';
 import DraggableCarousel from '../../components/ui/DraggableCarousel.tsx';
@@ -14,7 +14,7 @@ export default function Trilha() {
     let id = parseInt(params.id || ``);
 
 
-    const trilha = data.trilhas.find(t => t.id === id) as Trilha;
+    const trilha = data.trilhas.find(t => t.id === id) as TrilhaType;
     if (!trilha) return <NotFound />;
 
     const pontosList = trilha.pontos_interesse.map((ponto, index) => (
