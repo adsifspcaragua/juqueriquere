@@ -4,7 +4,7 @@ import SimpleButton from '../components/ui/buttons/SimpleButton';
 import TrilhasMap from '../components/ui/TrilhasMap';
 import './styles/mapa.css';
 import data from '../data.json';
-import { type Trilha } from './Trilhas/TrilhaInfo';
+import type Trilha from './Trilhas/TrilhaInfo';
 
 export default function Mapa() {
     const navigate = useNavigate();
