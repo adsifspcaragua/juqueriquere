@@ -13,7 +13,7 @@ export default function CardTrilha({ trilha, id }: Props): JSX.Element {
     const { Dificuldade, Distancia, Tempo } = icons.dark;
 
     return (
-        <Link to={`/trilha/${id}`} className='cardTrilha carrosselCard'>
+        <Link to={`/trilha/${id}`} className='cardTrilha'>
             <div className="info vertical">
 
                 <h2>{trilha.nome}</h2>

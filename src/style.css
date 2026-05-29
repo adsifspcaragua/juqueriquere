@@ -57,6 +57,9 @@ h3 {
 .gap15{
     gap: 15px;
 }
+.gap30{
+    gap: 30px !important;
+}
 
 .wrap{
     flex-wrap: wrap;
@@ -323,6 +326,13 @@ ul{
 }
 
 /* -- CARROSSEL -- */
+#CarrosselInicio{
+    .carrosselCard{
+        padding: 20px;
+        height: 200px;
+    }
+}
+
 .carrossel{
     display: flex;
     gap: 10px;
@@ -340,9 +350,9 @@ ul{
     scrollbar-color: var(--verdeClaroTransparente) transparent;
 }
 .carrosselCard{
-    width: 100%;
+    width: 100% !important;
     height: 250px;
-    min-width: 100%;
+    min-width: 100% !important;
     flex-shrink: 0;
     scroll-snap-align: start;
     padding: 20px;

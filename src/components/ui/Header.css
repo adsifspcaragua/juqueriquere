@@ -75,10 +75,10 @@ header{
         }
         :nth-child(3){
             .btn{
-                aspect-ratio: 1/1;
                 border-radius: 100% !important;
                 padding: 12px;
                 width: 60px;
+                height: 60px;
                 justify-content: center;
 
                 img{

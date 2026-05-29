@@ -5,9 +5,12 @@
     height: fit-content !important;
 }
 .cardPonto.carrosselCard{
-    height: 150px !important;
+    height: 130px !important;
     .info{
         justify-content: center;
+        h2{
+            font-size: 18px;
+        }
     }
 }
 .carrosselCard:has(.cardPonto.carrosselCard){

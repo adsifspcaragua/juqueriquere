@@ -2,8 +2,9 @@
     margin: 0 -5%;
     padding: 0 5%;
     scroll-padding: 5vw;
+    height: fit-content !important;
 }
-.cardTrilha.carrosselCard {
+.carrosselCard .cardTrilha, .cardTrilha.carrosselCard{
     background-image: url(../../assets/img/CardTrilha.png  );
     background-position: center;
     background-size: cover;
@@ -13,8 +14,8 @@
     border-radius: 20px;
     overflow: hidden;
     border: 1px solid var(--verdeClaro);
-    padding: 0;
-    height: 100%;
+    padding: 0 !important;
+    height: fit-content;
 
     .info {
         background-color: var(--verdeClaroTransparente);
@@ -46,4 +47,11 @@
     h2 {
         color: var(--verdeEscuro);
     }
+}
+.carrosselCard{
+    padding: 0;
+    height: auto;
+}
+.cardTrilha{
+    height: 100% !important;
 }

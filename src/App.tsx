@@ -79,7 +79,7 @@ const HomePage = () => {
 					</div>
 				</div>
 
-				<div className="carrossel horizontal">
+				<div className="carrossel horizontal" id="CarrosselInicio">
 
 					<div className="carrosselCard vertical gap5" id="trilhas">
 						<h1>Trilhas</h1>
@@ -88,7 +88,7 @@ const HomePage = () => {
 							Explore caminhos serenos, admire vistas deslumbrantes e encontre a paz na jornada.
 						</p>
 
-						<SimpleButton path="/explorar/" raio="10">
+						<SimpleButton path="/trilhas" raio="10">
 							Ir para Trilhas
 						</SimpleButton>
 					</div>
@@ -100,7 +100,7 @@ const HomePage = () => {
 							Descubra as espécies nativas do parque e aprenda mais sobre os seres que habitam esse espaço.
 						</p>
 
-						<SimpleButton path="/especies/" raio="10">
+						<SimpleButton path="/pontos" raio="10">
 							Ir para Espécies Nativas
 						</SimpleButton>
 					</div>
