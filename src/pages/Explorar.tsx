@@ -9,19 +9,26 @@ import './styles/explorar.css';
 import SimpleButton from '../components/ui/buttons/SimpleButton.tsx';
 
 export default function Explorar() {
-    const trilhas = [...data.trilhas] as Trilha[]; // Asserção de tipo para garantir que temos um array de Trilha
+    const trilhas = [...data.trilhas] as Trilha[]; 
      
     const [trilhaSelecionada, setTrilhaSelecionada] = useState(trilhas[0].id);
 
     const trilhaAtual = trilhas.find(t => t.id === trilhaSelecionada) || trilhas[0];
 
+    // Monta o array de IDs para o highlight: ID da trilha + IDs dos ramais (se existirem)
+    const highlightIds = [
+        trilhaAtual.id,
+        ...(trilhaAtual.ramais ? trilhaAtual.ramais.map(r => r.id) : [])
+    ];
+
     const trilhasList = trilhas.map((trilha) => (
         <CardTrilha
-            id={trilha.id} // O Carousel usa este ID para o onChange
+            id={trilha.id} 
             key={trilha.id}
             trilha={trilha}
         />
     ));
+    
     const pontosList = trilhaAtual.pontos_interesse.map((ponto, index) => (
         <CardPonto
             key={index}
@@ -29,15 +36,18 @@ export default function Explorar() {
             trilha={trilhaAtual.nome}
         />
     ));
-    
+
     return (
         <>
             <div className="paddingHeader"></div>
             <section className="conteudo vertical gap30">
                 
                 <div className="mapa">
-                    {/* Repasse o ID para o mapa */}
-                    <TrilhasMap highlight={trilhaSelecionada} onClick={(id) => setTrilhaSelecionada(id)}/>
+                    {/* Repasse o array de IDs (trilha + ramais) e garanta que o onClick atualize o estado da trilha principal */}
+                    <TrilhasMap 
+                        highlight={highlightIds} 
+                        onClick={(trailId, _ramalId) => setTrilhaSelecionada(trailId)}
+                    />
                 </div>
 
                 <div className="vertical gap5">
@@ -45,7 +55,6 @@ export default function Explorar() {
                     <DraggableCarousel 
                         items={trilhasList}
                         activeId={trilhaSelecionada}
-                        // O 'id' vem do componente CardTrilha.props.id
                         onChange={(id) => setTrilhaSelecionada(Number(id))}
                     />
                     <SimpleButton path='/trilhas'>Todas as Trilhas</SimpleButton>

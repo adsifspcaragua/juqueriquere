@@ -84,12 +84,12 @@
         {
           "nome": "Ramal do Rio",
           "descricao": "Ramal que conduz o visitante até a antiga área de saída de caiaques e embarcações às margens do Rio Juqueriquerê, oferecendo contato direto com o ambiente aquático e a vegetação ciliar do rio.",
-          "id": 5
+          "id": "5BDD9C23C5000006"
         },
         {
           "nome": "Ramal do Píer",
           "descricao": "Ramal que leva ao deck panorâmico com ampla vista do Rio Juqueriquerê e das áreas preservadas ao redor, proporcionando um espaço de contemplação e descanso para os visitantes.",
-          "id" : 6
+          "id" : "5BDD9BF419000003"
         }
       ],
       "pontos_interesse": [
