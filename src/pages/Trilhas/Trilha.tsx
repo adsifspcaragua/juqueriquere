@@ -33,7 +33,7 @@ export default function Trilha() {
                 <SimpleButton path="/explorar/" type='back'>Voltar para Mapa</SimpleButton>
 
                     <div className="mapa">
-                        {<TrilhasMap id={[id]}></TrilhasMap>}
+                        {<TrilhasMap highlight={id} id={[id]}></TrilhasMap>}
                     </div>
 
                         <div className='vertical gap5'>

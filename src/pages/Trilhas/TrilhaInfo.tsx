@@ -17,5 +17,10 @@ export default interface Trilha {
     pontos_interesse: PontoInteresse[];
     equipamento_recomendado: string;
     atencao: string;
+    ramais: {
+        nome: string;
+        descricao: string;
+        id: number | string;
+    }[];
     pontos_no_mapa: number[];
 }

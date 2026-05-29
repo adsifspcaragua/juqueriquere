@@ -80,6 +80,18 @@
       "descricao": "A Trilha da Capivara percorre áreas de mata densa do Parque Natural Municipal do Rio Juqueriquerê, funcionando como o principal eixo de conexão entre os ramais do Rio e do Píer. Durante o percurso, o visitante atravessa ambientes típicos da Mata Atlântica, com vegetação de médio e grande porte, solo coberto por serapilheira, raízes expostas e trechos naturalmente úmidos.\n\nAo longo da caminhada, é possível observar diversas espécies vegetais nativas, além de áreas sombreadas e silenciosas integradas ao ecossistema ribeirinho do Rio Juqueriquerê. O trajeto apresenta placas educativas, pequenas pontes, corrimões em áreas úmidas e infraestrutura autoguiada que auxilia na orientação dos visitantes.\n\nA partir da bifurcação principal, a trilha permite acesso ao Ramal do Rio, que conduz o visitante até a antiga área de saída de caiaques e embarcações às margens do rio, oferecendo contato direto com o ambiente aquático e a vegetação ciliar do Juqueriquerê. Também conecta o Ramal do Píer, que leva ao deck panorâmico com ampla vista do rio e das áreas preservadas ao redor.\n\nDurante o percurso, podem ser encontrados ambientes mais fechados e úmidos, além de pontos sujeitos ao acúmulo de água em períodos chuvosos.\n\nAlguns outros obstáculos são:\n- Raízes expostas e elevadas;\n- Solo úmido e escorregadio;\n- Pequenos desníveis naturais;\n- Áreas suscetíveis a alagamento;\n- Possibilidade de poças d’água.",
       "equipamento_recomendado": "Calçados antiderrapantes adequados para trilha, roupas leves, repelente e protetor solar.",
       "atencao": "Terreno escorregadio em períodos úmidos ou chuvosos, presença de raízes aparentes, áreas alagáveis, insetos e possibilidade de animais peçonhentos.",
+      "ramais": [
+        {
+          "nome": "Ramal do Rio",
+          "descricao": "Ramal que conduz o visitante até a antiga área de saída de caiaques e embarcações às margens do Rio Juqueriquerê, oferecendo contato direto com o ambiente aquático e a vegetação ciliar do rio.",
+          "id": 5
+        },
+        {
+          "nome": "Ramal do Píer",
+          "descricao": "Ramal que leva ao deck panorâmico com ampla vista do Rio Juqueriquerê e das áreas preservadas ao redor, proporcionando um espaço de contemplação e descanso para os visitantes.",
+          "id" : 6
+        }
+      ],
       "pontos_interesse": [
         {
           "planta": "Jerivá",

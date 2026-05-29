@@ -13,7 +13,7 @@ interface menuProps {
 export default function Menu({ ativo, onChoice }: menuProps) {
     const { Explorar, Sobre, Home } = icons.default;
 
-    const trilhas: Trilha[] = [...data.trilhas];
+    const trilhas: Trilha[] = [...data.trilhas] as Trilha[]; // Asserção de tipo para garantir que temos um array de Trilha
     const [trilhasShow, setTrilhasShow] = useState(false);
     const [pontosShow, setPontosShow] = useState(false);
 
