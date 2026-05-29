@@ -6,10 +6,11 @@ import CardPonto from '../components/ui/CardPonto.tsx';
 import TrilhasMap from '../components/ui/TrilhasMap.tsx';
 import DraggableCarousel from '../components/ui/DraggableCarousel.tsx';
 import './styles/explorar.css';
+import SimpleButton from '../components/ui/buttons/SimpleButton.tsx';
 
 export default function Explorar() {
     const trilhas = [...data.trilhas] as Trilha[]; // Asserção de tipo para garantir que temos um array de Trilha
-    
+     
     const [trilhaSelecionada, setTrilhaSelecionada] = useState(trilhas[0].id);
 
     const trilhaAtual = trilhas.find(t => t.id === trilhaSelecionada) || trilhas[0];
@@ -32,7 +33,7 @@ export default function Explorar() {
     return (
         <>
             <div className="paddingHeader"></div>
-            <section className="conteudo vertical">
+            <section className="conteudo vertical gap30">
                 
                 <div className="mapa">
                     {/* Repasse o ID para o mapa */}
@@ -47,24 +48,29 @@ export default function Explorar() {
                         // O 'id' vem do componente CardTrilha.props.id
                         onChange={(id) => setTrilhaSelecionada(Number(id))}
                     />
+                    <SimpleButton path='/trilhas'>Todas as Trilhas</SimpleButton>
                 </div>
 
-                <div className="vertical gap5">
-                    <h1>Pontos de interesse</h1>
-                    <div className="horizontal gap5 scroll">
-                        {trilhas.map((trilha) => (
-                            <button
-                                key={trilha.id}
-                                onClick={() => setTrilhaSelecionada(trilha.id)}
-                                className={trilhaSelecionada === trilha.id ? 'ativo' : ''}
-                            >
-                                {trilha.nome}
-                            </button>
-                        ))}
-                    </div>
+                <div className="vertical gap15">
                     <div className="vertical gap5">
-                        {pontosList}
+                        <h1>Pontos de interesse</h1>
+                        <div className="horizontal gap5 scroll">
+                            {trilhas.map((trilha) => (
+                                <button
+                                    key={trilha.id}
+                                    onClick={() => setTrilhaSelecionada(trilha.id)}
+                                    className={trilhaSelecionada === trilha.id ? 'ativo' : ''}
+                                >
+                                    {trilha.nome}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="vertical gap5">
+                            {pontosList}
+                        </div>
                     </div>
+                    <SimpleButton path='/pontos'>Todos os Pontos de Interesse</SimpleButton>
+
                 </div>
             </section>
         </>
