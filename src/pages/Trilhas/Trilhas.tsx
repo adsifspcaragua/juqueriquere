@@ -2,6 +2,7 @@ import { useState } from 'react';
 import data from '../../data.json';
 import Select from '../../components/ui/form/Select.tsx';
 import CardTrilha from '../../components/ui/CardTrilha.tsx';
+import type Trilha from './TrilhaInfo';
 
 export default function Trilhas() {
     const order = {
@@ -12,7 +13,7 @@ export default function Trilhas() {
     type OrderKey = keyof typeof order;
     
     const [orderKey, setOrderKey] = useState<OrderKey>("Nome A-Z");
-    const trilhas = [...data.trilhas].sort(order[orderKey]);
+    const trilhas = [...data.trilhas].sort(order[orderKey]) as Trilha[]; // Asserção de tipo para garantir que temos um array de Trilha
 
     const trilhasList = trilhas.map((trilha) => (
         <CardTrilha key={trilha.id} trilha={trilha}/>
