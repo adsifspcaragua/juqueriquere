@@ -90,7 +90,4 @@ export default defineConfig({
     }
   })
   ],
-  server: {
-    allowedHosts: ['wimp-thus-remnant.ngrok-free.dev']
-  }
 })

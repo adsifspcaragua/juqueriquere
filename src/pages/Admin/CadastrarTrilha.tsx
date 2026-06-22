@@ -1,6 +1,46 @@
+import { supabase } from "../../lib/supabase";
+import { db } from "../../lib/dexie";
 import SimpleButton from "../../components/ui/buttons/SimpleButton";
+import { useRef } from "react";
 
 export default function CadastrarTrilha() {
+    const formRef = useRef<HTMLFormElement>(null);
+
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+
+        const formData = new FormData(e.currentTarget);
+
+        const dados = {
+            nome: formData.get("nome") as string,
+            cor_identificacao: formData.get("cor_identificacao") as string,
+            dificuldade: formData.get("dificuldade") as string,
+            extensao: formData.get("extensao") as string,
+            duracao: formData.get("duracao") as string,
+            descricao_curta: formData.get("descricao_curta") as string,
+            descricao: formData.get("descricao") as string,
+            equipamento_recomendado: formData.get("equipamento_recomendado") as string,
+            atencao: formData.get("atencao") as string,
+        };
+
+        const { data, error } = await supabase
+            .from("trilhas")
+            .insert(dados)
+            .select()
+            .single();
+
+        if (error) {
+            console.error(error);
+            alert("Erro ao cadastrar a trilha.");
+            return;
+        }
+
+        await db.trilhas.put(data);
+
+
+        alert("Trilha cadastrada com sucesso!");
+        formRef.current?.reset();
+    }
 
     return (
 
@@ -21,8 +61,11 @@ export default function CadastrarTrilha() {
                     Cadastrar Trilha
                 </h1>
 
-                <form className="card form vertical gap15">
-
+                <form
+                    ref={formRef}
+                    className="card form vertical gap15"
+                    onSubmit={handleSubmit}
+                >
                     <div className="vertical gap5">
 
                         <label>
@@ -133,7 +176,7 @@ export default function CadastrarTrilha() {
                         name="atencao"
                     />
 
-                    <button>
+                    <button type="submit">
                         Cadastrar
                     </button>
 

@@ -2,7 +2,7 @@ import Dexie from "dexie";
 import type { Table } from "dexie";
 
 export interface TrilhaDB {
-  id: number;
+  id?: number;
   nome: string;
   cor_identificacao: string;
   dificuldade: string;

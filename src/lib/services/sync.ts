@@ -6,8 +6,6 @@ export async function sincronizarTrilhas() {
     .from("trilhas")
     .select("*");
 
-  console.log("SUPABASE DATA:", data);
-  console.log("SUPABASE ERROR:", error);
 
   if (error) throw error;
 
@@ -15,7 +13,6 @@ export async function sincronizarTrilhas() {
 
   await db.trilhas.bulkPut(data ?? []);
 
-  console.log("DEXIE SALVO:", await db.trilhas.toArray());
 }
 
 export async function sincronizarPontos() {

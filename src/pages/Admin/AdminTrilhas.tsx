@@ -5,7 +5,21 @@ import Select from "../../components/ui/form/Select";
 import type Trilha from "../Trilhas/TrilhaInfo";
 import { createPortal } from "react-dom";
 
+
 export default function AdminTrilhas() {
+
+    async function excluirTrilha() {
+        if (!trilhaSelecionada) return;
+
+        await db.trilhas.delete(trilhaSelecionada.id);
+
+        setTrilhas((prev) =>
+            prev.filter((t) => t.id !== trilhaSelecionada.id)
+        );
+
+        setModalDelete(false);
+        setTrilhaSelecionada(null);
+    }
 
     const order = {
         "Nome A-Z": (a: any, b: any) => a.nome.localeCompare(b.nome),
@@ -21,16 +35,16 @@ export default function AdminTrilhas() {
     const [trilhaSelecionada, setTrilhaSelecionada] = useState<any>(null);
 
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
-    
+
 
     useEffect(() => {
-            async function loadData() {
-                const data = await db.trilhas.toArray();
-                setTrilhas(data as Trilha[]);
-            }
-    
-            loadData();
-        }, []);
+        async function loadData() {
+            const data = await db.trilhas.toArray();
+            setTrilhas(data as Trilha[]);
+        }
+
+        loadData();
+    }, []);
 
     const abrirExcluir = (trilha: any) => {
         setTrilhaSelecionada(trilha);
@@ -84,7 +98,7 @@ export default function AdminTrilhas() {
                             }
                             style="none"
                         />
-                        
+
                         <div className="pesquisa horizontal">
 
                             <div className="pesquisaIcon"></div>
@@ -123,7 +137,7 @@ export default function AdminTrilhas() {
                                 {trilhaSelecionada?.nome}?
                             </h2>
 
-                            <button>
+                            <button onClick={excluirTrilha}>
                                 Excluir
                             </button>
 
@@ -137,37 +151,37 @@ export default function AdminTrilhas() {
 
                 )}
 
+                <div className="vertical gap5">
+                    <h2>Trilhas cadastradas</h2>
+
                     <div className="vertical gap5">
-                        <h2>Trilhas cadastradas</h2>
-
-                        <div className="vertical gap5">
-                            {trilhas.map((trilha) => (
-                                <div
-                                    className="card horizontal gap5 justify"
-                                    key={trilha.id}
-                                >
-                                    <div className="cardTrilhaCompacto vertical gap5">
-                                        <h3>{trilha.nome}</h3>
-                                        <p>{trilha.dificuldade}</p>
-                                        <p>{trilha.extensao}</p>
-                                    </div>
-
-                                    <div className="vertical gap5">
-                                        <SimpleButton tema="dark" path={`/admin/trilhas/editar/${trilha.id}`}                                        >
-                                            Editar
-                                        </SimpleButton>
-                                        <button
-                                            onClick={() =>
-                                                abrirExcluir(trilha)
-                                            }
-                                        >
-                                            Excluir
-                                        </button>
-                                    </div>
+                        {trilhas.map((trilha) => (
+                            <div
+                                className="card horizontal gap5 justify"
+                                key={trilha.id}
+                            >
+                                <div className="cardTrilhaCompacto vertical gap5">
+                                    <h3>{trilha.nome}</h3>
+                                    <p>{trilha.dificuldade}</p>
+                                    <p>{trilha.extensao}</p>
                                 </div>
-                            ))}
-                        </div>
+
+                                <div className="vertical gap5">
+                                    <SimpleButton tema="dark" path={`/admin/trilhas/editar/${trilha.id}`}                                        >
+                                        Editar
+                                    </SimpleButton>
+                                    <button
+                                        onClick={() =>
+                                            abrirExcluir(trilha)
+                                        }
+                                    >
+                                        Excluir
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
+                </div>
 
             </section>
 
