@@ -336,10 +336,10 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [-45.439180, -23.678591, 0]
+        "coordinates": [-45.439167, -23.678611, 0]
       },
       "properties": {
-        "name": "Margaritaria nobilis",
+        "name": "Sobragirana",
         "description": "",
         "styleUrl": "#__managed_style_08305456EC3F1E12A63F",
         "fill-opacity": 0.25098039215686274,
@@ -419,6 +419,28 @@
         "COL5BDDA70D68759849": "1"
       },
       "id": "DATAJSON_NOVO_05"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-45.4391667, -23.67778, 0]
+      },
+      "properties": {
+        "name": "Pimenta-de-macaco",
+        "description": "",
+        "styleUrl": "#__managed_style_08305456EC3F1E12A63F",
+        "fill-opacity": 0.25098039215686274,
+        "fill": "#ffffff",
+        "stroke-opacity": 1,
+        "stroke": "#fbc02d",
+        "stroke-width": 4,
+        "icon-offset": [64, 128],
+        "icon-offset-units": ["pixels", "insetPixels"],
+        "icon": "https://earth.google.com/earth/document/icon?color=1976d2&id=2000&scale=4",
+        "COL5BDDA70D68759849": "1"
+      },
+      "id": "Pimenta-macaco"
     }
   ]
 }

@@ -11,16 +11,23 @@ const trilhasLinhas = trilhasLinhasRaw as unknown as FeatureCollection<Geometry>
 
 interface MapProps {
   id?: number | number[];
-  // Agora as funções de callback retornam o ID da trilha e opcionalmente o ID do ramal
   onHover?: (event: React.MouseEvent<SVGElement>, trailId: number, ramalId?: string) => void;
   onClick?: (trailId: number, ramalId?: string) => void;
+  onPointClick?: (pointName: string, trailId?: number) => void;
   onLeave?: () => void;
-  highlight?: number | string | (number | string)[]; // Pode destacar por ID numérico (trilha) ou string (ramal)
+  highlight?: number | string | (number | string)[]; 
 }
 
-export default function Map({ id, onHover, onClick, onLeave, highlight }: MapProps) {
+export default function Map({ id, onHover, onClick, onPointClick, onLeave, highlight }: MapProps) {
 
   const normalize = (s: string) => s.toLowerCase().replace('trilha ', '').replace('.', '').trim();
+
+  // 1. Normalizamos os valores de highlight para facilitar a comparação em todo o componente
+  const normalizedHighlights = useMemo(() => {
+    if (!highlight) return [];
+    const arr = Array.isArray(highlight) ? highlight : [highlight];
+    return arr.map(h => typeof h === 'string' ? normalize(h) : h);
+  }, [highlight]);
 
   const projection = useMemo(() => {
     const width = 1146;
@@ -40,16 +47,14 @@ export default function Map({ id, onHover, onClick, onLeave, highlight }: MapPro
     
     const lines = trilhasLinhas.features.map(feature => {
       const featName = normalize(feature.properties?.name || "");
-      const featIdFromMap = feature.id as string; // ID vindo do GeoJSON (ex: "5BDD9BF419000003")
+      const featIdFromMap = feature.id as string;
 
       let trailId: number | undefined = undefined;
       let ramalId: string | undefined = undefined;
 
-      // Busca na estrutura do data.json
       for (const t of data.trilhas) {
         const normTrailName = normalize(t.nome);
 
-        // 1. Verifica se o ID do GeoJSON bate diretamente com o ID de algum ramal no JSON
         if (t.ramais) {
           const ramalEncontrado = t.ramais.find(
             r => String(r.id) === String(featIdFromMap) || featName.includes(normalize(r.nome))
@@ -57,12 +62,11 @@ export default function Map({ id, onHover, onClick, onLeave, highlight }: MapPro
           
           if (ramalEncontrado) {
             trailId = t.id;
-            ramalId = String(ramalEncontrado.id); // Força a string aqui também por segurança
+            ramalId = String(ramalEncontrado.id);
             break;
           }
         }
 
-        // 2. Se não for ramal, verifica se é a trilha principal pelo nome
         if (normTrailName === featName || normTrailName.includes(featName) || featName === normTrailName) {
           trailId = t.id;
           break;
@@ -73,13 +77,13 @@ export default function Map({ id, onHover, onClick, onLeave, highlight }: MapPro
 
     }).filter(item => {
       if (!item.trailId) return false;
-      // O filtro por 'id' externo (prop) ainda funciona baseado no ID da trilha principal
       return targetIds ? targetIds.includes(item.trailId) : true;
     });
 
     const points = trilhasPontos.features.map(feature => {
       const featName = normalize(feature.properties?.name || "");
-      
+      if (!featName) return { feature, trailId: undefined, pointName: featName };
+
       const trailMetadata = data.trilhas.find(t => 
         t.pontos_interesse.some(poi => {
           const valoresDoPonto = Object.values(poi).map(val => normalize(String(val)));
@@ -87,33 +91,45 @@ export default function Map({ id, onHover, onClick, onLeave, highlight }: MapPro
         })
       );
 
-      return { feature, trailId: trailMetadata?.id };
+      // Exportamos o pointName para facilitar a filtragem depois
+      return { feature, trailId: trailMetadata?.id, pointName: featName };
     }).filter(item => {
       if (!item.trailId) return false;
       return targetIds ? targetIds.includes(item.trailId) : true;
-    });
+    })
 
     return { lines, points };
   }, [id]);
 
-  // Função auxiliar para verificar se uma linha específica deve ser destacada
+  // 2. Identificamos se alguma trilha precisa ser destacada porque o PONTO dela está destacado
+  const highlightedTrailIdsByPoint = useMemo(() => {
+    if (normalizedHighlights.length === 0) return [];
+    return filteredData.points
+      .filter(p => p.pointName && normalizedHighlights.includes(p.pointName))
+      .map(p => p.trailId);
+  }, [filteredData.points, normalizedHighlights]);
+
+  // 3. Atualizamos a função de verificação das linhas
   const isLineHighlighted = (trailId?: number, ramalId?: string) => {
-    if (!highlight) return true; // Se nada estiver destacado, mostra tudo normal
+    if (!highlight) return true;
 
-    const highlights = Array.isArray(highlight) ? highlight : [highlight];
+    if (ramalId && normalizedHighlights.includes(ramalId)) return true;
+    if (trailId && normalizedHighlights.includes(trailId)) return true;
+    
+    // Se a trilha for dona de um ponto que está em destaque, destacamos a trilha
+    if (trailId && highlightedTrailIdsByPoint.includes(trailId)) return true;
 
-    // Se a linha atual for um ramal e o ID do ramal estiver na lista de destaques
-    if (ramalId && highlights.includes(ramalId)) {
-      return true;
-    }
+    return false;
+  };
 
-    // Se o ID da trilha principal estiver nos destaques (e não estivermos filtrando por um ramal específico que não este)
-    if (trailId && highlights.includes(trailId)) {
-      // Opcional: Se você quiser que destacar a trilha principal também destaque seus ramais, deixe apenas "return true;"
-      // Se quiser que destacar a trilha principal NÃO destaque o ramal, adicione: if (ramalId) return false;
-      //if (ramalId) return false;
-      return true; 
-    }
+  // função para verificar se o ponto em si deve ser destacado
+  const isPointHighlighted = (pointName?: string, trailId?: number) => {
+    if (!highlight) return true;
+
+    // Destaca o ponto se o nome dele foi passado no highlight
+    if (pointName && normalizedHighlights.includes(pointName)) return true;
+
+    if (trailId && normalizedHighlights.includes(trailId)) return true;
 
     return false;
   };
@@ -129,7 +145,6 @@ export default function Map({ id, onHover, onClick, onLeave, highlight }: MapPro
         
         return (
           <g key={`trail-group-${idx}`}>
-            {/* 1. PATH FANTASMA */}
             <path
               d={d}
               stroke="transparent"
@@ -140,15 +155,13 @@ export default function Map({ id, onHover, onClick, onLeave, highlight }: MapPro
               onMouseLeave={onLeave}
               onClick={() => item.trailId && onClick?.(item.trailId, item.ramalId)}
             />
-
-            {/* 2. PATH VISUAL */}
             <path
               d={d}
               stroke={item.feature.properties?.stroke || "#4CAF50"}
               strokeWidth="10"
               strokeLinecap="round"
               strokeLinejoin="round"
-              opacity="0.8"
+              opacity={highlighted ? "0.8" : "0"} // Modificado para esconder os que não estão no highlight (caso o CSS não cuide disso)
               pointerEvents="none"
               className={`path ${highlighted ? 'highlighted' : 'not-highlighted'}`}
             />
@@ -161,20 +174,33 @@ export default function Map({ id, onHover, onClick, onLeave, highlight }: MapPro
         {filteredData.points.map((item, idx) => {
           const coords = (item.feature.geometry as any).coordinates;
           const [x, y] = projection([coords[0], coords[1]]) || [0, 0];
+          const highlighted = isPointHighlighted(item.pointName, item.trailId);
 
           return (
             <circle
               key={`point-${idx}`}
               cx={x}
               cy={y}
-              r="8"
+              r="3"
               fill="#fbc02d"
-              stroke="#ffffff"
+              stroke="#fae208"
               strokeWidth="2"
+              opacity={highlighted ? "1" : "0"} 
+              pointerEvents={highlighted ? "auto" : "none"} // Evita cliques em pontos ocultos
+              className={`point ${highlighted ? 'highlighted' : 'not-highlighted'}`}
               onMouseEnter={(e) => item.trailId && onHover?.(e, item.trailId)}
               onMouseLeave={onLeave}
-              onClick={() => item.trailId && onClick?.(item.trailId)}
-              style={{ cursor: 'pointer' }}
+              onClick={(e) => {
+                // Evita que o clique no ponto dispare o clique de uma trilha que esteja embaixo dele
+                e.stopPropagation(); 
+                
+                if (onPointClick && item.pointName) {
+                  onPointClick(item.pointName, item.trailId);
+                } else if (item.trailId) {
+                  onClick?.(item.trailId); 
+                }
+              }}
+              style={{ cursor: highlighted ? 'pointer' : 'default' }}
             >
               <title>{item.feature.properties?.name}</title>
             </circle>

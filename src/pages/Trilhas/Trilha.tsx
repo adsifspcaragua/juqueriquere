@@ -1,8 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
+
 import data from '../../data.json';
 import NotFound from '../NotFound';
 import type TrilhaType from './TrilhaInfo';
+
 import SimpleButton from '../../components/ui/buttons/SimpleButton';
 import TrilhasMap from '../../components/ui/TrilhasMap';
 import DraggableCarousel from '../../components/ui/DraggableCarousel.tsx';
@@ -20,14 +22,27 @@ export default function Trilha() {
     if (!trilha) return <NotFound />;
 
     const pontosList = trilha.pontos_interesse.map((ponto, index) => (
-        <CardPonto
-            key={index}
+        <div
+        id={String(index)}
+        key={ponto.nome}
+        >
+            <CardPonto
             ponto={ponto}
             trilha={trilha}
         />
+        </div>
+        
     ));
     const [hl, setHl] = useState([id]) as unknown as [number | string | (number | string)[], (id: number | string | (number | string)[]) => void];
+    const [pontoSelecionado, setPontoSelecionado] = useState(pontosList[0].props?.id);
+
+    const normalize = (str: string) => str.toLowerCase().replace('.', '').trim();
     
+    const findCarousselID = (targetName: string, list : any) => {
+    const normalizedTarget = normalize(targetName);
+    return list.find((ponto : any) => normalize(String(ponto.key)) === normalizedTarget)?.props.id;
+    };
+
     const options = {
     "Mapa completo" : id,
     ...Object.fromEntries(trilha.ramais?.map(r => [r.nome, r.id]) || [])
@@ -42,7 +57,7 @@ export default function Trilha() {
                 <div className="vertical gap15">
                     <SimpleButton path="/explorar/" type='back' icon='setaBack'>Voltar para Mapa</SimpleButton>
                     <div className="mapa">
-                        <TrilhasMap highlight={hl} id={[id]} />
+                        <TrilhasMap highlight={hl} id={[id]} onPointClick={(nome) => (setPontoSelecionado(findCarousselID(nome, pontosList)))}/>
                     </div>
                     {trilha.ramais && trilha.ramais.length > 0 && (
                         <Switch
@@ -89,7 +104,11 @@ export default function Trilha() {
                     </div>
                     <div className="vertical gap5">
                         <h1>Pontos de Interesse</h1>
-                        <DraggableCarousel items={pontosList}/>
+                        <DraggableCarousel 
+                        items={pontosList}
+                        activeId={pontoSelecionado}
+                        onChange={(id) => (setPontoSelecionado(id))}
+                        />
                     </div>
                 </div>
                 

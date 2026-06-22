@@ -80,3 +80,7 @@ npm run build
 # 2. Executa o servidor de produção local
 npx serve -s dist
 ```
+
+## Licença
+
+Este projeto está licenciado sob a Licença Pública Geral GNU v3.0 (GPLv3) - consulte o arquivo [LICENSE](LICENSE) para obter mais detalhes.

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import './CardPonto.css'
 import type TrilhaType from '../../pages/Trilhas/TrilhaInfo';
 
@@ -15,10 +15,12 @@ interface Props {
 
 export default function CardPonto({ ponto, trilha: trilha  /*Temporário*/ }: Props) {
     if (!ponto.nome) return null; // Retorna null se o ponto não tiver nome
-    
-    console.log(Object(trilha).nome);
+
+    const location = useLocation();
+    const pageName = location.pathname.split("/").filter(Boolean).pop() || "explorar";
+
     return (
-        <Link to={`/trilha/${Object(trilha).id}/ponto/${ponto.nome}`}>
+        <Link to={`/trilha/${Object(trilha).id}/ponto/${ponto.nome}?from=${pageName}`}>
             <div className='cardTrilha cardPonto carrosselCard'>
                 <div className="info vertical">
                 <h2>{ponto.nome}</h2>

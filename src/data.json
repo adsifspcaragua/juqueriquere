@@ -25,9 +25,16 @@
           "longitude": ""
         },
         {
+          "nome": "Pimenta-de-macaco",
+           "planta": "Piper aduncum",
+           "descricao": "Planta da família das Piperáceas, conhecida por suas folhas aromáticas e propriedades medicinais. É frequentemente utilizada em fitoterapia e possui um aroma característico que a torna facilmente identificável na vegetação.",
+          "latitude": "-23.67778",
+          "longitude": "-45.4391667"
+        },
+        {
           "nome": "Jacarandá",
-          "latitude": "",
-          "longitude": ""
+          "latitude": "-23.6777",
+          "longitude": "-45.4394"
         },
         {
           "nome": "Pitanga",
@@ -109,9 +116,11 @@
           "longitude": ""
         },
         {
-          "nome": "Margaritaria nobilis",
+          "nome": "Sobragirana",
+          "planta": "Margaritaria nobilis",
+          "descricao": "Planta da família das Euphorbiaceae, conhecida por suas folhas brilhantes e frutos comestíveis. É uma espécie nativa da Mata Atlântica, frequentemente encontrada em áreas de floresta densa e úmida, contribuindo para a biodiversidade local.",
           "latitude": "-23.678591",
-          "longitude": "-45.439180"
+          "longitude": "-45.4391667"
         },
         {
           "nome": "Pariparoba Mansa",
