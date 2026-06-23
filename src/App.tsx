@@ -14,6 +14,7 @@ import Sobre from "./pages/Sobre.tsx";
 import Mapa from "./pages/Mapa.tsx";
 import Explorar from "./pages/Explorar.tsx";
 import Admin from "./pages/Admin.tsx";
+import Login from "./pages/Admin/Login.tsx";
 
 import AdminTrilhas from "./pages/Admin/AdminTrilhas.tsx";
 import CadastrarTrilha from "./pages/Admin/CadastrarTrilha.tsx";
@@ -220,6 +221,14 @@ function AnimatedRoutes() {
 							element={
 								<PageTransition>
 									<Admin />
+								</PageTransition>
+							}
+						/>
+						<Route
+							path="/admin/login"
+							element={
+								<PageTransition>
+									<Login />
 								</PageTransition>
 							}
 						/>

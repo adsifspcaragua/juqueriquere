@@ -53,7 +53,7 @@
     background-color: var(--verdeClaroTransparente);
     border-radius: 10px;
 }
-.menuLinks :last-child > .btn, .MenuGroup:last-of-type .btn{
+.menuLinks :last-child > .btn{
     border: 0;
 }
 .menuLista{
