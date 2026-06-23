@@ -9,7 +9,7 @@
     scroll-behavior: smooth;
 }
 
-.circleButton {
+.circleButton.left, .circleButton.right {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
