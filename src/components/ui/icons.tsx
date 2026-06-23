@@ -20,6 +20,9 @@ import Plus from '../../assets/icons/Plus.webp';
 import PlusDark from '../../assets/icons/PlusDark.webp';
 import Filter from '../../assets/icons/Filter.webp';
 import FilterDark from '../../assets/icons/FilterDark.webp';
+import Trash from '../../assets/icons/Trash.webp';
+import Edit from '../../assets/icons/Edit.webp';
+import SaveDark from '../../assets/icons/SaveDark.webp';
 
 export const icons = {
         "default": {
@@ -35,7 +38,8 @@ export const icons = {
             "Distancia"     : Distancia,
             "Tempo"         : Tempo,
             "Plus"          : Plus,
-            "Filter"          : Filter
+            "Filter"        : Filter,
+            "Edit"          : Edit
         },
         "dark": {
             "seta"          : setaDark,
@@ -49,8 +53,10 @@ export const icons = {
             "Dificuldade"   : DificuldadeDark,
             "Distancia"     : DistanciaDark,
             "Tempo"         : TempoDark,
-            "PlusDark"          : PlusDark,
-            "FilterDark"          : FilterDark
+            "PlusDark"      : PlusDark,
+            "FilterDark"    : FilterDark,
+            "Edit"          : Edit,
+            "Save"          : SaveDark
         },
          "none": {
             "seta"          : setaDark,
@@ -64,7 +70,11 @@ export const icons = {
             "Dificuldade"   : Dificuldade,
             "Distancia"     : Distancia,
             "Tempo"         : Tempo,
-            "PlusDark"          : PlusDark,
-            "FilterDark"          : FilterDark
+            "PlusDark"      : PlusDark,
+            "FilterDark"    : FilterDark,
+            "Edit"          : Edit
+        },
+         "red": {
+            "Trash"          : Trash
         }
 } as any;

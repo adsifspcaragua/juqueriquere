@@ -1,7 +1,42 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db } from "../../lib/dexie";
 import SimpleButton from "../../components/ui/buttons/SimpleButton";
+
+function AutoResizeTextarea({
+    defaultValue,
+    rows = 1,
+    ...props
+}: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
+
+    const ref = useRef<HTMLTextAreaElement>(null);
+
+    function resize() {
+    const textarea = ref.current;
+
+    if (!textarea) return;
+
+    requestAnimationFrame(() => {
+        textarea.style.height = "auto";
+        textarea.style.height = `${Math.min(textarea.scrollHeight, 500)}px`;
+    });
+}
+
+    useEffect(() => {
+        resize();
+    }, []);
+
+    return (
+        <textarea
+            ref={ref}
+            rows={rows}
+            defaultValue={defaultValue}
+            onInput={resize}
+            {...props}
+        />
+    );
+}
+
 
 export default function EditarTrilha() {
 
@@ -39,38 +74,71 @@ export default function EditarTrilha() {
 
                 <form className="card form vertical gap15">
 
-                    <label>Nome:</label>
-                    <input defaultValue={trilha.nome} />
+                    <div className="vertical gap5">
+                        <label>Nome:</label>
+                        <input defaultValue={trilha.nome}/>
+                    </div>
 
-                    <label>Cor:</label>
-                    <input defaultValue={trilha.cor_identificacao} />
+                    <div className="vertical gap5">
+                        <label>Cor:</label>
+                        <input defaultValue={trilha.cor_identificacao}/>
+                    </div>
 
-                    <label>Dificuldade:</label>
-                    <select defaultValue={trilha.dificuldade}>
-                        <option>Fácil</option>
-                        <option>Moderada</option>
-                        <option>Difícil</option>
-                    </select>
+                    <div className="horizontal gap15">
+                        <div className="vertical gap5">
+                            <label>Dificuldade:</label>
+                            <select defaultValue={trilha.dificuldade}>
+                                <option>Fácil</option>
+                                <option>Moderada</option>
+                                <option>Difícil</option>
+                            </select>
+                        </div>
 
-                    <label>Extensão:</label>
-                    <input defaultValue={trilha.extensao} />
+                        <div className="vertical gap5">
+                            <label>Extensão:</label>
+                            <input defaultValue={trilha.extensao}/>
+                        </div>
 
-                    <label>Duração:</label>
-                    <input defaultValue={trilha.duracao} />
+                        <div className="vertical gap5">
+                            <label>Duração:</label>
+                            <input defaultValue={trilha.duracao}/>
+                        </div>
+                    </div>
 
-                    <label>Descrição curta:</label>
-                    <textarea defaultValue={trilha.descricao_curta} />
+                    <div className="vertical gap5">
+                        <label>Descrição curta:</label>
+                        <AutoResizeTextarea
+                            defaultValue={trilha.descricao_curta}
+                        />
+                    </div>
 
-                    <label>Descrição:</label>
-                    <textarea rows={8} defaultValue={trilha.descricao} />
+                    <div className="vertical gap5">
+                        <label>Descrição:</label>
+                        <AutoResizeTextarea
+                            defaultValue={trilha.descricao}
+                            rows={3}
+                        />
+                    </div>
 
-                    <label>Equipamento recomendado:</label>
-                    <textarea defaultValue={trilha.equipamento_recomendado} />
+                    <div className="vertical gap5">
+                        <label>Equipamento recomendado:</label>
+                        <AutoResizeTextarea
+                            defaultValue={trilha.equipamento_recomendado}
+                        />
+                    </div>
 
-                    <label>Atenção:</label>
-                    <textarea defaultValue={trilha.atencao} />
+                    <div className="vertical gap5">
+                        <label>Atenção:</label>
+                        <AutoResizeTextarea
+                            defaultValue={trilha.atencao}
+                        />
+                    </div>
 
-                    <button>Salvar alterações</button>
+                    <div className="btnFull">
+                        <SimpleButton tema="dark" icon="Save" raio="10" type="back">
+                            Salvar alterações
+                        </SimpleButton>
+                    </div>
                 </form>
             </section>
         </>
