@@ -30,6 +30,7 @@ import Scanner from "./components/Scanner.tsx";
 import Logo from './assets/logo.webp';
 
 import { useSync } from "./lib/hooks/useSync.ts";
+import CadastrarPontoInteresse from "./pages/Admin/CadastrarPonto.tsx";
 
 
 function PageTransition({ children }: { children: React.ReactNode }) {
@@ -252,6 +253,14 @@ function AnimatedRoutes() {
 							element={
 								<PageTransition>
 									<AdminPontos />
+								</PageTransition>
+							}
+						/>
+						<Route
+							path="/admin/pontos/cadastrar"
+							element={
+								<PageTransition>
+									<CadastrarPontoInteresse />
 								</PageTransition>
 							}
 						/>

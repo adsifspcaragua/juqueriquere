@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import data from '../data.json';
+import { useEffect, useState } from 'react';
+import { db } from "../lib/dexie";
 import type Trilha from './Trilhas/TrilhaInfo';
 import CardTrilha from '../components/ui/CardTrilha.tsx';
 import CardPonto from '../components/ui/CardPonto.tsx';
@@ -9,13 +9,37 @@ import './styles/explorar.css';
 import SimpleButton from '../components/ui/buttons/SimpleButton.tsx';
 
 export default function Explorar() {
-    const trilhas = [...data.trilhas] as Trilha[]; 
-     
-    const [trilhaSelecionada, setTrilhaSelecionada] = useState(trilhas[0].id);
+    const [trilhas, setTrilhas] = useState<Trilha[]>([]);
 
-    const trilhaAtual = trilhas.find(t => t.id === trilhaSelecionada) || trilhas[0];
 
-    // Monta o array de IDs para o highlight: ID da trilha + IDs dos ramais (se existirem)
+    const [trilhaSelecionada, setTrilhaSelecionada] = useState<number | null>(null);
+
+    useEffect(() => {
+        async function loadData() {
+            const data = await db.trilhas.toArray();
+            setTrilhas(data);
+
+            if (data.length > 0) {
+                setTrilhaSelecionada(data[0].id);
+            }
+        }
+
+        loadData();
+    }, []);
+
+    const trilhaAtual =
+        trilhas.find((t) => t.id === trilhaSelecionada) ?? trilhas[0];
+
+    if (!trilhaAtual) {
+        return (
+            <>
+                <div className="paddingHeader"></div>
+                <section className="conteudo">
+                    <p>Nenhuma trilha cadastrada.</p>
+                </section>
+            </>
+        );
+    }
     const highlightIds = [
         trilhaAtual.id,
         ...(trilhaAtual.ramais ? trilhaAtual.ramais.map(r => r.id) : [])
@@ -23,13 +47,13 @@ export default function Explorar() {
 
     const trilhasList = trilhas.map((trilha) => (
         <CardTrilha
-            id={trilha.id} 
+            id={trilha.id}
             key={trilha.id}
             trilha={trilha}
         />
     ));
-    
-    const pontosList = trilhaAtual.pontos_interesse.map((ponto, index) => (
+
+    const pontosList = (trilhaAtual.pontos_interesse ?? []).map((ponto, index) => (
         <CardPonto
             key={index}
             ponto={ponto}
@@ -41,7 +65,7 @@ export default function Explorar() {
         <>
             <div className="paddingHeader"></div>
             <section className="conteudo vertical gap30 desktopWrap">
-                
+
                 <div className="vertical gap5">
                     <h1>Mapa geral do Parque</h1>
                     <div className="mapa">

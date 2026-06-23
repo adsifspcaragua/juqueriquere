@@ -1,8 +1,20 @@
 import Dexie from "dexie";
 import type { Table } from "dexie";
 
+interface PontoInteresseDB {
+  nome: string;
+  latitude?: string;
+  longitude?: string;
+}
+
+interface RamalDB {
+  nome: string;
+  descricao: string;
+  id: number | string;
+}
+
 export interface TrilhaDB {
-  id?: number;
+  id: number;
   nome: string;
   cor_identificacao: string;
   dificuldade: string;
@@ -12,25 +24,9 @@ export interface TrilhaDB {
   descricao: string;
   equipamento_recomendado: string;
   atencao: string;
-}
-
-export interface PontoInteresseDB {
-  id: number;
-  trilha_id?: number | null;
-  nome: string;
-  descricao?: string;
-  planta?: string;
-  caminho?: string;
-  misc?: string;
-  latitude?: number | null;
-  longitude?: number | null;
-}
-
-export interface RamalDB {
-  id: string;
-  trilha_id: number;
-  nome: string;
-  descricao: string;
+  pontos_interesse: PontoInteresseDB[];
+  ramais: RamalDB[];
+  pontos_no_mapa: number[];
 }
 
 export interface InformacaoParqueDB {
