@@ -231,15 +231,7 @@ export default function CadastrarTrilha() {
                     </div>
 
                     <div className="btnFull">
-                        <SimpleButton
-                            tema="dark"
-                            icon="Save"
-                            raio="10"
-                            type="back"
-                        >
-                            Cadastrar trilha
-                        </SimpleButton>
-
+                        <button type="submit">Cadastrar trilha</button>
                     </div>
                 </form>
 

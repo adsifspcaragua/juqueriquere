@@ -135,9 +135,7 @@ export default function EditarTrilha() {
                     </div>
 
                     <div className="btnFull">
-                        <SimpleButton tema="dark" icon="Save" raio="10" type="back">
-                            Salvar alterações
-                        </SimpleButton>
+                        <button type="submit">Cadastrar trilha</button>
                     </div>
                 </form>
             </section>

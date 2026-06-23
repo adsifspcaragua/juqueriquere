@@ -163,9 +163,9 @@ export default function CadastrarPontoInteresse() {
                         </div>
                     </div>
 
-                    <button type="submit">
-                        Cadastrar
-                    </button>
+                    <div className="btnFull">
+                        <button type="submit">Cadastrar trilha</button>
+                    </div>
                 </form>
             </section>
         </>
