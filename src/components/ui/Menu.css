@@ -1,4 +1,3 @@
-
 .menuOverlay {
     position: fixed;
     inset: 0;
@@ -7,20 +6,23 @@
     transition: all 0.3s ease;
 }
 .menuOverlay.open {
-    background: var(--headerBackground);
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
     pointer-events: all;
 }
 .menuWeb{
     background-color: var(--headerBackground);
-    backdrop-filter: blur(20px);
     border-radius: 20px;
+
     border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0 0 5px 2px rgba(255, 255, 255, 0.2);
+
     padding: 20px;
+    padding-bottom: 110px;
     width: 90vw;
     position: fixed;
     left: 4%;
-    bottom: 90px;
+    bottom: 0;
     transform: translateY(50%);
     max-height: 80dvh;
     overflow: auto;
@@ -32,12 +34,27 @@
     transition:
         transform 0.35s ease,
         opacity 0.25s ease;
+
+    .btn{
+        padding: 15px 0;
+        background-color: transparent;
+        color: var(--verdeEscuro);
+        border-bottom: 1px solid var(--headerBackground);
+    }
 }
 .menuWeb.open {
     opacity: 1;
     pointer-events: all;
 
     transform: translateX(0);
+}
+.menuLinks{
+    padding: 0 20px;
+    background-color: var(--verdeClaroTransparente);
+    border-radius: 10px;
+}
+.menuLinks :last-child > .btn, .MenuGroup:last-of-type .btn{
+    border: 0;
 }
 .menuLista{
     border-radius: 20px;
@@ -47,35 +64,15 @@
         justify-content: space-between;
     }
 }
-.MenuGroup{
-    border-radius: 10px;
-    border: 1px solid var(--verdeClaro);
-    overflow: hidden;
-
-    h3{
-        color: var(--verdeEscuro);
-    }
-    .btn{
-        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    .btn-dark{
-        background-color: var(--headerBackground);
-    }
-}
 .dark{
     h3{
         color: white;
-    }
-    .btn{
-        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    .btn-dark{
-        background-color: var(--verdeEscuro);
     }
 }
 .children {
     display: flex;
     flex-direction: column;
+    padding-left: 15px;
 
     max-height: 0;
     overflow: hidden;
@@ -84,11 +81,28 @@
     transform: translateY(-5px);
 
     transition: all 0.35s ease-in-out;
+
+    .btn{
+        font-weight: 500;
+        color: var(--texto);
+    }
 }
 .children.open {
     max-height: 800px;
     opacity: 1;
     transform: translateY(0);
+}
+
+.arrow {
+    width: 24px;
+    height: 24px;
+    background-image: url(../../assets/icons/ChevronDown.webp);
+    background-size: cover;
+    transition: transform 0.3s ease;
+}
+
+.arrow.open {
+    transform: rotate(-180deg);
 }
 
 @media (width > 850px) {
