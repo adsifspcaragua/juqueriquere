@@ -40,17 +40,29 @@ export default function Trilha() {
             />
         </div>
     ));
-
-
+    
     const [hl, setHl] = useState([id]) as unknown as [
         number | string | (number | string)[],
         (id: number | string | (number | string)[]) => void
     ];
 
-
     const [pontoSelecionado, setPontoSelecionado] = useState(
         pontosList[0]?.props?.id
     );
+
+    function pontoCoord(ponto: number | string) {
+        
+        const chaveDoPonto = pontosList[Number(ponto)]?.key;
+        
+        if (chaveDoPonto == null) return false;
+
+        // Busca as coordenadas baseadas na chave (nome)
+        const coords = trilha.pontos_interesse.find(p => p.nome === chaveDoPonto);
+        
+        if (!coords?.latitude || !coords?.longitude) return false;
+        
+        return true;
+    }
 
 
     const normalize = (str: string) =>
@@ -167,8 +179,12 @@ export default function Trilha() {
                             )}
                             <div className="mapa">
                                 <TrilhasMap
-                                    highlight={hl}
-                                    id={[id]}
+                                    highlight={
+                                       pontoCoord(pontoSelecionado) ? pontosList[pontoSelecionado]?.key ||[id] :  [id]
+                                    }
+                                    id={[id]
+                                        
+                                    }
                                     onPointClick={(nome) =>
                                         setPontoSelecionado(
                                             findCarousselID(nome, pontosList)
