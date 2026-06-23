@@ -4,6 +4,7 @@ import {
   isValidElement,
   type ReactNode
 } from 'react';
+import SimpleButton from './buttons/SimpleButton';
 
 interface CarouselProps {
   items: ReactNode[];
@@ -57,36 +58,59 @@ const NativeCarousel = ({
   }, [activeId]);
 
   // INTERNO -> EXTERNO
-  const handleScroll = () => {
+  const handleArrow = (i : number) => {
 
+    const container = containerRef.current;
+    if (!container) return;
+
+    const firstCard = container.children[0] as HTMLElement;
+    if (!firstCard) return;
+    if (!firstCard && i<0) return;
+    const cardWidth = firstCard.offsetWidth + 10;
+    const index = Math.round(
+      container.scrollLeft / cardWidth
+    );
+    const currentItem = items[index + i];
+
+    if (!currentItem) return;
+    let currentId: string | number = index;
+    if (isValidElement(currentItem)) {
+
+      const props = currentItem.props as {
+        id?: string | number
+      };
+
+      if (props.id !== undefined) {
+        currentId = props.id;
+      }
+    }
+    onChange?.(currentId);
+  }
+
+  const handleScroll = () => {
     if (scrollTimeout.current) {
       clearTimeout(scrollTimeout.current);
     }
 
     scrollTimeout.current = setTimeout(() => {
-
       const container = containerRef.current;
 
       if (!container) return;
 
-      const firstCard =
-        container.children[0] as HTMLElement;
+      const firstCard = container.children[0] as HTMLElement;
 
       if (!firstCard) return;
 
-      const cardWidth =
-        firstCard.offsetWidth + 10;
-
+      const cardWidth = firstCard.offsetWidth + 10;
+      
       const index = Math.round(
         container.scrollLeft / cardWidth
       );
 
       const currentItem = items[index];
-
       if (!currentItem) return;
 
       let currentId: string | number = index;
-
       if (isValidElement(currentItem)) {
 
         const props = currentItem.props as {
@@ -104,13 +128,16 @@ const NativeCarousel = ({
   };
 
   return (
-
-    <div
+    <>
+      <SimpleButton
+      onClick={() => handleArrow(-1)}
+      >carrossel-1</SimpleButton>
+      <div
       ref={containerRef}
       className="carrossel"
       onScroll={handleScroll}
-    >
-
+      >
+      
       {items.map((item, index) => (
 
         <div
@@ -121,8 +148,13 @@ const NativeCarousel = ({
         </div>
 
       ))}
-
+      
     </div>
+    <SimpleButton
+      onClick={() => handleArrow(1)}
+      >carrossel+1</SimpleButton>
+    </>
+    
   );
 };
 
