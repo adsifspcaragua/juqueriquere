@@ -1,0 +1,29 @@
+.carrosselContainer {
+    position: relative;
+    width: 100%;
+}
+
+.carrossel {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+}
+
+.circleButton.left, .circleButton.right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.circleButton.left {
+    left: -5px;
+}
+.circleButton.right {
+    right: -5px;
+}
+.circleButton .btn{
+    background-color: var(--verdeClaroTransparente);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
