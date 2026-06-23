@@ -133,7 +133,9 @@
           "longitude": "-45.440177"
         },
         {
-          "nome": "Bifurcação"
+          "nome": "Bifurcação",
+          "latitude": "-23.67848333",
+          "longitude": "-45.439575"
         }
       ],
       "pontos_no_mapa": [

@@ -6,6 +6,8 @@ import NotFound from '../NotFound';
 import SimpleButton from '../../components/ui/buttons/SimpleButton';
 import TrilhasMap from '../../components/ui/TrilhasMap';
 
+import '../styles/ponto.css';
+
 export default function Ponto() {
     const { id, nomePonto } = useParams<{ id: string; nomePonto: string }>();
     const [searchParams] = useSearchParams();
@@ -67,7 +69,7 @@ export default function Ponto() {
                     <div className='vertical gap5'>
                         {
                         Object(ponto).planta && (
-                            <h3>Nome científico: {Object(ponto).planta}</h3>
+                            <h2>Nome científico: {Object(ponto).planta}</h2>
                         )
                         }
                         <p>Presente em {trilha.nome}</p>
