@@ -12,7 +12,7 @@ export default function Explorar() {
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
 
 
-    const [trilhaSelecionada, setTrilhaSelecionada] = useState<number | null>(null);
+    const [trilhaSelecionada, setTrilhaSelecionada] = useState<number | undefined>(undefined);
 
     useEffect(() => {
         async function loadData() {
