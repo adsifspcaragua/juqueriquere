@@ -23,6 +23,8 @@ import FilterDark from '../../assets/icons/FilterDark.webp';
 import Trash from '../../assets/icons/Trash.webp';
 import Edit from '../../assets/icons/Edit.webp';
 import SaveDark from '../../assets/icons/SaveDark.webp';
+import Left from '../../assets/icons/chevronLeft.webp';
+import Right from '../../assets/icons/chevronRight.webp';
 
 export const icons = {
         "default": {
@@ -39,7 +41,9 @@ export const icons = {
             "Tempo"         : Tempo,
             "Plus"          : Plus,
             "Filter"        : Filter,
-            "Edit"          : Edit
+            "Edit"          : Edit,
+            "Left"          : Left,
+            "Right"         : Right
         },
         "dark": {
             "seta"          : setaDark,
