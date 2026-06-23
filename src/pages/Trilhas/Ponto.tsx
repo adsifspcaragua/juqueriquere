@@ -11,7 +11,6 @@ export default function Ponto() {
     const [searchParams] = useSearchParams();
     let from = searchParams.get('from') || 'explorar';
 
-    // carrega o objeto ponto
     const trilha = data.trilhas
         .find(t => t.id === parseInt(id || ''))
     const ponto = trilha?.pontos_interesse.find(p => String(Object.values(p)[0]) === nomePonto);
