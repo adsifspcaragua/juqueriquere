@@ -17,8 +17,8 @@
 :root{
     --verdeEscuro: #008A66;
     --verdeClaro: #CBFFF1;
-    --verdeClaroTransparente: rgba(203, 255, 241, 0.7);
-    --headerBackground: #309e819a;
+    --verdeClaroTransparente: rgba(203, 255, 241, 0.75);
+    --headerBackground: #3faa8ebb;
     --texto: #5C5C5C;
 }
 
@@ -50,6 +50,10 @@ h3 {
 .vertical{
     display: flex;
     flex-direction: column;
+}
+.center{
+    align-items: center;
+    text-align: center;
 }
 .justify{
     justify-content: space-between;
@@ -211,9 +215,11 @@ option:checked {
 
 #filtros{
     position: fixed !important;
-    bottom: 100px;
-    left: 5vw;
-    width: 90vw;
+    bottom: 0;
+    padding: 5vw;
+    padding-bottom: 95px;
+    background: linear-gradient(to top, var(--verdeEscuro), #008a6500);
+    width: 100vw;
     justify-content: space-between;
  
     align-items: center;
@@ -245,6 +251,8 @@ option:checked {
             justify-content: center;
             border-radius: 100% !important;
             border: 1px solid var(--headerBackground);
+            background-color: var(--verdeClaroTransparente);
+            backdrop-filter: blur(10px);
         }
     }
 }
@@ -254,7 +262,8 @@ option:checked {
     min-width: 0;
     background-color: var(--headerBackground);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(203, 255, 241, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: inset 0 0 5px 2px rgba(255, 255, 255, 0.2);
     color: var(--verdeClaro);
     padding: 0 15px;
     border-radius: 50px;
@@ -326,12 +335,44 @@ option:checked {
     }
 
 }
+.card{
+    .mapa{
+        padding: 0;
+    }
+    .switch{
+        padding: 0;
+        .btn{
+            width: max-content;
+        }
+        overflow-x: scroll;
+        scrollbar-width: none;
+    }
+}
+.switchCard{
+    border-radius: 10px 10px 20px 20px;
+    .cardPonto{
+        border-radius: 10px !important;
+    }
+    .carrossel{
+        padding-bottom: 0 !important;
+    }
+}
+#trilhaSwitch{
+    > .switch{
+        border-radius: 20px 20px 10px 10px;
+        > a > .btn {
+            border-radius: 15px 15px 5px 5px !important;
+        }
+    }
+}
 
 .linhaPontilhadaDark{
     border-bottom: 2px dashed var(--verdeEscuro);
+    width:  100%;
 }
 .linhaPontilhadaLight{
-    border-bottom: 2px dashed var(--verdeClaro)
+    border-bottom: 2px dashed var(--verdeClaro);
+    width:  100%;
 }
 ul{
     padding-left: 15px;
@@ -487,6 +528,52 @@ ul{
     >.vertical{
         min-width: 100%;
     }
+}
+
+/**/
+.campoLogin{
+    background-color: rgba(0, 138, 102, 0.2);
+    border: 1px solid var(--verdeEscuro);
+    width: 100%;
+    border-radius: 10px;
+    padding: 0 0 0 15px;
+    transition: border .15s ease-in-out;
+    gap: 10px;
+
+    input{
+        padding: 10px 0;
+        width: 100%;
+        background-color: transparent;
+        border: 0;
+        color: #000;
+        height: 45px;
+        font-size: 16px;
+    }
+    input:focus{
+        outline: 0;
+    }
+    img{
+        width: 22px;
+        height: 22px;
+    }
+}
+.campoLogin:has(input:focus){
+    border-bottom: 3px solid var(--verdeEscuro);
+}
+.btnFull{
+    width: 100%;
+    .btn{
+        width: 100%;
+        justify-content: center;
+    }
+}
+#loginPage{
+    height: 100vh;
+    padding-bottom: 100px;
+    justify-content: center;
+    background-image: url(assets/img/LoginBG.webp);
+    background-size: cover;
+    background-position: center;
 }
 
 @media (width > 850px) {

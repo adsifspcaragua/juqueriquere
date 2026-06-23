@@ -22,6 +22,7 @@ Desde pontos interessantes até dificuldades a serem enfrentadas, o sistema busc
 - **Front-end:** React / Vite / TypeScript
 - **Estilização:** Framer-Motion
 - **Funcionalidades:** Service Workers (PWA), QR Code Scanner API
+- **Bibliotecas Utilizadas:** html5-qrcode, react-dom, react-router-dom, vite-plugin-pwa, d3-geo, geojson, supabase-js, dexie
 
 ## Equipe do projeto
 

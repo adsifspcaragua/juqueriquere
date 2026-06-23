@@ -166,17 +166,13 @@ export default function AdminTrilhas() {
                                     <p>{trilha.extensao}</p>
                                 </div>
 
-                                <div className="vertical gap5">
-                                    <SimpleButton tema="dark" path={`/admin/trilhas/editar/${trilha.id}`}                                        >
+                                <div className="btnFull actions vertical gap5">
+                                    <SimpleButton  icon="Edit" tema="dark" raio="10" path={`/admin/trilhas/editar/${trilha.id}`}                                        >
                                         Editar
                                     </SimpleButton>
-                                    <button
-                                        onClick={() =>
-                                            abrirExcluir(trilha)
-                                        }
-                                    >
+                                    <SimpleButton icon="Trash" tema="red" raio="10" onClick={() => abrirExcluir(trilha)}>
                                         Excluir
-                                    </button>
+                                    </SimpleButton>
                                 </div>
                             </div>
                         ))}

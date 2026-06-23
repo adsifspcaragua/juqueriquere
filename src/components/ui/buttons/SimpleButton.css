@@ -24,6 +24,10 @@
     padding: 0 0;
     background-color: transparent;
 }
+.btn-red{
+    background-color: #e53e3e;
+    color: #fff;
+}
 
 .circleButton{
     .btn{

@@ -16,6 +16,7 @@ export default function SimpleButton({path, children, tema, icon, type, raio, on
     const styleClass = {
         "dark": "btn-dark",
         "none": "btn-none",
+        "red" : "btn-red",
     } as any;
     if(!icon) icon = 'seta';
     tema = (tema && icons[tema]) ? tema : 'default';

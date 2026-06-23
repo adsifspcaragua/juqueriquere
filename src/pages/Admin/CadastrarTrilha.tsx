@@ -1,7 +1,41 @@
 import { supabase } from "../../lib/supabase";
 import { db } from "../../lib/dexie";
 import SimpleButton from "../../components/ui/buttons/SimpleButton";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
+
+
+function AutoResizeTextarea(
+    props: React.TextareaHTMLAttributes<HTMLTextAreaElement>
+) {
+
+    const ref = useRef<HTMLTextAreaElement>(null);
+
+    function resize() {
+        const textarea = ref.current;
+
+        if (!textarea) return;
+
+        requestAnimationFrame(() => {
+            textarea.style.height = "auto";
+            textarea.style.height = `${Math.min(textarea.scrollHeight, 500)}px`;
+        });
+    }
+
+    useEffect(() => {
+        resize();
+    }, []);
+
+    return (
+        <textarea
+            ref={ref}
+            rows={1}
+            onInput={resize}
+            {...props}
+        />
+    );
+}
+
+
 
 export default function CadastrarTrilha() {
     const formRef = useRef<HTMLFormElement>(null);
@@ -43,7 +77,6 @@ export default function CadastrarTrilha() {
     }
 
     return (
-
         <>
             <div className="paddingHeader"></div>
 
@@ -74,6 +107,7 @@ export default function CadastrarTrilha() {
 
                         <input
                             name="nome"
+                            placeholder="Ex: Trilha da Capivara"
                             required
                         />
 
@@ -87,13 +121,15 @@ export default function CadastrarTrilha() {
 
                         <input
                             name="cor_identificacao"
+                            placeholder="Ex: Verde"
                         />
 
                     </div>
 
                     <div className="horizontal gap15">
 
-                        <div>
+
+                        <div className="vertical gap5">
 
                             <label>
                                 Dificuldade:
@@ -117,7 +153,7 @@ export default function CadastrarTrilha() {
 
                         </div>
 
-                        <div>
+                        <div className="vertical gap5">
 
                             <label>
                                 Extensão:
@@ -125,66 +161,89 @@ export default function CadastrarTrilha() {
 
                             <input
                                 name="extensao"
+                                placeholder="Ex: 2,5 km"
                             />
 
                         </div>
 
-                        <div>
-
+                        <div className="vertical gap5">
                             <label>
                                 Duração:
                             </label>
-
                             <input
                                 name="duracao"
+                                placeholder="Ex: 1h 30min"
                             />
-
                         </div>
+                    </div>
+
+                    <div className="vertical gap5">
+
+                        <label>
+                            Descrição curta:
+                        </label>
+
+                        <AutoResizeTextarea
+                            name="descricao_curta"
+                            placeholder="Resumo da trilha em poucas palavras..."
+                        />
 
                     </div>
 
-                    <label>
-                        Descrição curta:
-                    </label>
+                    <div className="vertical gap5">
 
-                    <textarea
-                        name="descricao_curta"
-                    />
+                        <label>
+                            Descrição:
+                        </label>
 
-                    <label>
-                        Descrição:
-                    </label>
+                        <AutoResizeTextarea
+                            name="descricao"
+                            rows={3}
+                            placeholder="Descreva o percurso, características, paisagem e informações importantes..."
+                        />
 
-                    <textarea
-                        name="descricao"
-                        rows={8}
-                    />
+                    </div>
 
-                    <label>
-                        Equipamento recomendado:
-                    </label>
+                    <div className="vertical gap5">
 
-                    <textarea
-                        name="equipamento_recomendado"
-                    />
+                        <label>
+                            Equipamento recomendado:
+                        </label>
 
-                    <label>
-                        Atenção:
-                    </label>
+                        <AutoResizeTextarea
+                            name="equipamento_recomendado"
+                            placeholder="Ex: Calçado adequado, água, protetor solar..."
+                        />
 
-                    <textarea
-                        name="atencao"
-                    />
+                    </div>
 
-                    <button type="submit">
-                        Cadastrar
-                    </button>
+                    <div className="vertical gap5">
 
+                        <label>
+                            Atenção:
+                        </label>
+
+                        <AutoResizeTextarea
+                            name="atencao"
+                            placeholder="Ex: Trechos íngremes, cuidado com pedras soltas..."
+                        />
+
+                    </div>
+
+                    <div className="btnFull">
+                        <SimpleButton
+                            tema="dark"
+                            icon="Save"
+                            raio="10"
+                            type="back"
+                        >
+                            Cadastrar trilha
+                        </SimpleButton>
+
+                    </div>
                 </form>
 
             </section>
-
         </>
-
     );
 }
