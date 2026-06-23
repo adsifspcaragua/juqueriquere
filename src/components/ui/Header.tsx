@@ -63,7 +63,7 @@ export default function Header() {
                         tema='none'
                         icon='Sobre'
                         type='back'
-                    >Início</SimpleButton>
+                    >Sobre</SimpleButton>
 
                     <div
                         className="navBtn"
