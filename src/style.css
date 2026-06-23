@@ -335,6 +335,36 @@ option:checked {
     }
 
 }
+.card{
+    .mapa{
+        padding: 0;
+    }
+    .switch{
+        padding: 0;
+        .btn{
+            width: max-content;
+        }
+        overflow-x: scroll;
+        scrollbar-width: none;
+    }
+}
+.switchCard{
+    border-radius: 10px 10px 20px 20px;
+    .cardPonto{
+        border-radius: 10px !important;
+    }
+    .carrossel{
+        padding-bottom: 0 !important;
+    }
+}
+#trilhaSwitch{
+    > .switch{
+        border-radius: 20px 20px 10px 10px;
+        > a > .btn {
+            border-radius: 15px 15px 5px 5px !important;
+        }
+    }
+}
 
 .linhaPontilhadaDark{
     border-bottom: 2px dashed var(--verdeEscuro);
