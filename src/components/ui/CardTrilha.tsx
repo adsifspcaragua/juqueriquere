@@ -2,7 +2,8 @@ import type Trilha from '../../pages/Trilhas/TrilhaInfo';
 import { Link } from "react-router-dom";
 import { icons } from './icons';
 import './CardTrilha.css'
-import type { JSX } from 'react';
+import { useEffect, useState, type JSX } from 'react';
+import { db } from '../../lib/dexie';
 
 type Props = {
     trilha: Trilha;
@@ -12,12 +13,25 @@ type Props = {
 export default function CardTrilha({ trilha, id }: Props): JSX.Element {
     const { Dificuldade, Distancia, Tempo } = icons.dark;
 
+    const [imagem, setImagem] = useState<string>();
+    
+    useEffect(() => {
+        async function loadData() {
+            const imagens = await db.imagens.toArray();
+            const imagem = imagens.find(i => i.trilha_id == id)
+            if(imagem)setImagem(imagem.caminho_arquivo)
+            console.log(imagem?.caminho_arquivo)
+        }
+
+        loadData();
+    }, []);
+
     return (
         <Link to={`/trilha/${id}`} className='cardTrilha'>
             <div className="info vertical">
 
                 <h2>{trilha.nome}</h2>
-
+                <img src={imagem}></img>
                 <div className="linhaPontilhadaDark"></div>
 
                 <div className="vertical gap5">

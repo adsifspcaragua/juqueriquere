@@ -65,7 +65,6 @@ const NativeCarousel = ({
 
     const firstCard = container.children[0] as HTMLElement;
     if (!firstCard) return;
-    if (!firstCard && i<0) return;
     const cardWidth = firstCard.offsetWidth + 10;
     const index = Math.round(
       container.scrollLeft / cardWidth
