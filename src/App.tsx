@@ -97,41 +97,31 @@ const HomePage = () => {
 
 				<div className="carrossel horizontal" id="CarrosselInicio">
 
-					<div className="carrosselCard vertical gap5" id="trilhas">
-						<h1>Trilhas</h1>
-
-						<p>
-							Explore caminhos serenos, admire vistas deslumbrantes e encontre a paz na jornada.
-						</p>
+					<div className="carrosselCard vertical gap15" id="trilhas">
+						<div className="vertical">
+							<h1>Trilhas</h1>
+							<p>
+								Explore caminhos serenos, admire vistas deslumbrantes e encontre a paz na jornada.
+							</p>
+						</div>
 
 						<SimpleButton path="/trilhas" raio="10">
 							Ir para Trilhas
 						</SimpleButton>
 					</div>
 					
-					<div className="carrosselCard vertical gap5" id="especies">
-						<h1>Pontos de Interesse</h1>
-
-						<p>
-							Descubra as espécies nativas do parque e aprenda mais sobre os seres que habitam esse espaço.
-						</p>
+					<div className="carrosselCard vertical" id="especies">
+						<div className="vertical gap5">
+							<h1>Pontos de Interesse</h1>
+							<p>
+								Descubra as espécies nativas do parque e aprenda mais sobre os seres que habitam esse espaço.
+							</p>
+						</div>
 
 						<SimpleButton path="/pontos" raio="10">
 							Ir para Pontos de Interesse
 						</SimpleButton>
 					</div>
-					{/*}
-					<div className="carrosselCard vertical gap5" id="passaros">
-						<h1>Pássaros</h1>
-
-						<p>
-							Observe pássaros em seu habitat natural e perceba sons, cores e comportamentos ao longo do passeio.
-						</p>
-
-						<SimpleButton path="/trilhas/" raio="10">
-							Ir para Pássaros
-						</SimpleButton>
-					</div> */}
 
 				</div>
 			</section>
