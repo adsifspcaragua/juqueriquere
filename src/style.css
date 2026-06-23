@@ -338,6 +338,7 @@ option:checked {
 .card{
     .mapa{
         padding: 0;
+        border-radius: 10px;
     }
     .switch{
         padding: 0;
