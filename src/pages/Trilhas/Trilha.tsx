@@ -12,6 +12,7 @@ import DraggableCarousel from "../../components/ui/DraggableCarousel";
 import { icons } from "../../components/ui/icons";
 import CardPonto from "../../components/ui/CardPonto";
 import Switch from "../../components/ui/buttons/Switch";
+import imgNotFound from "../../assets/img/imgNotFound.webp"
 
 export default function Trilha() {
     const { Distancia, Tempo, Dificuldade } = icons.default;
@@ -158,6 +159,7 @@ export default function Trilha() {
 
                 <DraggableCarousel
                 items={imagensList}
+                emptyImage={imgNotFound}
                 >
                 </DraggableCarousel>
 

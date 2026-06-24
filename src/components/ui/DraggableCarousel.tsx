@@ -6,12 +6,14 @@ interface CarouselProps {
     items: ReactNode[];
     activeId?: string | number;
     onChange?: (id: string | number) => void;
+    emptyImage?: string;
 }
 
 const NativeCarousel = ({
     items,
     activeId,
     onChange,
+    emptyImage,
 }: CarouselProps) => {
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -148,14 +150,23 @@ const NativeCarousel = ({
                 className="carrossel"
                 onScroll={handleScroll}
             >
-                {items.map((item, index) => (
-                    <div
-                        key={index}
-                        className="carrosselCard"
-                    >
-                        {item}
+                {items.length > 0 ? (
+                    items.map((item, index) => (
+                        <div
+                            key={index}
+                            className="carrosselCard"
+                        >
+                            {item}
+                        </div>
+                    ))
+                ) : emptyImage ? (
+                    <div className="carrosselCard empty">
+                        <img
+                            src={emptyImage}
+                            alt="Nenhuma imagem disponível"
+                        />
                     </div>
-                ))}
+                ) : null}
             </div>
 
             <div className="circleButton right">
