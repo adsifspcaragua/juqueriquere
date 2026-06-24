@@ -17,9 +17,8 @@ export default function CardTrilha({ trilha, id }: Props): JSX.Element {
     
     useEffect(() => {
         async function loadData() {
-            const imagens = await db.imagens.toArray();
-            const imagem = imagens.find(i => i.trilha_id == id)
-            if(imagem)setImagem(imagem.caminho_arquivo)
+            const imagem = await db.imagens.where('trilha_id').equals(String(id)).first();
+            setImagem(imagem?.caminho_arquivo)
             console.log(imagem?.caminho_arquivo)
         }
 
