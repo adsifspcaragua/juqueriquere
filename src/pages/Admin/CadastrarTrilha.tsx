@@ -3,49 +3,47 @@ import { db, type TrilhaDB, type ImagemDB } from "../../lib/dexie";
 import SimpleButton from "../../components/ui/buttons/SimpleButton";
 import { useRef, useEffect, useState } from "react";
 
-
-// --- FUNÇÃO UTILITÁRIA ADAPTADA PARA RETORNAR BASE64 EM WEBP ---
+// --- FUNÇÃO PARA CONVERTER A IMAGEM EM WEBP E RETORNAR COMO BASE64 ---
 function convertToWebPBase64(file: File, quality = 0.8): Promise<string> {
     return new Promise((resolve, reject) => {
-        // Se já for WebP, precisamos convertê-lo para Base64 de qualquer forma para salvar na tabela
         const reader = new FileReader();
         reader.readAsDataURL(file);
 
-
         reader.onload = (event) => {
-            // Se o arquivo original já for webp, podemos usar o Base64 direto dele
+            const resultBase64 = event.target?.result as string;
+
+            // Se o arquivo já for WebP, retorna a string Base64 diretamente
             if (file.type === "image/webp") {
-                return resolve(event.target.result as string);
+                return resolve(resultBase64);
             }
 
-
+            // Caso contrário, carrega a imagem em memória para conversão
             const img = new Image();
-            img.src = event.target.result as string;
-
+            img.src = resultBase64;
 
             img.onload = () => {
+                // Cria um canvas com as mesmas dimensões da imagem
                 const canvas = document.createElement("canvas");
                 canvas.width = img.width;
                 canvas.height = img.height;
 
-
                 const ctx = canvas.getContext("2d");
                 if (!ctx) return reject(new Error("Não foi possível obter o contexto do Canvas."));
 
-
+                // Desenha a imagem no canvas
                 ctx.drawImage(img, 0, 0);
 
-
-                // Em vez de toBlob, usamos toDataURL para obter a string Base64 do WebP otimizado
+                // Exporta o canvas como uma string Base64 formatada em WebP
                 const webpBase64 = canvas.toDataURL("image/webp", quality);
                 resolve(webpBase64);
             };
-            img.onerror = (error) => reject(error);
+
+            img.onerror = (error) => reject(new Error("Erro ao carregar a imagem para conversão."));
         };
+        
         reader.onerror = (error) => reject(error);
     });
 }
-
 
 function AutoResizeTextarea(
     props: React.TextareaHTMLAttributes<HTMLTextAreaElement>
@@ -80,12 +78,10 @@ function AutoResizeTextarea(
     );
 }
 
-
 export default function CadastrarTrilha() {
     const formRef = useRef<HTMLFormElement>(null);
     const [imagemSelecionada, setImagemSelecionada] = useState<File | null>(null);
     const [carregando, setCarregando] = useState(false);
-
 
     function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         if (e.target.files && e.target.files[0]) {
@@ -93,15 +89,12 @@ export default function CadastrarTrilha() {
         }
     }
 
-
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setCarregando(true);
 
-
         try {
             const formData = new FormData(e.currentTarget);
-
 
             // 1. Criar dados apenas da tabela 'trilhas'
             const dadosTrilhaSupabase = {
@@ -116,7 +109,6 @@ export default function CadastrarTrilha() {
                 atencao: formData.get("atencao") as string,
             };
 
-
             // 2. Inserir Trilha no Supabase
             const { data: novaTrilha, error: erroTrilha } = await supabase
                 .from("trilhas")
@@ -124,11 +116,9 @@ export default function CadastrarTrilha() {
                 .select()
                 .single();
 
-
             if (erroTrilha) throw erroTrilha;
 
-
-            // Salva no banco local Dexie com as chaves que a interface pede
+            // Salva no banco local Dexie com as chaves vazias que a interface exige
             const trilhaParaDexie: TrilhaDB = {
                 ...novaTrilha,
                 pontos_interesse: [],
@@ -137,21 +127,18 @@ export default function CadastrarTrilha() {
             };
             await db.trilhas.put(trilhaParaDexie);
 
-
-            // 3. Se houver imagem selecionada, processa a conversão e insere na tabela 'imagens'
+            // 3. Se houver imagem selecionada, converte para WebP e insere na tabela 'imagens'
             if (imagemSelecionada) {
-                // Converte em tempo de execução para uma string Base64 em formato WebP
+                // A mágica acontece aqui: A imagem vira uma string Base64 em WebP (bem mais leve)
                 const stringWebPBase64 = await convertToWebPBase64(imagemSelecionada, 0.8);
 
-
-                // Monta o objeto exatamente com as colunas da sua tabela 'public.imagens' do PostgreSQL
+                // Monta o objeto com as colunas da sua tabela 'public.imagens'
                 const dadosImagem = {
                     trilha_id: novaTrilha.id,
                     ponto_interesse_id: null,
-                    caminho_arquivo: stringWebPBase64, // Armazena a string de dados do WebP convertida
+                    caminho_arquivo: stringWebPBase64, // Armazena a string otimizada
                     legenda: `Capa da trilha ${novaTrilha.nome}`
                 };
-
 
                 // Insere o registro na tabela de imagens do Supabase
                 const { data: novaImagem, error: erroImagem } = await supabase
@@ -160,19 +147,15 @@ export default function CadastrarTrilha() {
                     .select()
                     .single();
 
-
                 if (erroImagem) throw erroImagem;
-
 
                 // Salva a imagem na tabela local correspondente do Dexie
                 await db.imagens.put(novaImagem as ImagemDB);
             }
 
-
-            alert("Trilha e imagem cadastradas e convertidas para WebP com sucesso!");
+            alert("Trilha cadastrada e imagem otimizada para WebP com sucesso!");
             formRef.current?.reset();
             setImagemSelecionada(null);
-
 
         } catch (error: any) {
             console.error(error);
@@ -282,18 +265,17 @@ export default function CadastrarTrilha() {
                         />
                     </div>
 
-
                     <div className="vertical gap5">
                         <label>Imagem de Capa da Trilha:</label>
-                        <input
-                            type="file"
-                            accept="image/*"
+                        <input 
+                            type="file" 
+                            accept="image/*" 
                             onChange={handleFileChange}
                             disabled={carregando}
                         />
                         {imagemSelecionada && (
                             <p style={{ fontSize: "12px", color: "gray" }}>
-                                Arquivo: {imagemSelecionada.name} (será convertido para texto WebP comprimido)
+                                Arquivo: {imagemSelecionada.name} (será convertido e comprimido em WebP)
                             </p>
                         )}
                     </div>

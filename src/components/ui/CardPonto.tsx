@@ -4,6 +4,7 @@ import type TrilhaType from '../../pages/Trilhas/TrilhaInfo';
 
 interface Ponto {
     nome: string;
+    planta?: string;
     latitude?: string;
     longitude?: string;
 }
@@ -24,12 +25,7 @@ export default function CardPonto({ ponto, trilha: trilha  /*Temporário*/ }: Pr
             <div className='cardTrilha cardPonto carrosselCard'>
                 <div className="info vertical">
                 <h2>{ponto.nome}</h2>
-                {ponto.latitude && ponto.longitude && (
-                    <p>Coordenadas: {ponto.latitude}, {ponto.longitude}</p>
-                )}
-                {!ponto.latitude && !ponto.longitude && (
-                    <p>Coordenadas: Não disponíveis</p>
-                )}
+                {ponto.planta && <h3>{ponto.planta}</h3>}
                 </div>
             </div>
         </Link>
