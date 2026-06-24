@@ -1,4 +1,5 @@
 import type Trilha from '../../pages/Trilhas/TrilhaInfo';
+import trilhaGeneric from '../../assets/img/CardTrilha.webp'
 import { Link } from "react-router-dom";
 import { icons } from './icons';
 import './CardTrilha.css'
@@ -8,6 +9,7 @@ import { db } from '../../lib/dexie';
 type Props = {
     trilha: Trilha;
     id?: string | number;
+    getImg?: (img : string | undefined) => void;
 };
 
 export default function CardTrilha({ trilha, id }: Props): JSX.Element {
@@ -15,25 +17,40 @@ export default function CardTrilha({ trilha, id }: Props): JSX.Element {
 
     const [imagem, setImagem] = useState<string>();
     
+
     useEffect(() => {
         async function loadData() {
-            const imagens = await db.imagens.toArray();
-            const imagem = imagens.find(i => i.trilha_id == id)
-            if(imagem)setImagem(imagem.caminho_arquivo)
-            console.log(imagem?.caminho_arquivo)
+            if (!id) {
+                setImagem(`url(${trilhaGeneric})`);
+                return;
+            }
+
+            const imagemDb = await db.imagens.where('trilha_id').equals(Number(id)).first();
+            
+            console.log(imagemDb)
+            if (imagemDb) {
+                setImagem(`url(${imagemDb.caminho_arquivo})`);
+            } else {
+                setImagem(`url(${trilhaGeneric})`);
+            }
         }
 
         loadData();
     }, []);
 
+
     return (
-        <Link to={`/trilha/${id}`} className='cardTrilha'>
+        <Link 
+        to={`/trilha/${id}`} 
+        className={imagem ?
+            `cardTrilha carrosselCard` : `cardTrilha carrosselCard`
+        }
+        style={ {backgroundImage : imagem} }
+        >
             <div className="info vertical">
 
                 <h2>{trilha.nome}</h2>
-                <img src={imagem}></img>
                 <div className="linhaPontilhadaDark"></div>
-
                 <div className="vertical gap5">
 
                     <div className="horizontal gap5">

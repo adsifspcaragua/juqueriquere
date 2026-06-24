@@ -11,7 +11,7 @@ interface CarouselProps {
 const NativeCarousel = ({
     items,
     activeId,
-    onChange
+    onChange,
 }: CarouselProps) => {
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -90,11 +90,9 @@ const NativeCarousel = ({
 
         scrollTimeout.current = setTimeout(() => {
             const container = containerRef.current;
-
             if (!container) return;
 
             const firstCard = container.children[0] as HTMLElement;
-
             if (!firstCard) return;
 
             const cardWidth = firstCard.offsetWidth + 10;

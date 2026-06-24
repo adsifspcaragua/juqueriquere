@@ -59,6 +59,9 @@ export default function Trilha() {
                     : [],
             } as TrilhaType;
 
+            const imagens = await db.imagens.where('trilha_id').equals(Number(id)).toArray;
+            console.log(imagens.length)
+
             setTrilha(trilhaConvertida);
             setLoading(false);
         }
@@ -207,33 +210,29 @@ export default function Trilha() {
 
                             {(trilha.ramais ?? []).length >
                                 0 && (
-                                <Switch
-                                    options={Object.keys(
-                                        options
-                                    )}
-                                    value={
-                                        Object.keys(
+                                    <Switch
+                                        options={Object.keys(
                                             options
-                                        ).find(
-                                            (key) =>
-                                                options[
-                                                    key
-                                                ] ===
-                                                hl[0]
-                                        ) ??
-                                        "Mapa completo"
-                                    }
-                                    onChange={(
-                                        valor
-                                    ) =>
-                                        setHl([
-                                            options[
-                                                valor
-                                            ],
-                                        ])
-                                    }
-                                />
-                            )}
+                                        )}
+                                        value={
+                                            Object.keys(
+                                                options
+                                            ).find(
+                                                (key) =>
+                                                    options[key] ===
+                                                    hl[0]
+                                            ) ??
+                                            "Mapa completo"
+                                        }
+                                        onChange={(
+                                            valor : string
+                                        ) =>
+                                            setHl([
+                                                options[valor],
+                                            ])
+                                        }
+                                    />
+                                )}
 
                             <div className="mapa">
                                 <TrilhasMap

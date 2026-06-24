@@ -15,6 +15,20 @@ export async function sincronizarTrilhas() {
 
 }
 
+export async function sincronizarImagens() {
+  const { data, error } = await supabase
+    .from("imagens")
+    .select("*");
+
+
+  if (error) throw error;
+
+  await db.imagens.clear();
+
+  await db.imagens.bulkPut(data ?? []);
+
+}
+
 export async function sincronizarPontos() {
   const { data, error } = await supabase
     .from("pontos_interesse")
