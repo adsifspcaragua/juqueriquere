@@ -54,24 +54,35 @@ const NativeCarousel = ({
     }, [activeId]);
 
     // INTERNO -> EXTERNO
-    const handleArrow = (i: number) => {
-
+    const handleArrow = (direction: number) => {
         const container = containerRef.current;
         if (!container) return;
 
         const firstCard = container.children[0] as HTMLElement;
         if (!firstCard) return;
-        if (!firstCard && i < 0) return;
+
         const cardWidth = firstCard.offsetWidth + 10;
-        const index = Math.round(
+
+        const currentIndex = Math.round(
             container.scrollLeft / cardWidth
         );
-        const currentItem = items[index + i];
 
-        if (!currentItem) return;
-        let currentId: string | number = index;
+        const nextIndex = currentIndex + direction;
+
+        if (nextIndex < 0 || nextIndex >= items.length) return;
+
+        // Move o carrossel visualmente
+        container.scrollTo({
+            left: nextIndex * cardWidth,
+            behavior: 'smooth'
+        });
+
+        // Mantém o comportamento externo (trilhas)
+        const currentItem = items[nextIndex];
+
+        let currentId: string | number = nextIndex;
+
         if (isValidElement(currentItem)) {
-
             const props = currentItem.props as {
                 id?: string | number
             };
@@ -80,8 +91,9 @@ const NativeCarousel = ({
                 currentId = props.id;
             }
         }
+
         onChange?.(currentId);
-    }
+    };
 
     const handleScroll = () => {
         if (scrollTimeout.current) {
