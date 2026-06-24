@@ -88,16 +88,25 @@ export default function CadastrarTrilha() {
     const formRef = useRef<HTMLFormElement>(null);
     // 1. Mudamos o estado para suportar um array de arquivos
     const [imagensSelecionadas, setImagensSelecionadas] = useState<File[]>([]);
+    const [imagensBase64, setImagensBase64] = useState<string[]>([]);
+
     const [carregando, setCarregando] = useState(false);
-
-
-    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    
+    async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         if (e.target.files) {
-            // Transforma o objeto FileList do navegador em um Array do JavaScript
-            setImagensSelecionadas(Array.from(e.target.files));
+            const files = Array.from(e.target.files);
+            const novosBase64: string[] = [];
+
+            // O 'for...of' permite o uso de await corretamente
+            for (const file of files) {
+                const base64 = await convertToWebPBase64(file, 0.8);
+                novosBase64.push(base64);
+            }
+
+            setImagensBase64(novosBase64);
+            setImagensSelecionadas(files);
         }
     }
-
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -146,7 +155,6 @@ export default function CadastrarTrilha() {
                 // Mapeia o array de arquivos e cria uma promessa de conversão para cada um
                 const promessasImagens = imagensSelecionadas.map(async (file, index) => {
                     const stringWebPBase64 = await convertToWebPBase64(file, 0.8);
-                   
                     return {
                         trilha_id: novaTrilha.id,
                         ponto_interesse_id: null,
@@ -154,8 +162,7 @@ export default function CadastrarTrilha() {
                         legenda: `Imagem ${index + 1} da trilha ${novaTrilha.nome}`
                     };
                 });
-
-
+                
                 // Aguarda todas as imagens serem convertidas simultaneamente
                 const dadosImagens = await Promise.all(promessasImagens);
 
@@ -304,11 +311,16 @@ export default function CadastrarTrilha() {
                         {imagensSelecionadas.length > 0 && (
                             <div style={{ fontSize: "12px", color: "gray", marginTop: "4px" }}>
                                 <p><strong>{imagensSelecionadas.length} imagem(ns) selecionada(s):</strong></p>
-                                <ul style={{ marginLeft: "15px", listStyleType: "disc" }}>
+                                
                                     {imagensSelecionadas.map((file, index) => (
-                                        <li key={index}>{file.name}</li>
+                                        <div key={index} >
+                                            <h3>{file.name}</h3>
+                                            <img
+                                            src={`${imagensBase64[index]}`}
+                                            style={{height : 200}}
+                                        ></img>
+                                        </div>
                                     ))}
-                                </ul>
                             </div>
                         )}
                     </div>
