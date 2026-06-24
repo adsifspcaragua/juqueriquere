@@ -27,7 +27,6 @@ export default function CardTrilha({ trilha, id }: Props): JSX.Element {
 
             const imagemDb = await db.imagens.where('trilha_id').equals(Number(id)).first();
             
-            console.log(imagemDb)
             if (imagemDb) {
                 setImagem(`url(${imagemDb.caminho_arquivo})`);
             } else {

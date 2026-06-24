@@ -6,7 +6,7 @@ import { supabase } from '../../lib/supabase';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Menu.css';
 
-import { getUser, logout } from '../../lib/auth'; // ajuste o path se necessário
+import { logout } from '../../lib/auth'; // ajuste o path se necessário
 
 interface menuProps {
     ativo: boolean;
