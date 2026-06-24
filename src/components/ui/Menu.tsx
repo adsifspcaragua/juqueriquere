@@ -52,19 +52,25 @@ export default function Menu({ ativo, onChoice }: menuProps) {
     }, []);
 
     async function handleLogout() {
-    await logout();
+        await logout();
 
-    if (location.pathname.startsWith('/admin')) {
-        navigate('/admin/login');
+        if (location.pathname.startsWith('/admin')) {
+            navigate('/admin/login');
+        }
+
+        onChoice();
     }
 
-    onChoice();
-}
+    function closeMenu() {
+        setTrilhasShow(false);
+        setPontosShow(false);
+        onChoice();
+    }
 
     return (
         <div
             className={`menuOverlay ${ativo ? 'open' : ''}`}
-            onClick={onChoice}
+            onClick={closeMenu}
         >
             <div
                 className={`menuWeb ${ativo ? 'open' : ''}`}
@@ -76,9 +82,9 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                     <h1>Menu</h1>
 
                     <div className="menuLinks">
-                        <SimpleButton path='/' raio='0'>Início</SimpleButton>
-                        <SimpleButton path='/explorar' raio='0'>Mapa</SimpleButton>
-                        <SimpleButton path='/sobre' raio='0'>Sobre</SimpleButton>
+                        <SimpleButton path='/' raio='0' onClick={closeMenu}>Início</SimpleButton>
+                        <SimpleButton path='/explorar' raio='0' onClick={closeMenu}>Mapa</SimpleButton>
+                        <SimpleButton path='/sobre' raio='0' onClick={closeMenu}>Sobre</SimpleButton>
                     </div>
 
                     {/* TRILHAS */}
@@ -99,12 +105,20 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                                         key={trilha.nome + "option"}
                                         raio="0"
                                         path={`/trilha/${trilha.id}`}
-                                        onClick={onChoice}
+                                        onClick={closeMenu}
                                     >
                                         {trilha.nome}
                                     </SimpleButton>
                                 ))}
+                                <SimpleButton
+                                    raio="0"
+                                    path='/trilhas'
+                                    onClick={closeMenu}
+                                >
+                                    <b>Ver todas as Trilhas</b>
+                                </SimpleButton>
                             </div>
+
                         </div>
 
                         {/* PONTOS */}
@@ -124,41 +138,38 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                                         key={`${ponto.nome}-${index}`}
                                         raio="0"
                                         path={`/trilha/${ponto.trilhaId}/ponto/${encodeURIComponent(ponto.nome)}`}
+                                        onClick={closeMenu}
                                     >
                                         {ponto.nome}
                                     </SimpleButton>
                                 ))}
+                                <SimpleButton
+                                    raio="0"
+                                    path='/pontos'
+                                    onClick={closeMenu}
+                                >
+                                    <b>Ver tods os Pontos</b>
+                                </SimpleButton>
                             </div>
                         </div>
 
-                        
+
                     </div>
                     <div className="menuLinks">
                         <div className='MenuGroup'>
-                            <SimpleButton path='/admin/login' raio='0'>
+                            <SimpleButton path='/admin' raio='0'>
                                 Administração do Site
                             </SimpleButton>
 
-                           
-                        </div>
-
-                        {/* PONTOS */}
-                        <div className='MenuGroup'>
+                            {/* ADMIN / LOGOUT */}
                             {user ? (
-                            <SimpleButton raio="0" onClick={handleLogout}>
-                                Logout
-                            </SimpleButton>
-                        ) : (
-                            null
-                        )}
+                                <SimpleButton raio="0" onClick={handleLogout}>
+                                    Logout
+                                </SimpleButton>
+                            ) : (
+                                null
+                            )}
                         </div>
-
-                        
-                    </div>
-
-                    {/* ADMIN / LOGOUT */}
-                    <div className="menuLinks">
-                        
                     </div>
 
                 </div>

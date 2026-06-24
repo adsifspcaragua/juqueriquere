@@ -9,6 +9,7 @@
     color: var(--verdeEscuro);
     border-radius: 20px;
     font-size: 16px;
+    cursor: pointer;
     
     img {
         width: 20px;
@@ -32,5 +33,14 @@
 .circleButton{
     .btn{
         padding: 10px;
+    }
+}
+
+.btnFull{
+    width: 100%;
+    .btn, button{
+        width: 100%;
+        justify-content: center;
+        border-radius: 10px;
     }
 }

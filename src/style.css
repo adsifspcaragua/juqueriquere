@@ -558,13 +558,6 @@ ul{
 .campoLogin:has(input:focus){
     border-bottom: 3px solid var(--verdeEscuro);
 }
-.btnFull{
-    width: 100%;
-    .btn{
-        width: 100%;
-        justify-content: center;
-    }
-}
 #loginPage{
     height: 100vh;
     padding-bottom: 100px;
