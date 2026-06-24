@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import ProtectedRoute from "./components/Protected.tsx";
 
 import ScrollToTop from "./components/Scroll.tsx";
 
@@ -109,13 +110,13 @@ const HomePage = () => {
 							Ir para Trilhas
 						</SimpleButton>
 					</div>
-					
-					<div className="carrosselCard vertical" id="especies">
-						<div className="vertical gap5">
-							<h1>Pontos de Interesse</h1>
-							<p>
-								Descubra as espécies nativas do parque e aprenda mais sobre os seres que habitam esse espaço.
-							</p>
+
+					<div className="carrosselCard vertical gap15" id="especies">
+						<div className="vertical">
+						<h1>Pontos de Interesse</h1>
+						<p>
+							Descubra as espécies nativas do parque e aprenda mais sobre os seres que habitam esse espaço.
+						</p>
 						</div>
 
 						<SimpleButton path="/pontos" raio="10">
@@ -135,7 +136,7 @@ const HomePage = () => {
 
 function AnimatedRoutes() {
 	const location = useLocation();
-	
+
 
 	return (
 		<>
@@ -210,9 +211,11 @@ function AnimatedRoutes() {
 						<Route
 							path="/admin"
 							element={
-								<PageTransition>
-									<Admin />
-								</PageTransition>
+								<ProtectedRoute>
+									<PageTransition>
+										<Admin />
+									</PageTransition>
+								</ProtectedRoute>
 							}
 						/>
 						<Route
@@ -226,49 +229,59 @@ function AnimatedRoutes() {
 						<Route
 							path="/admin/trilhas"
 							element={
-								<PageTransition>
-									<AdminTrilhas />
-								</PageTransition>
+								<ProtectedRoute>
+									<PageTransition>
+										<AdminTrilhas />
+									</PageTransition>
+								</ProtectedRoute>
 							}
 						/>
 						<Route
 							path="/admin/trilhas/cadastrar"
 							element={
-								<PageTransition>
-									<CadastrarTrilha />
-								</PageTransition>
+									<PageTransition>
+										<CadastrarTrilha />
+									</PageTransition>
 							}
 						/>
 						<Route
 							path="/admin/trilhas/editar/:id"
 							element={
-								<PageTransition>
-									<EditarTrilha />
-								</PageTransition>
+								<ProtectedRoute>
+									<PageTransition>
+										<EditarTrilha />
+									</PageTransition>
+								</ProtectedRoute>
 							}
 						/>
 						<Route
 							path="/admin/pontos"
 							element={
-								<PageTransition>
-									<AdminPontos />
-								</PageTransition>
+								<ProtectedRoute>
+									<PageTransition>
+										<AdminPontos />
+									</PageTransition>
+								</ProtectedRoute>
 							}
 						/>
 						<Route
 							path="/admin/pontos/cadastrar"
 							element={
-								<PageTransition>
-									<CadastrarPontoInteresse />
-								</PageTransition>
+								<ProtectedRoute>
+									<PageTransition>
+										<CadastrarPontoInteresse />
+									</PageTransition>
+								</ProtectedRoute>
 							}
 						/>
 						<Route
 							path="/admin/sobre"
 							element={
-								<PageTransition>
-									<AdminSobre />
-								</PageTransition>
+								<ProtectedRoute>
+									<PageTransition>
+										<AdminSobre />
+									</PageTransition>
+								</ProtectedRoute>
 							}
 						/>
 						<Route
@@ -289,7 +302,7 @@ function AnimatedRoutes() {
 
 export default function App() {
 	useSync();
-	
+
 	return (
 		<Router>
 			<AnimatedRoutes />

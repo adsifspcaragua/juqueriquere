@@ -1,4 +1,6 @@
 import SimpleButton from "../../components/ui/buttons/SimpleButton";
+import { db } from "../../lib/dexie";
+
 
 export default function Admin() {
 

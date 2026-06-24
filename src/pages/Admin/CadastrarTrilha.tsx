@@ -50,9 +50,11 @@ function AutoResizeTextarea(
 ) {
     const ref = useRef<HTMLTextAreaElement>(null);
 
+
     function resize() {
         const textarea = ref.current;
         if (!textarea) return;
+
 
         requestAnimationFrame(() => {
             textarea.style.height = "auto";
@@ -60,9 +62,11 @@ function AutoResizeTextarea(
         });
     }
 
+
     useEffect(() => {
         resize();
     }, []);
+
 
     return (
         <textarea
@@ -161,11 +165,14 @@ export default function CadastrarTrilha() {
         }
     }
 
+
     return (
         <>
             <div className="paddingHeader"></div>
 
+
             <section className="conteudo vertical gap15">
+
 
                 <SimpleButton
                     path="/admin/trilhas"
@@ -175,9 +182,11 @@ export default function CadastrarTrilha() {
                     Voltar
                 </SimpleButton>
 
+
                 <h1>
                     Cadastrar Trilha
                 </h1>
+
 
                 <form
                     ref={formRef}
@@ -189,10 +198,12 @@ export default function CadastrarTrilha() {
                         <input name="nome" placeholder="Ex: Trilha da Capivara" required />
                     </div>
 
+
                     <div className="vertical gap5">
                         <label>Cor:</label>
                         <input name="cor_identificacao" placeholder="Ex: Verde" />
                     </div>
+
 
                     <div className="horizontal gap15">
                         <div className="vertical gap5">
@@ -204,16 +215,19 @@ export default function CadastrarTrilha() {
                             </select>
                         </div>
 
+
                         <div className="vertical gap5">
                             <label>Extensão:</label>
                             <input name="extensao" placeholder="Ex: 2,5 km" />
                         </div>
+
 
                         <div className="vertical gap5">
                             <label>Duração:</label>
                             <input name="duracao" placeholder="Ex: 1h 30min" />
                         </div>
                     </div>
+
 
                     <div className="vertical gap5">
                         <label>Descrição curta:</label>
@@ -222,6 +236,7 @@ export default function CadastrarTrilha() {
                             placeholder="Resumo da trilha em poucas palavras..."
                         />
                     </div>
+
 
                     <div className="vertical gap5">
                         <label>Descrição:</label>
@@ -232,6 +247,7 @@ export default function CadastrarTrilha() {
                         />
                     </div>
 
+
                     <div className="vertical gap5">
                         <label>Equipamento recomendado:</label>
                         <AutoResizeTextarea
@@ -239,6 +255,7 @@ export default function CadastrarTrilha() {
                             placeholder="Ex: Calçado adequado, água, protetor solar..."
                         />
                     </div>
+
 
                     <div className="vertical gap5">
                         <label>Atenção:</label>
@@ -263,6 +280,7 @@ export default function CadastrarTrilha() {
                         )}
                     </div>
 
+
                     <div className="btnFull">
                         <button type="submit" disabled={carregando}>
                             {carregando ? "Cadastrando..." : "Cadastrar trilha"}
@@ -270,7 +288,9 @@ export default function CadastrarTrilha() {
                     </div>
                 </form>
 
+
             </section>
         </>
     );
 }
+

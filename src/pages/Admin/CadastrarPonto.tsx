@@ -103,31 +103,26 @@ export default function CadastrarPontoInteresse() {
                     <div className="vertical gap5">
                         <label>Trilha:</label>
 
-                        {trilhas.map((trilha) => (
-                            <label
-                                key={trilha.id}
-                                className="horizontal gap5"
-                            >
-                                <input
-                                    type="radio"
-                                    name="trilha"
-                                    checked={trilhaSelecionada === trilha.id}
-                                    onChange={() =>
-                                        setTrilhaSelecionada(trilha.id)
-                                    }
-                                />
-                                {trilha.nome}
-                            </label>
-                        ))}
-                        <label className="horizontal gap5">
-                            <input
-                                type="radio"
-                                name="trilha"
-                                checked={trilhaSelecionada === null}
 
-                            />
-                             Ponto não pertence a nenhuma trilha
-                        </label>
+
+                        <select
+                            name="trilha"
+                            value={trilhaSelecionada ?? ""}
+                            onChange={(e) =>
+                                setTrilhaSelecionada(
+                                    e.target.value ? Number(e.target.value) : null
+                                )
+                            }
+                            required
+                        >
+                            <option value="">Ponto não pertence a nenhuma trilha</option>
+
+                            {trilhas.map((trilha) => (
+                                <option key={trilha.id} value={trilha.id}>
+                                    {trilha.nome}
+                                </option>
+                            ))}
+                        </select>
 
                     </div>
 
@@ -167,7 +162,7 @@ export default function CadastrarPontoInteresse() {
                         <button type="submit">Cadastrar trilha</button>
                     </div>
                 </form>
-            </section>
+            </section >
         </>
     );
 }
