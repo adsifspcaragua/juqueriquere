@@ -1,8 +1,12 @@
 import data from '../../data.json';
 import type Trilha from '../../pages/Trilhas/TrilhaInfo.tsx';
 import SimpleButton from '../../components/ui/buttons/SimpleButton.tsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { supabase } from '../../lib/supabase';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './Menu.css';
+
+import { getUser, logout } from '../../lib/auth'; // ajuste o path se necessário
 
 interface menuProps {
     ativo: boolean;
@@ -11,7 +15,8 @@ interface menuProps {
 
 export default function Menu({ ativo, onChoice }: menuProps) {
 
-    const trilhas: Trilha[] = [...data.trilhas] as Trilha[]; // Asserção de tipo para garantir que temos um array de Trilha
+    const trilhas: Trilha[] = [...data.trilhas] as Trilha[];
+
     const pontos = trilhas
         .flatMap((trilha) =>
             trilha.pontos_interesse.map((ponto) => ({
@@ -19,10 +24,42 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                 trilhaId: trilha.id
             }))
         )
-        .slice(0, 5);   
+        .slice(0, 5);
 
     const [trilhasShow, setTrilhasShow] = useState(false);
     const [pontosShow, setPontosShow] = useState(false);
+
+    const [user, setUser] = useState<any>(null);
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        // pega sessão inicial
+        supabase.auth.getUser().then(({ data }) => {
+            setUser(data.user);
+        });
+
+        // escuta mudanças (LOGIN / LOGOUT)
+        const { data: listener } = supabase.auth.onAuthStateChange(
+            (_event, session) => {
+                setUser(session?.user ?? null);
+            }
+        );
+
+        return () => {
+            listener.subscription.unsubscribe();
+        };
+    }, []);
+
+    async function handleLogout() {
+    await logout();
+
+    if (location.pathname.startsWith('/admin')) {
+        navigate('/admin/login');
+    }
+
+    onChoice();
+}
 
     return (
         <div
@@ -44,8 +81,8 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                         <SimpleButton path='/sobre' raio='0'>Sobre</SimpleButton>
                     </div>
 
+                    {/* TRILHAS */}
                     <div className="menuLinks">
-                        {/* TRILHAS */}
                         <div className='MenuGroup'>
                             <SimpleButton
                                 icon="none"
@@ -67,12 +104,6 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                                         {trilha.nome}
                                     </SimpleButton>
                                 ))}
-                                <SimpleButton
-                                    raio="0"
-                                    path='/trilhas'
-                                >
-                                    <b>Ver todas as trilhas</b>
-                                </SimpleButton>
                             </div>
                         </div>
 
@@ -86,6 +117,7 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                                 Pontos
                                 <div className={`arrow ${pontosShow ? 'open' : ''}`}></div>
                             </SimpleButton>
+
                             <div className={`children ${pontosShow ? 'open' : ''}`}>
                                 {pontos.map((ponto, index) => (
                                     <SimpleButton
@@ -96,20 +128,39 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                                         {ponto.nome}
                                     </SimpleButton>
                                 ))}
-                                <SimpleButton
-                                    raio="0"
-                                    path='/Pontos'
-                                >
-                                    <b>Ver todas os pontos</b>
-                                </SimpleButton>
                             </div>
                         </div>
+
+                        
                     </div>
-                    
-                    {/* Acesso Temporário */}
                     <div className="menuLinks">
-                        <SimpleButton path='/admin/login' raio='0'>Administração do Site</SimpleButton>
+                        <div className='MenuGroup'>
+                            <SimpleButton path='/admin/login' raio='0'>
+                                Administração do Site
+                            </SimpleButton>
+
+                           
+                        </div>
+
+                        {/* PONTOS */}
+                        <div className='MenuGroup'>
+                            {user ? (
+                            <SimpleButton raio="0" onClick={handleLogout}>
+                                Logout
+                            </SimpleButton>
+                        ) : (
+                            null
+                        )}
+                        </div>
+
+                        
                     </div>
+
+                    {/* ADMIN / LOGOUT */}
+                    <div className="menuLinks">
+                        
+                    </div>
+
                 </div>
             </div>
         </div>
