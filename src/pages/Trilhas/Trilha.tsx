@@ -28,7 +28,6 @@ export default function Trilha() {
         (number | string)[]
     >([id]);
 
-<<<<<<< HEAD
     const [pontoSelecionado, setPontoSelecionado] =
         useState<string>();
 
@@ -97,44 +96,6 @@ export default function Trilha() {
         )
     );
 
-=======
-    const pontosList = trilha.pontos_interesse.map((ponto, index) => (
-        <div
-            id={String(index)}
-            key={ponto.nome}
-        >
-            <CardPonto
-                ponto={ponto}
-                trilha={trilha}
-            />
-        </div>
-    ));
-    
-    const [hl, setHl] = useState([id]) as unknown as [
-        number | string | (number | string)[],
-        (id: number | string | (number | string)[]) => void
-    ];
-
-    const [pontoSelecionado, setPontoSelecionado] = useState(
-        pontosList[0]?.props?.id
-    );
-
-    function pontoCoord(ponto: number | string) {
-        
-        const chaveDoPonto = pontosList[Number(ponto)]?.key;
-        
-        if (chaveDoPonto == null) return false;
-
-        // Busca as coordenadas baseadas na chave (nome)
-        const coords = trilha.pontos_interesse.find(p => p.nome === chaveDoPonto);
-        
-        if (!coords?.latitude || !coords?.longitude) return false;
-        
-        return true;
-    }
-
-
->>>>>>> bebbf871f4f2de84d8dee9a8163b40db0ad1cc36
     const normalize = (str: string) =>
         str.toLowerCase().replace(".", "").trim();
 
@@ -276,21 +237,11 @@ export default function Trilha() {
 
                             <div className="mapa">
                                 <TrilhasMap
-<<<<<<< HEAD
                                     highlight={hl}
                                     id={[id]}
                                     onPointClick={(
                                         nome
                                     ) =>
-=======
-                                    highlight={
-                                       pontoCoord(pontoSelecionado) ? pontosList[pontoSelecionado]?.key ||[id] :  [id]
-                                    }
-                                    id={[id]
-                                        
-                                    }
-                                    onPointClick={(nome) =>
->>>>>>> bebbf871f4f2de84d8dee9a8163b40db0ad1cc36
                                         setPontoSelecionado(
                                             findCarousselID(
                                                 nome,
