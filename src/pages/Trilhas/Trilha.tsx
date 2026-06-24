@@ -24,12 +24,11 @@ export default function Trilha() {
 
     const [aba, setAba] = useState("Descrição");
 
-    const [hl, setHl] = useState<
-        (number | string)[]
-    >([id]);
+    const [hl, setHl] = useState<(number | string)[]>([id]);
 
-    const [pontoSelecionado, setPontoSelecionado] =
-        useState<string>();
+    const [imagens, setImagemArray] = useState<string[]>();
+
+    const [pontoSelecionado, setPontoSelecionado] = useState<string>();
 
     useEffect(() => {
         async function carregar() {
@@ -58,9 +57,16 @@ export default function Trilha() {
                     ? resultado.pontos_no_mapa
                     : [],
             } as TrilhaType;
-
-            const imagens = await db.imagens.where('trilha_id').equals(Number(id)).toArray;
-            console.log(imagens.length)
+            const arrayIMG : string[] = [];
+            const imagens = await db.imagens.where('trilha_id').equals(Number(id)).toArray();
+            imagens.forEach((imagem) => (
+                arrayIMG.push(
+                    imagem.caminho_arquivo &&
+                    `${imagem.caminho_arquivo}`
+                )
+            ))
+            setImagemArray(arrayIMG)
+            console.log(arrayIMG)
 
             setTrilha(trilhaConvertida);
             setLoading(false);
@@ -99,6 +105,19 @@ export default function Trilha() {
         )
     );
 
+    const imagensList = (imagens ?? []).map(
+        (imagem, index) => (
+            <div
+                key={String(index)}
+            >
+                <img
+                src={imagem}
+                >
+                </img>
+            </div>
+        )
+    );
+
     const normalize = (str: string) =>
         str.toLowerCase().replace(".", "").trim();
 
@@ -123,7 +142,7 @@ export default function Trilha() {
                 r.id,
             ])
         ),
-    };
+    } as Record<string, number | string>;
 
     return (
         <>
@@ -137,6 +156,12 @@ export default function Trilha() {
                 >
                     Voltar para Mapa
                 </SimpleButton>
+
+                <DraggableCarousel
+                items={imagensList}
+                >
+
+                </DraggableCarousel>
 
                 <div className="vertical gap5">
                     <h1>{trilha.nome}</h1>
@@ -214,22 +239,12 @@ export default function Trilha() {
                                         options={Object.keys(
                                             options
                                         )}
-                                        value={
-                                            Object.keys(
-                                                options
-                                            ).find(
-                                                (key) =>
-                                                    options[key] ===
-                                                    hl[0]
+                                        value={Object.keys(options).find((key) =>
+                                                    options[key] === hl[0]
                                             ) ??
                                             "Mapa completo"
                                         }
-                                        onChange={(
-                                            valor : string
-                                        ) =>
-                                            setHl([
-                                                options[valor],
-                                            ])
+                                        onChange={(valor : string ) =>setHl([options[valor] as string])
                                         }
                                     />
                                 )}
