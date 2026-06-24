@@ -66,7 +66,6 @@ export default function Trilha() {
                 )
             ))
             setImagemArray(arrayIMG)
-            console.log(arrayIMG)
 
             setTrilha(trilhaConvertida);
             setLoading(false);
@@ -160,7 +159,6 @@ export default function Trilha() {
                 <DraggableCarousel
                 items={imagensList}
                 >
-
                 </DraggableCarousel>
 
                 <div className="vertical gap5">

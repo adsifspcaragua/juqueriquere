@@ -97,7 +97,6 @@ export default function CadastrarTrilha() {
             const files = Array.from(e.target.files);
             const novosBase64: string[] = [];
 
-            // O 'for...of' permite o uso de await corretamente
             for (const file of files) {
                 const base64 = await convertToWebPBase64(file, 0.8);
                 novosBase64.push(base64);
@@ -187,7 +186,7 @@ export default function CadastrarTrilha() {
             alert("Trilha e imagens cadastradas com sucesso!");
             formRef.current?.reset();
             setImagensSelecionadas([]); // Limpa o array após o sucesso
-
+            setImagensBase64([]);
 
         } catch (error: any) {
             console.error(error);
