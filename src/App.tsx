@@ -113,10 +113,10 @@ const HomePage = () => {
 
 					<div className="carrosselCard vertical gap15" id="especies">
 						<div className="vertical">
-						<h1>Pontos de Interesse</h1>
-						<p>
-							Descubra as espécies nativas do parque e aprenda mais sobre os seres que habitam esse espaço.
-						</p>
+							<h1>Pontos de Interesse</h1>
+							<p>
+								Descubra as espécies nativas do parque e aprenda mais sobre os seres que habitam esse espaço.
+							</p>
 						</div>
 
 						<SimpleButton path="/pontos" raio="10">
