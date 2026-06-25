@@ -1,96 +1,15 @@
+import { useRef, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { db, type TrilhaDB, type ImagemDB } from "../../lib/dexie";
 import SimpleButton from "../../components/ui/buttons/SimpleButton";
-import { useRef, useEffect, useState } from "react";
 import DraggableCarousel from "../../components/ui/DraggableCarousel";
-
-
-// --- FUNÇÃO PARA CONVERTER A IMAGEM EM WEBP E RETORNAR COMO BASE64 ---
-function convertToWebPBase64(file: File, quality = 0.8): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-
-
-        reader.onload = (event) => {
-            const resultBase64 = event.target?.result as string;
-
-
-            if (file.type === "image/webp") {
-                return resolve(resultBase64);
-            }
-
-
-            const img = new Image();
-            img.src = resultBase64;
-
-
-            img.onload = () => {
-                const canvas = document.createElement("canvas");
-                canvas.width = img.width;
-                canvas.height = img.height;
-
-
-                const ctx = canvas.getContext("2d");
-                if (!ctx) return reject(new Error("Não foi possível obter o contexto do Canvas."));
-
-
-                ctx.drawImage(img, 0, 0);
-
-
-                const webpBase64 = canvas.toDataURL("image/webp", quality);
-                resolve(webpBase64);
-            };
-
-
-            img.onerror = () => reject(new Error("Erro ao carregar a imagem para conversão."));
-        };
-       
-        reader.onerror = (error) => reject(error);
-    });
-}
-
-
-function AutoResizeTextarea(
-    props: React.TextareaHTMLAttributes<HTMLTextAreaElement>
-) {
-    const ref = useRef<HTMLTextAreaElement>(null);
-
-
-    function resize() {
-        const textarea = ref.current;
-        if (!textarea) return;
-
-
-        requestAnimationFrame(() => {
-            textarea.style.height = "auto";
-            textarea.style.height = `${Math.min(textarea.scrollHeight, 500)}px`;
-        });
-    }
-
-
-    useEffect(() => {
-        resize();
-    }, []);
-
-
-    return (
-        <textarea
-            ref={ref}
-            rows={1}
-            onInput={resize}
-            {...props}
-        />
-    );
-}
-
+import AutoResizeTextarea from "./AutoResizeTextarea.tsx";
+import { convertToWebPBase64 } from "./imageConverter";
 
 export default function CadastrarTrilha() {
     const formRef = useRef<HTMLFormElement>(null);
-    // 1. Mudamos o estado para suportar um array de arquivos
     const [imagensSelecionadas, setImagensSelecionadas] = useState<File[]>([]);
     const [imagensBase64, setImagensBase64] = useState<string[]>([]);
-
     const [carregando, setCarregando] = useState(false);
     
     async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -112,10 +31,8 @@ export default function CadastrarTrilha() {
         e.preventDefault();
         setCarregando(true);
 
-
         try {
             const formData = new FormData(e.currentTarget);
-
 
             const dadosTrilhaSupabase = {
                 nome: formData.get("nome") as string,
@@ -129,16 +46,13 @@ export default function CadastrarTrilha() {
                 atencao: formData.get("atencao") as string,
             };
 
-
             const { data: novaTrilha, error: erroTrilha } = await supabase
                 .from("trilhas")
                 .insert(dadosTrilhaSupabase)
                 .select()
                 .single();
 
-
             if (erroTrilha) throw erroTrilha;
-
 
             const trilhaParaDexie: TrilhaDB = {
                 ...novaTrilha,
@@ -148,11 +62,7 @@ export default function CadastrarTrilha() {
             };
             await db.trilhas.put(trilhaParaDexie);
 
-
-            // 2. Lógica para processar MÚLTIPLAS imagens
             if (imagensSelecionadas.length > 0) {
-               
-                // Mapeia o array de arquivos e cria uma promessa de conversão para cada um
                 const promessasImagens = imagensSelecionadas.map(async (file, index) => {
                     const stringWebPBase64 = await convertToWebPBase64(file, 0.8);
                     return {
@@ -163,30 +73,23 @@ export default function CadastrarTrilha() {
                     };
                 });
                 
-                // Aguarda todas as imagens serem convertidas simultaneamente
                 const dadosImagens = await Promise.all(promessasImagens);
 
-
-                // O Supabase aceita um Array de objetos no .insert() para salvar vários de uma vez!
                 const { data: novasImagens, error: erroImagens } = await supabase
                     .from("imagens")
                     .insert(dadosImagens)
                     .select();
 
-
                 if (erroImagens) throw erroImagens;
 
-
-                // O Dexie possui o bulkPut para salvar múltiplos registros locais de forma super rápida
                 if (novasImagens) {
                     await db.imagens.bulkPut(novasImagens as ImagemDB[]);
                 }
             }
 
-
             alert("Trilha e imagens cadastradas com sucesso!");
             formRef.current?.reset();
-            setImagensSelecionadas([]); // Limpa o array após o sucesso
+            setImagensSelecionadas([]);
             setImagensBase64([]);
 
         } catch (error: any) {
@@ -197,139 +100,89 @@ export default function CadastrarTrilha() {
         }
     }
 
-
     return (
         <>
             <div className="paddingHeader"></div>
 
-
             <section className="conteudo vertical gap15">
-
-
-                <SimpleButton
-                    path="/admin/trilhas"
-                    type="back"
-                    icon="setaBack"
-                >
+                <SimpleButton path="/admin/trilhas" type="back" icon="setaBack">
                     Voltar
                 </SimpleButton>
 
+                <h1>Cadastrar Trilha</h1>
 
-                <h1>
-                    Cadastrar Trilha
-                </h1>
-
-
-                <form
-                    ref={formRef}
-                    className="card form vertical gap15"
-                    onSubmit={handleSubmit}
-                >
+                <form ref={formRef} className="card form vertical gap15" onSubmit={handleSubmit}>
                     <div className="vertical gap5">
                         <label>Nome:</label>
-                        <input name="nome" placeholder="Ex: Trilha da Capivara" required />
+                        <input name="nome" placeholder="Ex: Trilha da Capivara" required disabled={carregando} />
                     </div>
-
 
                     <div className="vertical gap5">
                         <label>Cor:</label>
-                        <input name="cor_identificacao" placeholder="Ex: Verde" />
+                        <input name="cor_identificacao" placeholder="Ex: Verde" disabled={carregando} />
                     </div>
-
 
                     <div className="horizontal gap15">
                         <div className="vertical gap5">
                             <label>Dificuldade:</label>
-                            <select name="dificuldade">
+                            <select name="dificuldade" disabled={carregando}>
                                 <option>Fácil</option>
                                 <option>Moderada</option>
                                 <option>Difícil</option>
                             </select>
                         </div>
 
-
                         <div className="vertical gap5">
                             <label>Extensão:</label>
-                            <input name="extensao" placeholder="Ex: 2,5 km" />
+                            <input name="extensao" placeholder="Ex: 2,5 km" disabled={carregando} />
                         </div>
-
 
                         <div className="vertical gap5">
                             <label>Duração:</label>
-                            <input name="duracao" placeholder="Ex: 1h 30min" />
+                            <input name="duracao" placeholder="Ex: 1h 30min" disabled={carregando} />
                         </div>
                     </div>
 
-
                     <div className="vertical gap5">
                         <label>Descrição curta:</label>
-                        <AutoResizeTextarea
-                            name="descricao_curta"
-                            placeholder="Resumo da trilha em poucas palavras..."
-                        />
+                        <AutoResizeTextarea name="descricao_curta" placeholder="Resumo da trilha em poucas palavras..." disabled={carregando} />
                     </div>
-
 
                     <div className="vertical gap5">
                         <label>Descrição:</label>
-                        <AutoResizeTextarea
-                            name="descricao"
-                            rows={3}
-                            placeholder="Descreva o percurso, características, paisagem..."
-                        />
+                        <AutoResizeTextarea name="descricao" placeholder="Descreva o percurso..." disabled={carregando} />
                     </div>
-
 
                     <div className="vertical gap5">
                         <label>Equipamento recomendado:</label>
-                        <AutoResizeTextarea
-                            name="equipamento_recomendado"
-                            placeholder="Ex: Calçado adequado, água, protetor solar..."
-                        />
+                        <AutoResizeTextarea name="equipamento_recomendado" placeholder="Ex: Calçado adequado..." disabled={carregando} />
                     </div>
-
 
                     <div className="vertical gap5">
                         <label>Atenção:</label>
-                        <AutoResizeTextarea
-                            name="atencao"
-                            placeholder="Ex: Trechos íngremes, cuidado com pedras soltas..."
-                        />
+                        <AutoResizeTextarea name="atencao" placeholder="Ex: Trechos íngremes..." disabled={carregando} />
                     </div>
 
-
-                    {/* 3. Adicionamos o atributo 'multiple' no input */}
                     <div className="vertical gap15">
                         <div className="vertical gap5" id="file">
                             <label>Imagens da Trilha:</label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                multiple
-                                onChange={handleFileChange}
-                                disabled={carregando}
-                            />
+                            <input type="file" accept="image/*" multiple onChange={handleFileChange} disabled={carregando} />
                         </div>
 
                         {imagensSelecionadas.length > 0 && (
                             <div className="vertical gap5">
-                                <p>
-                                    <strong>{imagensSelecionadas.length} imagem(ns) selecionada(s):</strong>
-                                </p>
-
+                                <p><strong>{imagensSelecionadas.length} imagem(ns) selecionada(s):</strong></p>
                                 <DraggableCarousel
-                                    items={imagensSelecionadas.map((file, index) => (
-                                        <div key={index} className="uploadPreview vertical gap5 carrosselCard">
-                                            <img src={imagensBase64[index]} alt={file.name} />
+                                    items={imagensSelecionadas.map((file, idx) => (
+                                        <div key={idx} className="uploadPreview vertical gap5 carrosselCard">
+                                            <img src={imagensBase64[idx]} alt={file.name} />
                                             <p>{file.name}</p>
                                         </div>
                                     ))}
                                 />
                             </div>
                         )}
-
                     </div>
-
 
                     <div className="btnFull">
                         <button type="submit" disabled={carregando}>
@@ -337,12 +190,7 @@ export default function CadastrarTrilha() {
                         </button>
                     </div>
                 </form>
-
-
             </section>
         </>
     );
 }
-
-
-
