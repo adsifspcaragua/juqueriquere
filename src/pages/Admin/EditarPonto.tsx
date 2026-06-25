@@ -287,7 +287,7 @@ export default function EditarPontoInteresse() {
                                             type="button" 
                                             onClick={() => handleRemoveImagemAntiga(imagem)}
                                             disabled={carregando}
-                                            style={{ background: '#ff4d4f', color: 'white' }}
+                                            className="btn-red"
                                         >
                                             Excluir
                                         </button>

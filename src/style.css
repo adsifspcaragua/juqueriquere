@@ -87,7 +87,7 @@ body{
     background: linear-gradient(173deg,rgba(0, 138, 102, 1) 0%, rgba(65, 181, 150, 1) 50%, rgba(0, 138, 102, 1) 100%);
 }
 
-.paddingHeader{
+.paddingHeader, .paddingHeader2{
     height: 20px;
 }
 .paddingFooter{

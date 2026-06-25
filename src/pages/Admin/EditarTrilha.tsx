@@ -237,8 +237,9 @@ export default function EditarTrilha() {
                                                     type="button" 
                                                     onClick={() => handleRemoveSavedImage(img, idx)}
                                                     disabled={carregando}
+                                                    className="btn-red"
                                                 >
-                                                    Remover
+                                                    Excluir
                                                 </button>
                                                 <p>{img.legenda}</p>
                                             </div>
@@ -265,7 +266,7 @@ export default function EditarTrilha() {
 
                     <div className="btnFull">
                         <button type="submit" disabled={carregando}>
-                            {carregando ? "Salvando alterações..." : "Editar trilha"}
+                            {carregando ? "Salvando alterações..." : "Salvar alterações"}
                         </button>
                     </div>
                 </form>

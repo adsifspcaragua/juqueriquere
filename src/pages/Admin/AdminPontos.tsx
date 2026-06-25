@@ -4,6 +4,7 @@ import SimpleButton from "../../components/ui/buttons/SimpleButton";
 import Select from "../../components/ui/form/Select";
 import { createPortal } from "react-dom";
 import type Trilha from "../Trilhas/TrilhaInfo";
+import distancia from "../../assets/icons/Distancia-light.webp";
 
 export default function AdminPontos() {
 
@@ -147,7 +148,7 @@ export default function AdminPontos() {
                 )}
 
                 <div className="vertical gap5">
-                    <h2>Pontos cadastradas</h2>
+                    <h2>Pontos cadastrados</h2>
 
                     <div className="vertical gap5">
                         {pontos.map((ponto) => (
@@ -155,10 +156,15 @@ export default function AdminPontos() {
                                 className="card horizontal gap5 justify"
                                 key={ponto.id}
                             >
-                                <div className="cardPontoCompacto vertical gap5">
-                                    <h3>{ponto.nome}</h3>
-                                    {/* Agora vai exibir o nome correto assim que o Dexie responder */}
-                                    <h3>{findTrilha(ponto)}</h3> 
+                                <div className="cardPontoCompacto vertical gap15">
+                                    <div className="vertical gap5">
+                                        <h3>{ponto.nome}</h3>
+                                        <p>{ponto.latitude}, {ponto.longitude}</p>
+                                    </div>
+                                    <div className="seloTrilha horizontal center">
+                                        <img src={distancia}/>
+                                        <p>{findTrilha(ponto)}</p>
+                                    </div>
                                 </div>
 
                                 <div className="btnFull actions vertical gap5">

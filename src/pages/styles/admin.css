@@ -49,9 +49,13 @@
         border-radius: 10px;
         height: 45px;
     }
+    .carrosselCard img{
+        border-radius: 10px;
+    }
 }
 
 .cardTrilhaCompacto{
+    justify-content: center;
     h3{
         color: var(--verdeEscuro);
     }
@@ -92,6 +96,19 @@
 #adminPontosCard{background-image: url(../../assets/img/adminPontoBg.webp);}
 #adminSobreCard{background-image: url(../../assets/img/adminSobreBg.webp);}
 #adminTrilhasCard{background-image: url(../../assets/img/adminTrilhaBg.webp);}
+
+.seloTrilha{
+    background-color: var(--verdeEscuro);
+    padding: 5px 10px;
+    border-radius: 10px;
+    gap: 3px;
+    
+    img{width: 20px;height: 20px;}
+    p{
+        color: #fff;
+        font-weight: 600;
+    }
+}
 
 @media (width > 850px){
     .modal .card{
