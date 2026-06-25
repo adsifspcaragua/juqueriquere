@@ -22,13 +22,23 @@ export default function AdminTrilhas() {
     }
 
     const order = {
-        "Nome A-Z": (a: any, b: any) => a.nome.localeCompare(b.nome),
-        "Nome Z-A": (a: any, b: any) => b.nome.localeCompare(a.nome),
+        "Nome A-Z": (a: Trilha, b: Trilha) =>
+            a.nome.localeCompare(b.nome, "pt-BR"),
+
+        "Nome Z-A": (a: Trilha, b: Trilha) =>
+            b.nome.localeCompare(a.nome, "pt-BR"),
+
+        "ID Crescente": (a: Trilha, b: Trilha) =>
+            a.id - b.id,
+
+        "ID Decrescente": (a: Trilha, b: Trilha) =>
+            b.id - a.id,
+
     } as const;
 
     type OrderKey = keyof typeof order;
 
-    const [orderKey, setOrderKey] = useState<OrderKey>("Nome A-Z");
+    const [orderKey, setOrderKey] = useState<OrderKey>("ID Crescente");
     const [search, setSearch] = useState("");
 
     const [modalDelete, setModalDelete] = useState(false);
@@ -56,9 +66,15 @@ export default function AdminTrilhas() {
         setTrilhaSelecionada(null);
     };
 
+    const trilhasFiltradas = trilhas
+    .filter((trilha) =>
+        trilha.nome.toLowerCase().includes(search.toLowerCase())
+    )
+    .sort(order[orderKey]);
+
     return (
         <>
-            <div className="paddingHeader"></div>
+            <div className="paddingHeader2"></div>
 
             <section className="conteudo vertical gap15">
 
@@ -156,11 +172,14 @@ export default function AdminTrilhas() {
 
                 )}
 
-                <div className="vertical gap5">
-                    <h2>Trilhas cadastradas</h2>
-
+                <div className="vertical gap15">
                     <div className="vertical gap5">
-                        {trilhas.map((trilha) => (
+                        <h1>Trilhas cadastradas</h1>
+                        <p>{trilhasFiltradas.length} trilha(s) encontrada(s).</p>
+                    </div>
+
+                    <div className="listaGrid">
+                        {trilhasFiltradas.map((trilha) => (
                             <div
                                 className="card horizontal gap5 justify"
                                 key={trilha.id}

@@ -7,6 +7,9 @@ import SimpleButton from '../../components/ui/buttons/SimpleButton';
 import TrilhasMap from '../../components/ui/TrilhasMap';
 
 import '../styles/ponto.css';
+import DraggableCarousel from '../../components/ui/DraggableCarousel';
+import imgNotFound from "../../assets/img/imgNotFound.webp"
+import type { ReactNode } from 'react';
 
 export default function Ponto() {
     const { id, nomePonto } = useParams<{ id: string; nomePonto: string }>();
@@ -43,10 +46,13 @@ export default function Ponto() {
         }
     };
 
+    // GALERIA?
+    let imagensList: ReactNode[]=[];
+
     return (
         <>
             <div className="paddingHeader"></div>
-            <section className='conteudo desktopWrap'>
+            <section className='conteudo vertical gap15'>
 
                 <div className="vertical gap15">
                     <div className='horizontal gap5'>
@@ -54,40 +60,55 @@ export default function Ponto() {
                     </div>
                 </div>
 
-                <div className="vertical gap15">
-                    <h1>{Object(ponto).nome}</h1>
-                    <div className='vertical gap5'>
-                        {
-                            Object(ponto).planta && (
-                                <h3>Nome científico: {Object(ponto).planta}</h3>
-                            )
-                        }
+                <div className="desktopWrap">
+
+                    <div className="vertical">
+                        <DraggableCarousel
+                        items={imagensList}
+                        emptyImage={imgNotFound}
+                        >
+                        </DraggableCarousel>
                     </div>
 
-                    {
-                        Object(ponto).descricao && (
-                            <p>{Object(ponto).descricao}</p>
-                        )
-                    }
-                </div>
-
-                <div className="card vertical gap15">
-                    <div className="vertical gap5">
-                        <p>Aparece em:</p>
-                        <SimpleButton path={`/trilha/${id}`} tema='dark' raio='10'>{trilha.nome}</SimpleButton>
-                    </div>
-                    
-                    {ponto.latitude && ponto.longitude && (
-                        <div className="mapa">
-                            <TrilhasMap highlight={Object(ponto).nome} id={[trilha.id]} />
+                    <div className="vertical gap15">
+                        <div className="vertical gap15">
+                            <div className="vertical gap5">
+                                <h1>{Object(ponto).nome}</h1>
+                                <div className='vertical gap5'>
+                                    {
+                                        Object(ponto).planta && (
+                                            <i>{Object(ponto).planta}</i>
+                                        )
+                                    }
+                                </div>
+                            </div>
+                            <div className="card vertical gap5">
+                                <h2>Descrição</h2>
+                                {
+                                    Object(ponto).descricao && (
+                                        <p>{Object(ponto).descricao}</p>
+                                    )
+                                }
+                            </div>
                         </div>
-                    )}
-
-                    {
-                        ponto.latitude && ponto.longitude && (
-                            <p>Coordenadas: {ponto.latitude}, {ponto.longitude}</p>
-                        )
-                    }
+                        <div className="card desktopWrap gap15">
+                            {ponto.latitude && ponto.longitude && (
+                                <div className="mapa">
+                                    <TrilhasMap highlight={Object(ponto).nome} id={[trilha.id]} />
+                                </div>
+                            )}
+                        
+                            <div className="vertical gap5">
+                                <p>Aparece em:</p>
+                                <SimpleButton path={`/trilha/${id}`} tema='dark' raio='10'>{trilha.nome}</SimpleButton>
+                                {
+                                    ponto.latitude && ponto.longitude && (
+                                        <p>Coordenadas: {ponto.latitude}, {ponto.longitude}</p>
+                                    )
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 

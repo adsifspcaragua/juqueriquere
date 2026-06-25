@@ -92,3 +92,14 @@
 #adminPontosCard{background-image: url(../../assets/img/adminPontoBg.webp);}
 #adminSobreCard{background-image: url(../../assets/img/adminSobreBg.webp);}
 #adminTrilhasCard{background-image: url(../../assets/img/adminTrilhaBg.webp);}
+
+@media (width > 850px){
+    .modal .card{
+        max-width: 500px;
+    }
+    .adminCard{
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: left;
+    }
+}

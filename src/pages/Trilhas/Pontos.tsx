@@ -83,7 +83,7 @@ export default function Pontos() {
                 </div>,
                 document.body
             )}
-            <div className="paddingHeader"></div>
+            <div className="paddingHeader2"></div>
             <section>
                 <div className="conteudo vertical">
 

@@ -157,134 +157,128 @@ export default function Trilha() {
                     Voltar para Mapa
                 </SimpleButton>
 
-                <DraggableCarousel
-                items={imagensList}
-                emptyImage={imgNotFound}
-                >
-                </DraggableCarousel>
-
-                <div className="vertical gap5">
-                    <h1>{trilha.nome}</h1>
-
-                    <p>{trilha.descricao_curta}</p>
-                </div>
-
-                <div className="horizontal destaquesTrilha">
-                    <div className="vertical gap5">
-                        <div className="horizontal gap5">
-                            <img src={Distancia} />
-
-                            <p>Distância</p>
-                        </div>
-
-                        <p>{trilha.extensao}</p>
+                <div className="desktopWrap">
+                    <div className="vertical">
+                        <DraggableCarousel
+                        items={imagensList}
+                        emptyImage={imgNotFound}
+                        >
+                        </DraggableCarousel>
                     </div>
-
-                    <div className="linhaVertical"></div>
-
-                    <div className="vertical gap5">
-                        <div className="horizontal gap5">
-                            <img src={Tempo} />
-
-                            <p>Duração</p>
-                        </div>
-
-                        <p>{trilha.duracao}</p>
-                    </div>
-
-                    <div className="linhaVertical"></div>
-
-                    <div className="vertical gap5">
-                        <div className="horizontal gap5">
-                            <img src={Dificuldade} />
-
-                            <p>Dificuldade</p>
-                        </div>
-
-                        <p>{trilha.dificuldade}</p>
-                    </div>
-                </div>
-
-                <div
-                    className="vertical gap5"
-                    id="trilhaSwitch"
-                >
-                    <Switch
-                        options={[
-                            "Descrição",
-                            "Mapa da trilha",
-                        ]}
-                        value={aba}
-                        onChange={setAba}
-                        style="light"
-                    />
-
-                    {aba === "Descrição" && (
-                        <div className="vertical gap15">
-                            <div className="vertical gap5 card switchCard">
-                                <h1>Descrição</h1>
-
-                                <p>{trilha.descricao}</p>
-                            </div>
-                        </div>
-                    )}
-
-                    {aba === "Mapa da trilha" && (
-                        <div className="vertical card gap15 switchCard">
-                            <h1>Mapa da trilha</h1>
-
-                            {(trilha.ramais ?? []).length >
-                                0 && (
-                                    <Switch
-                                        options={Object.keys(
-                                            options
-                                        )}
-                                        value={Object.keys(options).find((key) =>
-                                                    options[key] === hl[0]
-                                            ) ??
-                                            "Mapa completo"
-                                        }
-                                        onChange={(valor : string ) =>setHl([options[valor] as string])
-                                        }
-                                    />
-                                )}
-
-                            <div className="mapa">
-                                <TrilhasMap
-                                    highlight={hl}
-                                    id={[id]}
-                                    onPointClick={(
-                                        nome
-                                    ) =>
-                                        setPontoSelecionado(
-                                            findCarousselID(
-                                                nome,
-                                                pontosList
-                                            )
-                                        )
-                                    }
-                                />
-                            </div>
-
+                    <div className="vertical gap15">
+                        <div className="desktopWrap gap15">
                             <div className="vertical gap5">
-                                <h1>
-                                    Pontos de Interesse
-                                </h1>
-
-                                <DraggableCarousel
-                                    items={pontosList}
-                                    activeId={
-                                        pontoSelecionado
-                                    }
-                                    onChange={(id) =>
-                                        setPontoSelecionado(
-                                            String(id)
-                                        )
-                                    }
-                                />
+                                <h1>{trilha.nome}</h1>
+                                <p>{trilha.descricao_curta}</p>
+                            </div>
+                            <div className="horizontal destaquesTrilha">
+                                <div className="vertical gap5">
+                                    <div className="horizontal gap5">
+                                        <img src={Distancia} />
+                                        <p>Distância</p>
+                                    </div>
+                                    <p>{trilha.extensao}</p>
+                                </div>
+                                <div className="linhaVertical"></div>
+                                <div className="vertical gap5">
+                                    <div className="horizontal gap5">
+                                        <img src={Tempo} />
+                                        <p>Duração</p>
+                                    </div>
+                                    <p>{trilha.duracao}</p>
+                                </div>
+                                <div className="linhaVertical"></div>
+                                <div className="vertical gap5">
+                                    <div className="horizontal gap5">
+                                        <img src={Dificuldade} />
+                                        <p>Dificuldade</p>
+                                    </div>
+                                    <p>{trilha.dificuldade}</p>
+                                </div>
                             </div>
                         </div>
-                    )}
+                        <div
+                            className="vertical gap5"
+                            id="trilhaSwitch"
+                        >
+                            <Switch
+                                options={[
+                                    "Descrição",
+                                    "Mapa da trilha",
+                                ]}
+                                value={aba}
+                                onChange={setAba}
+                                style="light"
+                            />
+                            {aba === "Descrição" && (
+                                <div className="vertical gap15">
+                                    <div className="vertical gap5 card switchCard">
+                                        <h1>Descrição</h1>
+                                        <p>{trilha.descricao}</p>
+                                    </div>
+                                </div>
+                            )}
+                            {aba === "Mapa da trilha" && (
+                                <div className="vertical card gap15 switchCard">
+                                    
+                                    {(trilha.ramais ?? []).length >
+                                        0 && (
+                                            <Switch
+                                                options={Object.keys(
+                                                    options
+                                                )}
+                                                value={Object.keys(options).find((key) =>
+                                                    options[key] === hl[0]
+                                                ) ??
+                                                    "Mapa completo"
+                                                }
+                                                onChange={(valor: string) => setHl([options[valor] as string])
+                                                }
+                                            />
+                                        )
+                                    }
+                                    
+                                    <div className="desktopWrap gap30">
+                                        <div className="vertical gap5">
+                                            <h1>Mapa da trilha</h1>
+                                            <div className="mapa">
+                                                <TrilhasMap
+                                                    highlight={hl}
+                                                    id={[id]}
+                                                    onPointClick={(
+                                                        nome
+                                                    ) =>
+                                                        setPontoSelecionado(
+                                                            findCarousselID(
+                                                                nome,
+                                                                pontosList
+                                                            )
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="vertical gap5">
+                                            <h1>
+                                                Pontos de Interesse
+                                            </h1>
+                                            <DraggableCarousel
+                                                items={pontosList}
+                                                activeId={
+                                                    pontoSelecionado
+                                                }
+                                                onChange={(id) =>
+                                                    setPontoSelecionado(
+                                                        String(id)
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </section>
         </>

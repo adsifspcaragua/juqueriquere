@@ -22,7 +22,7 @@
     --texto: #5C5C5C;
 }
 
-h1, h2, h3, p, a, li {
+h1, h2, h3, p, a, li, i {
     color: #fff;
 }
 h1, h2 {
@@ -32,7 +32,7 @@ h1, h2 {
 h1 {
     font-size: 24px;
 }
-p, a, h3, li {
+p, a, h3, li, i {
     font-family: Inter, Arial, Helvetica, sans-serif;
 }
 p, a {
@@ -490,6 +490,7 @@ ul{
     border-radius: 20px;
     padding: 10px;
     justify-content: space-around;
+    align-items: center;
 
     .vertical{align-items: center;}
     .horizontal{align-items: center; font-weight: bold;}
@@ -507,12 +508,7 @@ ul{
 .desktopWrap{
     display: grid;
     width: 100%;
-    grid-template-columns:
-        if(
-            media(width < 850px): 1fr;
-            media(width > 850px): repeat(2, 1fr);
-        )
-    ;
+    grid-template-columns: 1fr;
 
     >.vertical{
         min-width: 100%;
@@ -521,12 +517,7 @@ ul{
 .desktopWrap3{
     display: grid;
     width: 100%;
-    grid-template-columns:
-        if(
-            media(width < 850px): 1fr;
-            media(width > 850px): repeat(3, 1fr);
-        )
-    ;
+    grid-template-columns: 1fr;
 
     >.vertical{
         min-width: 100%;
@@ -579,6 +570,12 @@ ul{
     .paddingHeader{
         height: 120px;
     }
+    .paddingHeader2{
+        height: 180px;
+    }
+    .paddingFooter{
+        height: 0;
+    }
     #inicio{
         flex-direction: row;
     }
@@ -627,5 +624,22 @@ ul{
     .listaGrid{
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    #filtros{
+        top: 0;
+        bottom: unset;
+        padding-top: 100px;
+        padding-bottom: 30px;
+        background: linear-gradient(to top, #008a6500, var(--verdeEscuro));
+    }
+
+    .desktopWrap{
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
+    .desktopWrap3{
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
     }
 }

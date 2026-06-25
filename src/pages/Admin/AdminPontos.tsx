@@ -58,7 +58,7 @@ export default function AdminPontos() {
 
     return (
         <>
-            <div className="paddingHeader"></div>
+            <div className="paddingHeader2"></div>
 
             <section className="conteudo vertical gap15">
 
