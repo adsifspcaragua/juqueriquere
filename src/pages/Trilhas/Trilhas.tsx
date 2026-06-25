@@ -22,7 +22,7 @@ export default function Trilhas() {
     useEffect(() => {
         async function loadData() {
             const data = await db.trilhas.toArray();
-            setTrilhas(data as Trilha[]);
+            if(data)setTrilhas(data as Trilha[]);
         }
 
         loadData();

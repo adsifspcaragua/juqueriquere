@@ -1,9 +1,12 @@
 import type Trilha from '../../pages/Trilhas/TrilhaInfo';
 import trilhaGeneric from '../../assets/img/CardTrilha.webp'
-import { Link } from "react-router-dom";
+
 import { icons } from './icons';
 import './CardTrilha.css'
+
+import { Link } from "react-router-dom";
 import { useEffect, useState, type JSX } from 'react';
+
 import { db } from '../../lib/dexie';
 
 type Props = {

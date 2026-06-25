@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { db } from "../../lib/dexie";
+import { db, type PontoInteresseDB } from "../../lib/dexie";
 import SimpleButton from "../../components/ui/buttons/SimpleButton";
 import Select from "../../components/ui/form/Select";
-import type Ponto from "../Trilhas/TrilhaInfo";
 import { createPortal } from "react-dom";
 
 
@@ -34,13 +33,13 @@ export default function AdminPontos() {
     const [modalDelete, setModalDelete] = useState(false);
     const [pontoSelecionada, setPontoSelecionada] = useState<any>(null);
 
-    const [pontos, setPontos] = useState<Ponto[]>([]);
+    const [pontos, setPontos] = useState<PontoInteresseDB[]>([]);
 
 
     useEffect(() => {
         async function loadData() {
             const data = await db.pontos_interesse.toArray();
-            setPontos(data as Ponto[]);
+            if(data)setPontos(data);
         }
 
         loadData();
@@ -162,8 +161,6 @@ export default function AdminPontos() {
                             >
                                 <div className="cardPontoCompacto vertical gap5">
                                     <h3>{ponto.nome}</h3>
-                                    <p>{ponto.dificuldade}</p>
-                                    <p>{ponto.extensao}</p>
                                 </div>
 
                                 <div className="btnFull actions vertical gap5">

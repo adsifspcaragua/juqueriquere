@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import data from '../../data.json';
+import { useEffect, useState } from 'react';
 import Select from '../../components/ui/form/Select.tsx';
 import CardPonto from '../../components/ui/CardPonto.tsx';
 import { createPortal } from "react-dom";
+import { db, type PontoInteresseDB } from '../../lib/dexie.ts';
 //import SimpleButton from '../../components/ui/buttons/SimpleButton.tsx';
 
 
@@ -16,40 +16,43 @@ export default function Pontos() {
     const [orderKey, setOrderKey] = useState<OrderKey>(Object.keys(order)[0] as OrderKey);
     const [search, setSearch] = useState("");
 
+    const [pontosDados, setPontosDados] = useState<PontoInteresseDB[]>([]);
+
+    useEffect(() => {
+        async function carregarPontos() {
+            const pontos = await db.pontos_interesse.toArray();
+            if(pontos)setPontosDados(pontos)
+        }
+        carregarPontos();
+    }, []);
+
     const getNomePonto = (ponto: any) => {
         return String(Object.values(ponto)[0] ?? "");
     };
 
-    const pontos = data.trilhas.flatMap((trilha) =>
-        trilha.pontos_interesse.map((ponto) => ({
-            ponto,
-            trilha: trilha
-        }))
-    );
-
-    const pontosFiltrados = pontos
+    const pontosFiltrados = pontosDados
         .filter((item) =>
-            getNomePonto(item.ponto)
+            getNomePonto(item.nome)
                 .toLowerCase()
                 .includes(search.toLowerCase())
         )
         .sort((a, b) =>
             order[orderKey](
                 {
-                    nome: getNomePonto(a.ponto)
+                    nome: getNomePonto(a.nome)
                 },
                 {
-                    nome: getNomePonto(b.ponto)
+                    nome: getNomePonto(b.nome)
                 }
             )
         );
-    const pontosList = pontosFiltrados.map((item, index) => (
+    const pontosList = pontosFiltrados.map((item) => (
         <>
-            {!Object(item.ponto).caminho && 
+            {!Object(item.nome).caminho && 
                 <CardPonto
-                    key={index}
-                    ponto={item.ponto}
-                    trilha={Object(item.trilha)}
+                    key={item.id}
+                    ponto={item}
+                    trilhaId={item.trilha_id}
                 /> 
              }
         </>

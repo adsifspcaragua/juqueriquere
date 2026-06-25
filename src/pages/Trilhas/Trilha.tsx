@@ -105,7 +105,7 @@ export default function Trilha() {
             >
                 <CardPonto
                     ponto={ponto}
-                    trilha={trilha}
+                    trilhaId={trilha.id}
                 />
             </div>
         )

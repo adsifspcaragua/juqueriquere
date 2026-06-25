@@ -33,9 +33,26 @@ export default function Ponto() {
                 .where('trilha_id').equals(Number(id))
                 .and(ponto => ponto.nome.toLowerCase().includes(nomePonto.toLowerCase()))
                 .first();
+
+            let arrayIMG : string[] = [];
+            const imagens = ponto ? await db.imagens.where('ponto_interesse_id').equals(Number(ponto.id)).toArray() : null;
+            
+            {
+                imagens ? 
+                imagens.forEach((imagem) => (
+                    arrayIMG.push(
+                        imagem.caminho_arquivo &&
+                        `${imagem.caminho_arquivo}`
+                    )
+                ))
+                :
+                    arrayIMG = [imgNotFound]
+            }
+            
+            
             setTrilha(trilha)
             setPontoDados(ponto)
-            setImagens([imgNotFound])//temporário
+            setImagens(arrayIMG)
         }
 
         carregar();

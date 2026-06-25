@@ -2,6 +2,8 @@ import Dexie from "dexie";
 import type { Table } from "dexie";
 
 export interface PontoInteresseDB {
+  id: number;
+  trilha_id: number;
   nome: string;
   planta?: string;
   latitude?: string;
