@@ -1,12 +1,12 @@
-import data from '../../data.json';
 import type Trilha from '../../pages/Trilhas/TrilhaInfo.tsx';
 import SimpleButton from '../../components/ui/buttons/SimpleButton.tsx';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { db, type PontoInteresseDB } from '../../lib/dexie.ts'
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Menu.css';
 
-import { logout } from '../../lib/auth'; // ajuste o path se necessário
+import { logout } from '../../lib/auth';
 
 interface menuProps {
     ativo: boolean;
@@ -15,8 +15,23 @@ interface menuProps {
 
 export default function Menu({ ativo, onChoice }: menuProps) {
 
-    const trilhas: Trilha[] = [...data.trilhas] as Trilha[];
 
+    const [trilhas, setTrilhas] = useState<Trilha[]>([]);
+    const [pontos, setPontos] = useState<PontoInteresseDB[]>([]);
+
+    useEffect(() => {
+        async function loadData() {
+            const data = (await db.trilhas.toArray()).slice(0, 5);
+            const pontos = (await db.pontos_interesse.toArray()).slice(0, 5);
+            if(data)setTrilhas(data as Trilha[]);
+            if(pontos)setPontos(pontos)
+
+        }
+
+        loadData();
+    }, []);
+
+    /*
     const pontos = trilhas
         .flatMap((trilha) =>
             trilha.pontos_interesse.map((ponto) => ({
@@ -24,7 +39,7 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                 trilhaId: trilha.id
             }))
         )
-        .slice(0, 5);
+        .slice(0, 5);*/
 
     const [trilhasShow, setTrilhasShow] = useState(false);
     const [pontosShow, setPontosShow] = useState(false);
@@ -137,7 +152,7 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                                     <SimpleButton
                                         key={`${ponto.nome}-${index}`}
                                         raio="0"
-                                        path={`/trilha/${ponto.trilhaId}/ponto/${encodeURIComponent(ponto.nome)}`}
+                                        path={`/trilha/${ponto.trilha_id}/ponto/${encodeURIComponent(ponto.nome)}`}
                                         onClick={closeMenu}
                                     >
                                         {ponto.nome}
@@ -148,7 +163,7 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                                     path='/pontos'
                                     onClick={closeMenu}
                                 >
-                                    <b>Ver tods os Pontos</b>
+                                    <b>Ver todos os Pontos</b>
                                 </SimpleButton>
                             </div>
                         </div>

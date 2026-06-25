@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SimpleButton from '../components/ui/buttons/SimpleButton';
 import TrilhasMap from '../components/ui/TrilhasMap';
 import './styles/mapa.css';
-import data from '../data.json';
+//import data from '../data.json';
 import type Trilha from './Trilhas/TrilhaInfo';
+import { db } from '../lib/dexie';
 
 export default function Mapa() {
     const navigate = useNavigate();
@@ -15,8 +16,20 @@ export default function Mapa() {
         y: 0,
         content: null as React.ReactNode | null,
     });
+
+    const [trilhas, setTrilhas] = useState<Trilha[]>([]);
+
+    useEffect(() => {
+        async function loadData() {
+            const data = (await db.trilhas.toArray()).slice(0, 5);
+            if(data)setTrilhas(data as Trilha[]);
+
+        }
+
+        loadData();
+    }, []);
     const onHover = (e: React.MouseEvent, id: number) => {
-        const trilha = data.trilhas.find(t => t.id === id) as Trilha;
+        const trilha = trilhas.find(t => Number(t.id) === Number(id)) as Trilha;
         const content = (
                 <div className='popoverContent'>
                     <h3>{trilha.nome}</h3>
