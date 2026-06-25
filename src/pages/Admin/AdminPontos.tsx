@@ -125,26 +125,29 @@ export default function AdminPontos() {
                     document.body
                 )}
 
-                {modalDelete && (
-                    <div className="modal">
-                        <div className="modal-content">
-                            <h2>
-                                Deseja excluir:
-                                <br />
-                                {pontoSelecionada?.nome}?
-                            </h2>
+                {createPortal(
+                    modalDelete && (
+                        <div className="modal vertical center">
+                            <div className="modal-content card vertical gap15">
+                                <h2>
+                                    Deseja excluir <br />
+                                    {pontoSelecionada?.nome}?
+                                </h2>
 
-                            <button onClick={excluirPonto}>
-                                Excluir
-                            </button>
+                                <p>Esta ação não pode ser revertida.</p>
 
-                            <button
-                                onClick={cancelar}
-                            >
-                                Cancelar
-                            </button>
+                                <div className="horizontal btnFull gap15">
+                                    <SimpleButton tema="dark" icon="X" raio="10" onClick={cancelar}>
+                                        Manter
+                                    </SimpleButton>
+
+                                    <SimpleButton tema="red" icon="Trash" raio="10" onClick={excluirPonto}>
+                                        Excluir
+                                    </SimpleButton>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    ), document.body
                 )}
 
                 <div className="vertical gap5">
