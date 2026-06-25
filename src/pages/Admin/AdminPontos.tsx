@@ -3,7 +3,7 @@ import { db, type PontoInteresseDB } from "../../lib/dexie";
 import SimpleButton from "../../components/ui/buttons/SimpleButton";
 import Select from "../../components/ui/form/Select";
 import { createPortal } from "react-dom";
-
+import type Trilha from "../Trilhas/TrilhaInfo";
 
 export default function AdminPontos() {
 
@@ -34,16 +34,24 @@ export default function AdminPontos() {
     const [pontoSelecionada, setPontoSelecionada] = useState<any>(null);
 
     const [pontos, setPontos] = useState<PontoInteresseDB[]>([]);
-
+    const [trilhas, setTrilhas] = useState<Trilha[]>([]);
 
     useEffect(() => {
         async function loadData() {
+            const dadosTrilhas = await db.trilhas.toArray();
             const data = await db.pontos_interesse.toArray();
-            if(data)setPontos(data);
+            
+            if (data) setPontos(data);
+            if (dadosTrilhas) setTrilhas(dadosTrilhas); 
         }
 
         loadData();
     }, []);
+
+    const findTrilha = (ponto : PontoInteresseDB) => {
+        const trilha = trilhas?.find(t => Number(t.id) === Number(ponto.trilha_id));
+        return trilha?.nome || "Trilha não encontrada";
+    }
 
     const abrirExcluir = (ponto: any) => {
         setPontoSelecionada(ponto);
@@ -70,25 +78,20 @@ export default function AdminPontos() {
                 </SimpleButton>
 
                 <div className="card vertical gap5 adminCard" id="adminPontosCard">
-
                     <h1>
                         Gerenciar Pontos
                     </h1>
-
                     <p>
                         Cadastre, edite e organize as pontos
                         do parque.
                     </p>
-
                 </div>
 
                 {createPortal(
-
                     <div
                         className="horizontal gap5"
                         id="filtros"
                     >
-
                         <Select
                             options={Object.keys(order)}
                             value={orderKey}
@@ -99,9 +102,7 @@ export default function AdminPontos() {
                         />
 
                         <div className="pesquisa horizontal">
-
                             <div className="pesquisaIcon"></div>
-
                             <input
                                 type="text"
                                 placeholder="Pesquisar ponto..."
@@ -110,7 +111,6 @@ export default function AdminPontos() {
                                     setSearch(e.target.value)
                                 }
                             />
-
                         </div>
 
                         <div className="circleButton">
@@ -120,7 +120,6 @@ export default function AdminPontos() {
                             >
                             </SimpleButton>
                         </div>
-
                     </div>,
                     document.body
                 )}
@@ -128,11 +127,9 @@ export default function AdminPontos() {
                 {modalDelete && (
                     <div className="modal">
                         <div className="modal-content">
-
                             <h2>
                                 Deseja excluir:
                                 <br />
-
                                 {pontoSelecionada?.nome}?
                             </h2>
 
@@ -147,7 +144,6 @@ export default function AdminPontos() {
                             </button>
                         </div>
                     </div>
-
                 )}
 
                 <div className="vertical gap5">
@@ -161,10 +157,12 @@ export default function AdminPontos() {
                             >
                                 <div className="cardPontoCompacto vertical gap5">
                                     <h3>{ponto.nome}</h3>
+                                    {/* Agora vai exibir o nome correto assim que o Dexie responder */}
+                                    <h3>{findTrilha(ponto)}</h3> 
                                 </div>
 
                                 <div className="btnFull actions vertical gap5">
-                                    <SimpleButton  icon="Edit" tema="dark" raio="10" path={`/admin/pontos/editar/${ponto.id}`}                                        >
+                                    <SimpleButton  icon="Edit" tema="dark" raio="10" path={`/admin/pontos/editar/${ponto.id}`}        >
                                         Editar
                                     </SimpleButton>
                                     <SimpleButton icon="Trash" tema="red" raio="10" onClick={() => abrirExcluir(ponto)}>
