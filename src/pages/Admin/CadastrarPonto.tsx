@@ -62,6 +62,11 @@ export default function CadastrarPontoInteresse() {
         }
     }
 
+    function handleRemoveImage(indexToRemove: number) {
+        setImagensSelecionadas((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+        setImagensBase64((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+    }
+
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setCarregando(true);
@@ -201,9 +206,16 @@ export default function CadastrarPontoInteresse() {
                             <div className="vertical gap5">
                                 <p><strong>{imagensSelecionadas.length} imagem(ns) selecionada(s):</strong></p>
                                 <DraggableCarousel
-                                    items={imagensSelecionadas.map((file, index) => (
-                                        <div key={index} className="uploadPreview vertical gap5 carrosselCard">
-                                            <img src={imagensBase64[index]} alt={file.name} />
+                                    items={imagensSelecionadas.map((file, idx) => (
+                                        <div key={idx} className="uploadPreview vertical gap5 carrosselCard">
+                                            <img src={imagensBase64[idx]} alt={file.name} />
+                                            <button 
+                                                type="button" 
+                                                onClick={() => handleRemoveImage(idx)}
+                                                disabled={carregando}
+                                            >
+                                                Remover 
+                                            </button>
                                             <p>{file.name}</p>
                                         </div>
                                     ))}

@@ -27,6 +27,12 @@ export default function CadastrarTrilha() {
         }
     }
 
+    // Função para remover uma imagem específica
+    function handleRemoveImage(indexToRemove: number) {
+        setImagensSelecionadas((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+        setImagensBase64((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+    }
+
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setCarregando(true);
@@ -175,7 +181,16 @@ export default function CadastrarTrilha() {
                                 <DraggableCarousel
                                     items={imagensSelecionadas.map((file, idx) => (
                                         <div key={idx} className="uploadPreview vertical gap5 carrosselCard">
+                                            
                                             <img src={imagensBase64[idx]} alt={file.name} />
+                                            
+                                            <button 
+                                                type="button" 
+                                                onClick={() => handleRemoveImage(idx)}
+                                                disabled={carregando}
+                                            >
+                                                Remover 
+                                            </button>
                                             <p>{file.name}</p>
                                         </div>
                                     ))}
