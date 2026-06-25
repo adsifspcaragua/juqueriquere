@@ -63,7 +63,6 @@ export default function Trilha() {
             } as TrilhaType;
             const pontos = await db.pontos_interesse.where('trilha_id').equals(Number(id)).toArray();
             setPontosDados(pontos)
-            console.log(pontos)
 
             const arrayIMG : string[] = [];
             const imagens = await db.imagens.where('trilha_id').equals(Number(id)).toArray();
