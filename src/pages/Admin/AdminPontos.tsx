@@ -70,7 +70,7 @@ export default function AdminPontos() {
                     Voltar
                 </SimpleButton>
 
-                <div className="card vertical gap5">
+                <div className="card vertical gap5 adminCard" id="adminPontosCard">
 
                     <h1>
                         Gerenciar Pontos
@@ -181,6 +181,7 @@ export default function AdminPontos() {
 
             </section>
 
+            {createPortal(<div className="paddingFooter"></div>,document.body)}
         </>
     );
 }

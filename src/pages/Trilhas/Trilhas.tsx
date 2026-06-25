@@ -92,6 +92,8 @@ export default function Trilhas() {
                     </div>
                 </div>
             </section>
+
+            {createPortal(<div className="paddingFooter"></div>,document.body)}
         </>
     );
 }

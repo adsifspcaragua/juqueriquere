@@ -36,7 +36,7 @@
     }
 }
 
-.btnFull{
+.btnFull, .btnFull a{
     width: 100%;
     .btn, button{
         width: 100%;

@@ -107,6 +107,7 @@ export default function Pontos() {
                 </div>
             </section>
 
+            {createPortal(<div className="paddingFooter"></div>,document.body)}
         </>
     );
 }

@@ -70,7 +70,7 @@ export default function AdminTrilhas() {
                     Voltar
                 </SimpleButton>
 
-                <div className="card vertical gap5">
+                <div className="card vertical gap5 adminCard" id="adminTrilhasCard">
 
                     <h1>
                         Gerenciar Trilhas
@@ -125,29 +125,34 @@ export default function AdminTrilhas() {
                     </div>,
                     document.body
                 )}
+                
 
                 {modalDelete && (
-                    <div className="modal">
-                        <div className="modal-content">
+                    createPortal(
+                        <div className = "modal vertical center" >
+                            <div className="modal-content card vertical gap15">
 
-                            <h2>
-                                Deseja excluir:
-                                <br />
+                                <h2>
+                                    Deseja excluir <br/>
+                                    {trilhaSelecionada?.nome}?
+                                </h2>
 
-                                {trilhaSelecionada?.nome}?
-                            </h2>
+                                <p>Esta ação não pode ser revertida.</p>
 
-                            <button onClick={excluirTrilha}>
-                                Excluir
-                            </button>
+                                <div className="horizontal btnFull gap15">
+                                    <SimpleButton tema="dark" icon="X" raio="10" onClick={cancelar}>
+                                        Manter
+                                    </SimpleButton>
 
-                            <button
-                                onClick={cancelar}
-                            >
-                                Cancelar
-                            </button>
-                        </div>
-                    </div>
+                                    <SimpleButton tema="red" icon="Trash" raio="10" onClick={excluirTrilha}>
+                                        Excluir
+                                    </SimpleButton>
+                                </div>
+
+                            </div>
+                    </div>, 
+                    document.body
+                    )
 
                 )}
 
@@ -181,6 +186,7 @@ export default function AdminTrilhas() {
 
             </section>
 
+            {createPortal(<div className="paddingFooter"></div>,document.body)}
         </>
     );
 }

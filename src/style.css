@@ -90,6 +90,11 @@ body{
 .paddingHeader{
     height: 20px;
 }
+.paddingFooter{
+    height: 60px;
+    width: 100vw;
+    background-color: #2c2c2c;
+}
 
 .bannerInicio{
     background:  linear-gradient(rgba(0, 0, 0, 0.6)), url(assets/img/inicio-bg.webp);
