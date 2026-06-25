@@ -5,6 +5,7 @@ import Select from "../../components/ui/form/Select";
 import { createPortal } from "react-dom";
 import type Trilha from "../Trilhas/TrilhaInfo";
 import distancia from "../../assets/icons/Distancia-light.webp";
+import { supabase } from "../../lib/supabase";
 
 export default function AdminPontos() {
 
@@ -13,9 +14,22 @@ export default function AdminPontos() {
 
         await db.pontos_interesse.delete(pontoSelecionada.id);
 
-        setPontos((prev) =>
-            prev.filter((t) => t.id !== pontoSelecionada.id)
-        );
+        try{
+            const { error: erroDeletar } = await supabase
+            .from("pontos_interesse")
+            .delete()
+            .eq('id', pontoSelecionada.id)
+            ;
+
+        if (erroDeletar) throw erroDeletar;
+        } catch (error : any){
+            alert("erro ao deletar \n tente novamente mais tarde.")
+            console.log(error)
+        } finally{
+            setPontos((prev) =>
+                prev.filter((t) => t.id !== pontoSelecionada.id)
+            );
+        }
 
         setModalDelete(false);
         setPontoSelecionada(null);

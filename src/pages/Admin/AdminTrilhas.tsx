@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { db } from "../../lib/dexie";
+import { supabase } from "../../lib/supabase";
 import SimpleButton from "../../components/ui/buttons/SimpleButton";
 import Select from "../../components/ui/form/Select";
 import type Trilha from "../Trilhas/TrilhaInfo";
@@ -12,6 +13,19 @@ export default function AdminTrilhas() {
         if (!trilhaSelecionada) return;
 
         await db.trilhas.delete(trilhaSelecionada.id);
+
+        try{
+            const { error: erroDeletar } = await supabase
+            .from("trilhas")
+            .delete()
+            .eq('id', trilhaSelecionada.id);
+
+        if (erroDeletar) throw erroDeletar;
+        } catch (error : any){
+            alert("erro ao deletar \n tente novamente mais tarde.")
+            console.log(error)
+        }
+        
 
         setTrilhas((prev) =>
             prev.filter((t) => t.id !== trilhaSelecionada.id)
