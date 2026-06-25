@@ -33,6 +33,7 @@ import Logo from './assets/logo.webp';
 
 import { useSync } from "./lib/hooks/useSync.ts";
 import CadastrarPontoInteresse from "./pages/Admin/CadastrarPonto.tsx";
+import EditarPonto from "./pages/Admin/EditarPonto.tsx";
 
 
 function PageTransition({ children }: { children: React.ReactNode }) {
@@ -260,6 +261,16 @@ function AnimatedRoutes() {
 								<ProtectedRoute>
 									<PageTransition>
 										<AdminPontos />
+									</PageTransition>
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="/admin/pontos/editar/:id"
+							element={
+								<ProtectedRoute>
+									<PageTransition>
+										<EditarPonto />
 									</PageTransition>
 								</ProtectedRoute>
 							}

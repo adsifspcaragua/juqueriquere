@@ -5,9 +5,10 @@ export interface PontoInteresseDB {
   id: number;
   trilha_id: number;
   nome: string;
+  descricao: string;
   planta?: string;
-  latitude?: string;
-  longitude?: string;
+  latitude?: number | null; 
+  longitude?: number | null;
 }
 
 interface RamalDB {
