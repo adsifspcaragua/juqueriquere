@@ -1,8 +1,9 @@
 import Dexie from "dexie";
 import type { Table } from "dexie";
 
-interface PontoInteresseDB {
+export interface PontoInteresseDB {
   nome: string;
+  planta?: string;
   latitude?: string;
   longitude?: string;
 }

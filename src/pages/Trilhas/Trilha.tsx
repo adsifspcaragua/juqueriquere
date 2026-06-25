@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import { db } from "../../lib/dexie";
+import { db, type PontoInteresseDB } from "../../lib/dexie";
 
 import NotFound from "../NotFound";
 import type TrilhaType from "./TrilhaInfo";
@@ -13,6 +13,7 @@ import { icons } from "../../components/ui/icons";
 import CardPonto from "../../components/ui/CardPonto";
 import Switch from "../../components/ui/buttons/Switch";
 import imgNotFound from "../../assets/img/imgNotFound.webp"
+
 
 export default function Trilha() {
     const { Distancia, Tempo, Dificuldade } = icons.default;
@@ -29,7 +30,9 @@ export default function Trilha() {
 
     const [imagens, setImagemArray] = useState<string[]>();
 
+    const [pontosDados, setPontosDados] = useState<PontoInteresseDB[]>();
     const [pontoSelecionado, setPontoSelecionado] = useState<string>();
+
 
     useEffect(() => {
         async function carregar() {
@@ -58,6 +61,10 @@ export default function Trilha() {
                     ? resultado.pontos_no_mapa
                     : [],
             } as TrilhaType;
+            const pontos = await db.pontos_interesse.where('trilha_id').equals(Number(id)).toArray();
+            setPontosDados(pontos)
+            console.log(pontos)
+
             const arrayIMG : string[] = [];
             const imagens = await db.imagens.where('trilha_id').equals(Number(id)).toArray();
             imagens.forEach((imagem) => (
@@ -90,8 +97,7 @@ export default function Trilha() {
     if (!trilha) {
         return <NotFound />;
     }
-
-    const pontosList = (trilha.pontos_interesse ?? []).map(
+    const pontosList = (pontosDados ?? []).map(
         (ponto, index) => (
             <div
                 id={String(index)}
