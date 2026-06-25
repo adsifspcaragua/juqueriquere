@@ -48,3 +48,24 @@
 .actions{
     width: max-content;
 }
+
+#file input::file-selector-button {
+    background-color: var(--verdeEscuro);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.uploadPreview{
+    width: 100%;
+
+    img {
+        aspect-ratio: 4/3;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid var(--verdeEscuro);
+    }
+}

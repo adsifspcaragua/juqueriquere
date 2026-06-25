@@ -2,6 +2,7 @@ import { supabase } from "../../lib/supabase";
 import { db, type TrilhaDB, type ImagemDB } from "../../lib/dexie";
 import SimpleButton from "../../components/ui/buttons/SimpleButton";
 import { useRef, useEffect, useState } from "react";
+import DraggableCarousel from "../../components/ui/DraggableCarousel";
 
 
 // --- FUNÇÃO PARA CONVERTER A IMAGEM EM WEBP E RETORNAR COMO BASE64 ---
@@ -298,30 +299,35 @@ export default function CadastrarTrilha() {
 
 
                     {/* 3. Adicionamos o atributo 'multiple' no input */}
-                    <div className="vertical gap5">
-                        <label>Imagens da Trilha:</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handleFileChange}
-                            disabled={carregando}
-                        />
+                    <div className="vertical gap15">
+                        <div className="vertical gap5" id="file">
+                            <label>Imagens da Trilha:</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={handleFileChange}
+                                disabled={carregando}
+                            />
+                        </div>
+
                         {imagensSelecionadas.length > 0 && (
-                            <div style={{ fontSize: "12px", color: "gray", marginTop: "4px" }}>
-                                <p><strong>{imagensSelecionadas.length} imagem(ns) selecionada(s):</strong></p>
-                                
-                                    {imagensSelecionadas.map((file, index) => (
-                                        <div key={index} >
-                                            <h3>{file.name}</h3>
-                                            <img
-                                            src={`${imagensBase64[index]}`}
-                                            style={{height : 200}}
-                                        ></img>
+                            <div className="vertical gap5">
+                                <p>
+                                    <strong>{imagensSelecionadas.length} imagem(ns) selecionada(s):</strong>
+                                </p>
+
+                                <DraggableCarousel
+                                    items={imagensSelecionadas.map((file, index) => (
+                                        <div key={index} className="uploadPreview vertical gap5 carrosselCard">
+                                            <img src={imagensBase64[index]} alt={file.name} />
+                                            <p>{file.name}</p>
                                         </div>
                                     ))}
+                                />
                             </div>
                         )}
+
                     </div>
 
 
