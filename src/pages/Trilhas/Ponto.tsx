@@ -1,27 +1,64 @@
 import { useParams, useSearchParams } from 'react-router-dom';
-import data from '../../data.json';
+import { useEffect, useState } from "react";
+
+import { db, type PontoInteresseDB } from '../../lib/dexie';
 
 import NotFound from '../NotFound';
 
 import SimpleButton from '../../components/ui/buttons/SimpleButton';
 import TrilhasMap from '../../components/ui/TrilhasMap';
+import DraggableCarousel from '../../components/ui/DraggableCarousel';
 
 import '../styles/ponto.css';
-import DraggableCarousel from '../../components/ui/DraggableCarousel';
-import imgNotFound from "../../assets/img/imgNotFound.webp"
-import type { ReactNode } from 'react';
+import imgNotFound from "../../assets/img/imgNotFound.webp";
+import type TrilhaType from './TrilhaInfo';
 
 export default function Ponto() {
     const { id, nomePonto } = useParams<{ id: string; nomePonto: string }>();
     const [searchParams] = useSearchParams();
     let from = searchParams.get('from') || 'explorar';
+    
+    const [trilha, setTrilha] = useState<TrilhaType | undefined>(undefined);
+    const [ponto, setPontoDados] = useState<PontoInteresseDB>();
+    const [imagens, setImagens] = useState<string[]>();
 
-    const trilha = data.trilhas
-        .find(t => t.id === parseInt(id || ''))
-    const ponto = trilha?.pontos_interesse.find(p => String(Object.values(p)[0]) === nomePonto);
+    useEffect(() => {
+        async function carregar() {
+            if(!nomePonto){
+                return;
+            }
 
-    if (!trilha || !ponto) { return (<NotFound />); }
+            const trilha = await db.trilhas.get(Number(id));
+            const ponto = await db.pontos_interesse
+                .where('trilha_id').equals(Number(id))
+                .and(ponto => ponto.nome.toLowerCase().includes(nomePonto.toLowerCase()))
+                .first();
+            setTrilha(trilha)
+            setPontoDados(ponto)
+            setImagens([imgNotFound])//temporário
+        }
 
+        carregar();
+    },[id]);
+
+    const imagensList = (imagens ?? []).map(
+        (imagem, index) => (
+            <div
+                key={String(index)}
+            >
+                <img
+                src={imagem}
+                >
+                </img>
+            </div>
+        )
+    );
+    
+    //const trilha = data.trilhas
+    //    .find(t => t.id === parseInt(id || ''))
+    //const ponto = trilha?.pontos_interesse.find(p => String(Object.values(p)[0]) === nomePonto);
+    
+    if (!ponto || !trilha) { return (<NotFound />); }
     if (!from) from = 'explorar';
     const goBack = () => {
         switch (from) {
@@ -46,14 +83,11 @@ export default function Ponto() {
         }
     };
 
-    // GALERIA?
-    let imagensList: ReactNode[]=[];
-
     return (
         <>
             <div className="paddingHeader"></div>
             <section className='conteudo vertical gap15'>
-
+                
                 <div className="vertical gap15">
                     <div className='horizontal gap5'>
                         {goBack()}
@@ -63,11 +97,14 @@ export default function Ponto() {
                 <div className="desktopWrap">
 
                     <div className="vertical">
-                        <DraggableCarousel
-                        items={imagensList}
-                        emptyImage={imgNotFound}
-                        >
-                        </DraggableCarousel>
+                        {
+                            imagensList && 
+                            <DraggableCarousel
+                            items={imagensList}
+                            ></DraggableCarousel>
+                            
+                        }
+                        
                     </div>
 
                     <div className="vertical gap15">
