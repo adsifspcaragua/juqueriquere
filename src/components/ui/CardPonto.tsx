@@ -11,8 +11,8 @@ interface Ponto {
     id : number;
     nome: string;
     planta?: string;
-    latitude?: string;
-    longitude?: string;
+    latitude?: number | null;
+    longitude?: number | null;
 }
 
 interface Props {
