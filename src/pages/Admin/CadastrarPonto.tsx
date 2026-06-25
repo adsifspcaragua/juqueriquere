@@ -136,7 +136,7 @@ export default function CadastrarPontoInteresse() {
             <div className="paddingHeader"></div>
 
             <section className="conteudo vertical gap15">
-                <SimpleButton path="/admin/pontos-interesse" type="back" icon="setaBack">
+                <SimpleButton path="/admin/pontos" type="back" icon="setaBack">
                     Voltar
                 </SimpleButton>
 
