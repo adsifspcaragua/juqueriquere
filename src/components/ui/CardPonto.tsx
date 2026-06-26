@@ -17,7 +17,7 @@ interface Ponto {
 
 interface Props {
     ponto: Ponto;
-    trilhaId: number; // Pode ser do tipo TrilhaType
+    trilhaId: number;
     imagem?: string;
 }
 
