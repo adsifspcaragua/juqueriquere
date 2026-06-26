@@ -14,7 +14,7 @@ import imgNotFound from "../../assets/img/imgNotFound.webp";
 import type TrilhaType from './TrilhaInfo';
 
 export default function Ponto() {
-    const { id, nomePonto } = useParams<{ id: string; nomePonto: string }>();
+    const { id, idPonto } = useParams<{ id: string; idPonto: string }>();
     const [searchParams] = useSearchParams();
     let from = searchParams.get('from') || 'explorar';
     
@@ -24,15 +24,12 @@ export default function Ponto() {
 
     useEffect(() => {
         async function carregar() {
-            if(!nomePonto){
+            if(!idPonto){
                 return;
             }
 
             const trilha = await db.trilhas.get(Number(id));
-            const ponto = await db.pontos_interesse
-                .where('trilha_id').equals(Number(id))
-                .and(ponto => ponto.nome.toLowerCase().includes(nomePonto.toLowerCase()))
-                .first();
+            const ponto = await db.pontos_interesse.get(Number(idPonto));
 
             let arrayIMG : string[] = [];
             const imagens = ponto ? await db.imagens.where('ponto_interesse_id').equals(Number(ponto.id)).toArray() : null;
@@ -73,7 +70,7 @@ export default function Ponto() {
     
     //const trilha = data.trilhas
     //    .find(t => t.id === parseInt(id || ''))
-    //const ponto = trilha?.pontos_interesse.find(p => String(Object.values(p)[0]) === nomePonto);
+    //const ponto = trilha?.pontos_interesse.find(p => String(Object.values(p)[0]) === idPonto);
     
     if (!ponto || !trilha) { return (<NotFound />); }
     if (!from) from = 'explorar';

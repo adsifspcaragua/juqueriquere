@@ -14,18 +14,18 @@ export default function AdminPontos() {
 
         await db.pontos_interesse.delete(pontoSelecionada.id);
 
-        try{
+        try {
             const { error: erroDeletar } = await supabase
-            .from("pontos_interesse")
-            .delete()
-            .eq('id', pontoSelecionada.id)
-            ;
+                .from("pontos_interesse")
+                .delete()
+                .eq('id', pontoSelecionada.id)
+                ;
 
-        if (erroDeletar) throw erroDeletar;
-        } catch (error : any){
+            if (erroDeletar) throw erroDeletar;
+        } catch (error: any) {
             alert("erro ao deletar \n tente novamente mais tarde.")
             console.log(error)
-        } finally{
+        } finally {
             setPontos((prev) =>
                 prev.filter((t) => t.id !== pontoSelecionada.id)
             );
@@ -55,15 +55,15 @@ export default function AdminPontos() {
         async function loadData() {
             const dadosTrilhas = await db.trilhas.toArray();
             const data = await db.pontos_interesse.toArray();
-            
+
             if (data) setPontos(data);
-            if (dadosTrilhas) setTrilhas(dadosTrilhas); 
+            if (dadosTrilhas) setTrilhas(dadosTrilhas);
         }
 
         loadData();
     }, []);
 
-    const findTrilha = (ponto : PontoInteresseDB) => {
+    const findTrilha = (ponto: PontoInteresseDB) => {
         const trilha = trilhas?.find(t => Number(t.id) === Number(ponto.trilha_id));
         return trilha?.nome || "Trilha não encontrada";
     }
@@ -179,13 +179,13 @@ export default function AdminPontos() {
                                         <p>{ponto.latitude}, {ponto.longitude}</p>
                                     </div>
                                     <div className="seloTrilha horizontal center">
-                                        <img src={distancia}/>
+                                        <img src={distancia} />
                                         <p>{findTrilha(ponto)}</p>
                                     </div>
                                 </div>
 
                                 <div className="btnFull actions vertical gap5">
-                                    <SimpleButton  icon="Edit" tema="dark" raio="10" path={`/admin/pontos/editar/${ponto.id}`}        >
+                                    <SimpleButton icon="Edit" tema="dark" raio="10" path={`/admin/pontos/editar/${ponto.id}`}        >
                                         Editar
                                     </SimpleButton>
                                     <SimpleButton icon="Trash" tema="red" raio="10" onClick={() => abrirExcluir(ponto)}>
@@ -199,7 +199,7 @@ export default function AdminPontos() {
 
             </section>
 
-            {createPortal(<div className="paddingFooter"></div>,document.body)}
+            {createPortal(<div className="paddingFooter"></div>, document.body)}
         </>
     );
 }

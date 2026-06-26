@@ -194,7 +194,7 @@ function AnimatedRoutes() {
 							}
 						/>
 						<Route
-							path="/trilha/:id/ponto/:nomePonto"
+							path="/trilha/:id/ponto/:idPonto"
 							element={
 								<PageTransition>
 									<Ponto />

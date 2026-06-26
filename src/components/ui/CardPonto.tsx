@@ -46,7 +46,7 @@ export default function CardPonto({ ponto, trilhaId  /*Temporário*/ }: Props) {
 
     return (
         <Link 
-        to={`/trilha/${trilhaId}/ponto/${ponto.nome}?from=${pageName}`}
+        to={`/trilha/${trilhaId}/ponto/${ponto.id}?from=${pageName}`}
         className={imagem ?
             `cardTrilha carrosselCard` : `cardTrilha carrosselCard`
         }
