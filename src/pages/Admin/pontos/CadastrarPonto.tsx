@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "../../lib/supabase";
-import { db, type ImagemDB } from "../../lib/dexie";
-import SimpleButton from "../../components/ui/buttons/SimpleButton";
-import DraggableCarousel from "../../components/ui/DraggableCarousel";
-import AutoResizeTextarea from "./AutoResizeTextarea.tsx";
-import { convertToWebPBase64 } from "./imageConverter.ts";
+import { supabase } from "../../../lib/supabase.ts";
+import { db, type ImagemDB } from "../../../lib/dexie.ts";
+import SimpleButton from "../../../components/ui/buttons/SimpleButton.tsx";
+import DraggableCarousel from "../../../components/ui/DraggableCarousel.tsx";
+import AutoResizeTextarea from "../../../utils/AutoResizeTextarea.tsx";
+import { convertToWebPBase64 } from "../../../utils/imageConverter.ts";
 
 // Importações necessárias para simular a página Ponto.tsx no preview
-import TrilhasMap from "../../components/ui/TrilhasMap";
-import "../styles/ponto.css"; 
+import TrilhasMap from "../../../components/ui/TrilhasMap.tsx";
+import "../../styles/ponto.css"; 
 
 interface Trilha {
     id: number;

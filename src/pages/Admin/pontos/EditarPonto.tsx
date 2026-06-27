@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { supabase } from "../../lib/supabase";
-import { db, type ImagemDB, type PontoInteresseDB } from "../../lib/dexie";
-import SimpleButton from "../../components/ui/buttons/SimpleButton";
-import DraggableCarousel from "../../components/ui/DraggableCarousel";
-import AutoResizeTextarea from "./AutoResizeTextarea.tsx";
-import { convertToWebPBase64 } from "./imageConverter.ts";
+import { supabase } from "../../../lib/supabase.ts";
+import { db, type ImagemDB, type PontoInteresseDB } from "../../../lib/dexie.ts";
+import SimpleButton from "../../../components/ui/buttons/SimpleButton.tsx";
+import DraggableCarousel from "../../../components/ui/DraggableCarousel.tsx";
+import AutoResizeTextarea from "../../../utils/AutoResizeTextarea.tsx";
+import { convertToWebPBase64 } from "../../../utils/imageConverter.ts";
 
 interface Trilha {
     id: number;

@@ -1,82 +1,90 @@
 import { useEffect, useState } from "react";
-import { db, type PontoInteresseDB } from "../../lib/dexie";
-import SimpleButton from "../../components/ui/buttons/SimpleButton";
-import Select from "../../components/ui/form/Select";
+import { db } from "../../../lib/dexie";
+import { supabase } from "../../../lib/supabase";
+import SimpleButton from "../../../components/ui/buttons/SimpleButton";
+import Select from "../../../components/ui/form/Select";
+import type Trilha from "../../Trilhas/TrilhaInfo";
 import { createPortal } from "react-dom";
-import type Trilha from "../Trilhas/TrilhaInfo";
-import distancia from "../../assets/icons/Distancia-light.webp";
-import { supabase } from "../../lib/supabase";
 
-export default function AdminPontos() {
 
-    async function excluirPonto() {
-        if (!pontoSelecionada) return;
+export default function AdminTrilhas() {
 
-        await db.pontos_interesse.delete(pontoSelecionada.id);
+    async function excluirTrilha() {
+        if (!trilhaSelecionada) return;
 
-        try {
+        await db.trilhas.delete(trilhaSelecionada.id);
+
+        try{
             const { error: erroDeletar } = await supabase
-                .from("pontos_interesse")
-                .delete()
-                .eq('id', pontoSelecionada.id)
-                ;
+            .from("trilhas")
+            .delete()
+            .eq('id', trilhaSelecionada.id);
 
-            if (erroDeletar) throw erroDeletar;
-        } catch (error: any) {
+        if (erroDeletar) throw erroDeletar;
+        } catch (error : any){
             alert("erro ao deletar \n tente novamente mais tarde.")
             console.log(error)
-        } finally {
-            setPontos((prev) =>
-                prev.filter((t) => t.id !== pontoSelecionada.id)
-            );
         }
+        
+
+        setTrilhas((prev) =>
+            prev.filter((t) => t.id !== trilhaSelecionada.id)
+        );
 
         setModalDelete(false);
-        setPontoSelecionada(null);
+        setTrilhaSelecionada(null);
     }
 
     const order = {
-        "Nome A-Z": (a: any, b: any) => a.nome.localeCompare(b.nome),
-        "Nome Z-A": (a: any, b: any) => b.nome.localeCompare(a.nome),
+        "Nome A-Z": (a: Trilha, b: Trilha) =>
+            a.nome.localeCompare(b.nome, "pt-BR"),
+
+        "Nome Z-A": (a: Trilha, b: Trilha) =>
+            b.nome.localeCompare(a.nome, "pt-BR"),
+
+        "ID Crescente": (a: Trilha, b: Trilha) =>
+            a.id - b.id,
+
+        "ID Decrescente": (a: Trilha, b: Trilha) =>
+            b.id - a.id,
+
     } as const;
 
     type OrderKey = keyof typeof order;
 
-    const [orderKey, setOrderKey] = useState<OrderKey>("Nome A-Z");
+    const [orderKey, setOrderKey] = useState<OrderKey>("ID Crescente");
     const [search, setSearch] = useState("");
 
     const [modalDelete, setModalDelete] = useState(false);
-    const [pontoSelecionada, setPontoSelecionada] = useState<any>(null);
+    const [trilhaSelecionada, setTrilhaSelecionada] = useState<any>(null);
 
-    const [pontos, setPontos] = useState<PontoInteresseDB[]>([]);
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
+
 
     useEffect(() => {
         async function loadData() {
-            const dadosTrilhas = await db.trilhas.toArray();
-            const data = await db.pontos_interesse.toArray();
-
-            if (data) setPontos(data);
-            if (dadosTrilhas) setTrilhas(dadosTrilhas);
+            const data = await db.trilhas.toArray();
+            setTrilhas(data as Trilha[]);
         }
 
         loadData();
     }, []);
 
-    const findTrilha = (ponto: PontoInteresseDB) => {
-        const trilha = trilhas?.find(t => Number(t.id) === Number(ponto.trilha_id));
-        return trilha?.nome || "Trilha não encontrada";
-    }
-
-    const abrirExcluir = (ponto: any) => {
-        setPontoSelecionada(ponto);
+    const abrirExcluir = (trilha: any) => {
+        setTrilhaSelecionada(trilha);
         setModalDelete(true);
     };
 
     const cancelar = () => {
         setModalDelete(false);
-        setPontoSelecionada(null);
+        setTrilhaSelecionada(null);
     };
+
+    const trilhasFiltradas = trilhas
+    .filter((trilha) =>
+        trilha.nome.toLowerCase().includes(search.toLowerCase())
+    )
+    .sort(order[orderKey]);
 
     return (
         <>
@@ -92,21 +100,26 @@ export default function AdminPontos() {
                     Voltar
                 </SimpleButton>
 
-                <div className="card vertical gap5 adminCard" id="adminPontosCard">
+                <div className="card vertical gap5 adminCard" id="adminTrilhasCard">
+
                     <h1>
-                        Gerenciar Pontos
+                        Gerenciar Trilhas
                     </h1>
+
                     <p>
-                        Cadastre, edite e organize as pontos
+                        Cadastre, edite e organize as trilhas
                         do parque.
                     </p>
+
                 </div>
 
                 {createPortal(
+
                     <div
                         className="horizontal gap5"
                         id="filtros"
                     >
+
                         <Select
                             options={Object.keys(order)}
                             value={orderKey}
@@ -117,35 +130,41 @@ export default function AdminPontos() {
                         />
 
                         <div className="pesquisa horizontal">
+
                             <div className="pesquisaIcon"></div>
+
                             <input
                                 type="text"
-                                placeholder="Pesquisar ponto..."
+                                placeholder="Pesquisar trilha..."
                                 value={search}
                                 onChange={(e) =>
                                     setSearch(e.target.value)
                                 }
                             />
+
                         </div>
 
                         <div className="circleButton">
                             <SimpleButton
-                                path="/admin/pontos/cadastrar"
+                                path="/admin/trilhas/cadastrar"
                                 icon="Plus"
                             >
                             </SimpleButton>
                         </div>
+
                     </div>,
                     document.body
                 )}
+                
 
-                {createPortal(
-                    modalDelete && (
-                        <div className="modal vertical center">
+                {modalDelete && (
+                    createPortal(
+                        <div className = "modal vertical center" >
                             <div className="modal-content card vertical gap15">
+
                                 <h2>
-                                    Deseja excluir <br />
-                                    {pontoSelecionada?.nome}?
+                                    Deseja excluir <br/>
+                                    {trilhaSelecionada?.nome}?
                                 </h2>
 
                                 <p>Esta ação não pode ser revertida.</p>
@@ -155,40 +174,41 @@ export default function AdminPontos() {
                                         Manter
                                     </SimpleButton>
 
-                                    <SimpleButton tema="red" icon="Trash" raio="10" onClick={excluirPonto}>
+                                    <SimpleButton tema="red" icon="Trash" raio="10" onClick={excluirTrilha}>
                                         Excluir
                                     </SimpleButton>
                                 </div>
+
                             </div>
-                        </div>
-                    ), document.body
+                    </div>, 
+                    document.body
+                    )
+
                 )}
 
-                <div className="vertical gap5">
-                    <h2>Pontos cadastrados</h2>
-
+                <div className="vertical gap15">
                     <div className="vertical gap5">
-                        {pontos.map((ponto) => (
+                        <h1>Trilhas cadastradas</h1>
+                        <p>{trilhasFiltradas.length} trilha(s) encontrada(s).</p>
+                    </div>
+
+                    <div className="listaGrid">
+                        {trilhasFiltradas.map((trilha) => (
                             <div
                                 className="card horizontal gap5 justify"
-                                key={ponto.id}
+                                key={trilha.id}
                             >
-                                <div className="cardPontoCompacto vertical gap15">
-                                    <div className="vertical gap5">
-                                        <h3>{ponto.nome}</h3>
-                                        <p>{ponto.latitude}, {ponto.longitude}</p>
-                                    </div>
-                                    <div className="seloTrilha horizontal center">
-                                        <img src={distancia} />
-                                        <p>{findTrilha(ponto)}</p>
-                                    </div>
+                                <div className="cardTrilhaCompacto vertical gap5">
+                                    <h3>{trilha.nome}</h3>
+                                    <p>{trilha.dificuldade}</p>
+                                    <p>{trilha.extensao}</p>
                                 </div>
 
                                 <div className="btnFull actions vertical gap5">
-                                    <SimpleButton icon="Edit" tema="dark" raio="10" path={`/admin/pontos/editar/${ponto.id}`}        >
+                                    <SimpleButton  icon="Edit" tema="dark" raio="10" path={`/admin/trilhas/editar/${trilha.id}`}                                        >
                                         Editar
                                     </SimpleButton>
-                                    <SimpleButton icon="Trash" tema="red" raio="10" onClick={() => abrirExcluir(ponto)}>
+                                    <SimpleButton icon="Trash" tema="red" raio="10" onClick={() => abrirExcluir(trilha)}>
                                         Excluir
                                     </SimpleButton>
                                 </div>
@@ -199,7 +219,7 @@ export default function AdminPontos() {
 
             </section>
 
-            {createPortal(<div className="paddingFooter"></div>, document.body)}
+            {createPortal(<div className="paddingFooter"></div>,document.body)}
         </>
     );
 }

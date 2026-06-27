@@ -17,11 +17,11 @@ import Explorar from "./pages/Explorar.tsx";
 import Admin from "./pages/Admin.tsx";
 import Login from "./pages/Admin/Login.tsx";
 
-import AdminTrilhas from "./pages/Admin/AdminTrilhas.tsx";
-import CadastrarTrilha from "./pages/Admin/CadastrarTrilha.tsx";
-import EditarTrilha from "./pages/Admin/EditarTrilha.tsx";
+import AdminTrilhas from "./pages/Admin/trilhas/AdminTrilhas.tsx";
+import CadastrarTrilha from "./pages/Admin/trilhas/CadastrarTrilha.tsx";
+import EditarTrilha from "./pages/Admin/trilhas/EditarTrilha.tsx";
 
-import AdminPontos from "./pages/Admin/AdminPontos.tsx";
+import AdminPontos from "./pages/Admin/pontos/AdminPontos.tsx";
 import AdminSobre from "./pages/Admin/AdminSobre.tsx";
 
 import Header from './components/ui/Header.tsx';
@@ -32,8 +32,8 @@ import Scanner from "./components/Scanner.tsx";
 import Logo from './assets/logo.webp';
 
 import { useSync } from "./lib/hooks/useSync.ts";
-import CadastrarPontoInteresse from "./pages/Admin/CadastrarPonto.tsx";
-import EditarPonto from "./pages/Admin/EditarPonto.tsx";
+import CadastrarPontoInteresse from "./pages/Admin/pontos/CadastrarPonto.tsx";
+import EditarPonto from "./pages/Admin/pontos/EditarPonto.tsx";
 
 
 function PageTransition({ children }: { children: React.ReactNode }) {

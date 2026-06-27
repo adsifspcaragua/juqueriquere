@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { db, type ImagemDB } from "../../lib/dexie";
-import { supabase } from "../../lib/supabase";
-import SimpleButton from "../../components/ui/buttons/SimpleButton";
-import DraggableCarousel from "../../components/ui/DraggableCarousel";
-import AutoResizeTextarea from "./AutoResizeTextarea.tsx";
-import { convertToWebPBase64 } from "./imageConverter";
+import { db, type ImagemDB } from "../../../lib/dexie";
+import { supabase } from "../../../lib/supabase";
+import SimpleButton from "../../../components/ui/buttons/SimpleButton";
+import DraggableCarousel from "../../../components/ui/DraggableCarousel";
+import AutoResizeTextarea from "../../../utils/AutoResizeTextarea.tsx";
+import { convertToWebPBase64 } from "../../../utils/imageConverter.ts";
 
 export default function EditarTrilha() {
     const { id } = useParams();

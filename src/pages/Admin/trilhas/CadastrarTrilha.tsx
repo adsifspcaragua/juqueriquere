@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
-import { supabase } from "../../lib/supabase";
-import { db, type TrilhaDB, type ImagemDB } from "../../lib/dexie";
-import SimpleButton from "../../components/ui/buttons/SimpleButton";
-import DraggableCarousel from "../../components/ui/DraggableCarousel";
-import AutoResizeTextarea from "./AutoResizeTextarea.tsx";
-import { convertToWebPBase64 } from "./imageConverter";
+import { supabase } from "../../../lib/supabase";
+import { db, type TrilhaDB, type ImagemDB } from "../../../lib/dexie";
+import SimpleButton from "../../../components/ui/buttons/SimpleButton";
+import DraggableCarousel from "../../../components/ui/DraggableCarousel";
+import AutoResizeTextarea from "../../../utils/AutoResizeTextarea.tsx";
+import { convertToWebPBase64 } from "../../../utils/imageConverter.ts";
 
 export default function CadastrarTrilha() {
     const formRef = useRef<HTMLFormElement>(null);
