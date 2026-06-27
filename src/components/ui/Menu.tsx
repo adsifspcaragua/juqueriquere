@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { db, type PontoInteresseDB } from '../../lib/dexie.ts'
 import { useNavigate, useLocation } from 'react-router-dom';
-import './Menu.css';
+import '../styles/Menu.css';
 
 import { logout } from '../../lib/auth';
 

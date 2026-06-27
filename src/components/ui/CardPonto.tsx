@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import './CardPonto.css'
+import '../styles/CardPonto.css'
 import trilhaGeneric from '../../assets/img/CardTrilha.webp'
 
 import { db } from '../../lib/dexie';

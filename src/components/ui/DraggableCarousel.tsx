@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, isValidElement, type ReactNode } from 'react';
 import SimpleButton from './buttons/SimpleButton';
-import './DraggableCarousel.css';
+import '../styles/DraggableCarousel.css';
 
 interface CarouselProps {
     items: ReactNode[];

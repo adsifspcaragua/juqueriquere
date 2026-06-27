@@ -12,9 +12,9 @@ import Pontos from "./pages/Trilhas/Pontos.tsx";
 import Ponto from "./pages/Trilhas/Ponto.tsx";
 
 import Sobre from "./pages/Sobre.tsx";
-import Mapa from "./pages/Mapa.tsx";
+
 import Explorar from "./pages/Explorar.tsx";
-import Admin from "./pages/Admin.tsx";
+import Admin from "./pages/Admin/Admin.tsx";
 import Login from "./pages/Admin/Login.tsx";
 
 import AdminTrilhas from "./pages/Admin/trilhas/AdminTrilhas.tsx";
@@ -158,14 +158,6 @@ function AnimatedRoutes() {
 							element={
 								<PageTransition>
 									<Sobre />
-								</PageTransition>
-							}
-						/>
-						<Route
-							path="/mapa"
-							element={
-								<PageTransition>
-									<Mapa />
 								</PageTransition>
 							}
 						/>

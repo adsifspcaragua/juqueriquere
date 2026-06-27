@@ -2,7 +2,7 @@ import type Trilha from '../../pages/Trilhas/TrilhaInfo';
 import trilhaGeneric from '../../assets/img/CardTrilha.webp'
 
 import { icons } from './icons';
-import './CardTrilha.css'
+import '../styles/CardTrilha.css'
 
 import { Link } from "react-router-dom";
 import { useEffect, useState, type JSX } from 'react';

@@ -1,5 +1,5 @@
-import SimpleButton from "../components/ui/buttons/SimpleButton";
-import './styles/admin.css'
+import SimpleButton from "../../components/ui/buttons/SimpleButton";
+import '../styles/admin.css'
 
 export default function Admin() {
 
