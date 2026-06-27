@@ -152,7 +152,7 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                                     <SimpleButton
                                         key={`${ponto.nome}-${index}`}
                                         raio="0"
-                                        path={`/trilha/${ponto.trilha_id}/ponto/${encodeURIComponent(ponto.nome)}`}
+                                        path={`/trilha/${ponto.trilha_id}/ponto/${encodeURIComponent(ponto.id)}`}
                                         onClick={closeMenu}
                                     >
                                         {ponto.nome}

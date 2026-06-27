@@ -7,11 +7,9 @@ import NotFound from '../NotFound';
 
 import SimpleButton from '../../components/ui/buttons/SimpleButton';
 import TrilhasMap from '../../components/ui/TrilhasMap';
-import DraggableCarousel from '../../components/ui/DraggableCarousel';
-
 import '../styles/ponto.css';
-import imgNotFound from "../../assets/img/imgNotFound.webp";
 import type TrilhaType from './TrilhaInfo';
+import GaleriaImagens from '../../components/ui/GaleriaImagens.tsx';
 
 export default function Ponto() {
     const { id, idPonto } = useParams<{ id: string; idPonto: string }>();
@@ -24,54 +22,23 @@ export default function Ponto() {
 
     useEffect(() => {
         async function carregar() {
-            if(!idPonto){
-                return;
-            }
+            if (!id || !idPonto) return;
 
-            const trilha = await db.trilhas.get(Number(id));
-            const ponto = await db.pontos_interesse.get(Number(idPonto));
+            const trilhaDB = await db.trilhas.get(Number(id));
+            const pontoDB = await db.pontos_interesse.get(Number(idPonto));
 
-            let arrayIMG : string[] = [];
-            const imagens = ponto ? await db.imagens.where('ponto_interesse_id').equals(Number(ponto.id)).toArray() : null;
-            
-            {
-                imagens ? 
-                imagens.forEach((imagem) => (
-                    arrayIMG.push(
-                        imagem.caminho_arquivo &&
-                        `${imagem.caminho_arquivo}`
-                    )
-                ))
-                :
-                    arrayIMG = [imgNotFound]
-            }
-            
-            
-            setTrilha(trilha)
-            setPontoDados(ponto)
-            setImagens(arrayIMG)
+            if (!pontoDB) return;
+
+            const imagensDB = await db.imagens.where('ponto_interesse_id').equals(Number(pontoDB.id)).toArray();
+            const caminhosImagens = imagensDB.map((img) => img.caminho_arquivo).filter(Boolean) as string[];
+
+            setTrilha(trilhaDB);
+            setPontoDados(pontoDB);
+            setImagens(caminhosImagens); 
         }
-
         carregar();
-    },[id]);
+    }, [id, idPonto]);
 
-    const imagensList = (imagens ?? []).map(
-        (imagem, index) => (
-            <div
-                key={String(index)}
-            >
-                <img
-                src={imagem}
-                >
-                </img>
-            </div>
-        )
-    );
-    
-    //const trilha = data.trilhas
-    //    .find(t => t.id === parseInt(id || ''))
-    //const ponto = trilha?.pontos_interesse.find(p => String(Object.values(p)[0]) === idPonto);
-    
     if (!ponto || !trilha) { return (<NotFound />); }
     if (!from) from = 'explorar';
     const goBack = () => {
@@ -111,14 +78,9 @@ export default function Ponto() {
                 <div className="desktopWrap">
 
                     <div className="vertical">
-                        {
-                            imagensList && 
-                            <DraggableCarousel
-                            items={imagensList}
-                            ></DraggableCarousel>
-                            
-                        }
-                        
+                        <div className="vertical">
+                            <GaleriaImagens imagens={imagens} />
+                        </div>
                     </div>
 
                     <div className="vertical gap15">

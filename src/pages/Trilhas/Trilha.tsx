@@ -12,7 +12,7 @@ import DraggableCarousel from "../../components/ui/DraggableCarousel";
 import { icons } from "../../components/ui/icons";
 import CardPonto from "../../components/ui/CardPonto";
 import Switch from "../../components/ui/buttons/Switch";
-import imgNotFound from "../../assets/img/imgNotFound.webp"
+import GaleriaImagens from "../../components/ui/GaleriaImagens";
 
 
 export default function Trilha() {
@@ -64,15 +64,8 @@ export default function Trilha() {
             const pontos = await db.pontos_interesse.where('trilha_id').equals(Number(id)).toArray();
             setPontosDados(pontos)
 
-            const arrayIMG : string[] = [];
             const imagens = await db.imagens.where('trilha_id').equals(Number(id)).toArray();
-            imagens.forEach((imagem) => (
-                arrayIMG.push(
-                    imagem.caminho_arquivo &&
-                    `${imagem.caminho_arquivo}`
-                )
-            ))
-            setImagemArray(arrayIMG)
+            setImagemArray(imagens.map(img => img.caminho_arquivo).filter(Boolean) as string[]);
 
             setTrilha(trilhaConvertida);
             setLoading(false);
@@ -106,19 +99,6 @@ export default function Trilha() {
                     ponto={ponto}
                     trilhaId={trilha.id}
                 />
-            </div>
-        )
-    );
-
-    const imagensList = (imagens ?? []).map(
-        (imagem, index) => (
-            <div
-                key={String(index)}
-            >
-                <img
-                src={imagem}
-                >
-                </img>
             </div>
         )
     );
@@ -164,11 +144,7 @@ export default function Trilha() {
 
                 <div className="desktopWrap">
                     <div className="vertical">
-                        <DraggableCarousel
-                        items={imagensList}
-                        emptyImage={imgNotFound}
-                        >
-                        </DraggableCarousel>
+                        <GaleriaImagens imagens={imagens} />
                     </div>
                     <div className="vertical gap15">
                         <div className="desktopWrap gap15">

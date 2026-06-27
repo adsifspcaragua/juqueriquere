@@ -36,7 +36,8 @@ const NativeCarousel = ({
 
     // EXTERNO -> INTERNO
     useEffect(() => {
-        if (activeId === undefined) return;
+        console.log(items)
+        if (activeId === undefined || items.length === 0) return;
 
         const idx = items.findIndex((item) => {
             if (isValidElement(item)) {
@@ -53,7 +54,7 @@ const NativeCarousel = ({
                 behavior: 'smooth',
             });
         }
-    }, [activeId, items]);
+    }, [activeId, items, index]);
 
     // INTERNO -> EXTERNO (Cliques nas setas)
     const handleArrow = (direction: number) => {
