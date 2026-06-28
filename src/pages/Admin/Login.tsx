@@ -25,6 +25,12 @@ export default function Login() {
 
         navigate("/admin");
     }
+    
+    const handleKeyDown = (e: any) => {
+        if (e.key === 'Enter') {
+            fazerLogin();
+        }
+    };
 
     return (
         <div className="desktopWrap3">
@@ -68,6 +74,7 @@ export default function Login() {
                             placeholder="Email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            onKeyDown={handleKeyDown} // Adicionado aqui
                         />
                     </div>
 
@@ -79,6 +86,7 @@ export default function Login() {
                             placeholder="Senha"
                             value={senha}
                             onChange={(e) => setSenha(e.target.value)}
+                            onKeyDown={handleKeyDown} // Adicionado aqui
                         />
                     </div>
 
