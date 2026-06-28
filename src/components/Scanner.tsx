@@ -5,17 +5,23 @@ import './styles/Scanner.css';
 
 export default function Scanner({ onClose }: { onClose: () => void }) {
   const qrRef = useRef<Html5Qrcode | null>(null);
+  const isStartingRef = useRef(false);
+  const onCloseRef = useRef(onClose);
 
-  // 1. Centraliza a lógica de forçar a parada da câmera e limpar o DOM
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   const stopScanner = useCallback(async () => {
     try {
       if (qrRef.current) {
-        await qrRef.current.stop().catch(() => {});
+        if (qrRef.current.isScanning) {
+          await qrRef.current.stop().catch(() => {});
+        }
         qrRef.current.clear();
         qrRef.current = null;
       }
 
-      // 🔥 Força matar qualquer stream restante (substitui o 'any' por genéricos do TS)
       document.querySelectorAll<HTMLVideoElement>("#reader video").forEach((video) => {
         if (video.srcObject) {
           (video.srcObject as MediaStream).getTracks().forEach((track) => track.stop());
@@ -23,23 +29,20 @@ export default function Scanner({ onClose }: { onClose: () => void }) {
         }
       });
 
-      // 🔥 Limpa DOM manualmente
       const reader = document.getElementById("reader");
       if (reader) reader.innerHTML = "";
-    } catch (err) {
-      console.warn("Erro ao parar câmera:", err);
-    }
+    } catch (err) {}
   }, []);
 
   const handleClose = useCallback(async () => {
     await stopScanner();
-    // 🔥 pequeno delay pra garantir que browser finalize stream
-    setTimeout(onClose, 100);
-  }, [stopScanner, onClose]);
+    setTimeout(() => {onCloseRef.current();}, 100);
+  }, [stopScanner]);
 
   useEffect(() => {
-    if (qrRef.current) return;
+    if (qrRef.current || isStartingRef.current) return;
 
+    isStartingRef.current = true;
     qrRef.current = new Html5Qrcode("reader");
 
     qrRef.current.start(
@@ -54,13 +57,17 @@ export default function Scanner({ onClose }: { onClose: () => void }) {
           alert("QR inválido");
         }
 
-        await handleClose(); 
-      },
-      () => {} // Callback de ignorar erros de frame
-    );
+        await stopScanner();
+        onCloseRef.current();
+      }, () => {}
+    ).finally(() => {
+      isStartingRef.current = false;
+    });
 
-    return () => { stopScanner(); };
-  }, [handleClose, stopScanner]);
+    return () => {
+      stopScanner();
+    };
+  }, [stopScanner]);
 
   return (
     <div className="leitorQR" onClick={handleClose}>
