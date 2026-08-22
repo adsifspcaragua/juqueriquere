@@ -6,6 +6,10 @@ import trilhasPontosRaw from '../../data/Trilhas PNMJ/PontosRaw.json';
 import trilhasLinhasRaw from '../../data/Trilhas PNMJ/TrilhasRaw.json';
 import data from '../../data.json';
 
+/*
+Necessita de atualizações urgentes
+*/
+
 const trilhasPontos = trilhasPontosRaw as unknown as FeatureCollection<Geometry>;
 const trilhasLinhas = trilhasLinhasRaw as unknown as FeatureCollection<Geometry>;
 
