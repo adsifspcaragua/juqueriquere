@@ -1,7 +1,7 @@
-import SimpleButton from "../../components/ui/buttons/SimpleButton";
-import '../styles/admin.css'
 import { useState, useEffect } from "react";
-import { supabase } from "../../lib/supabase";
+import SimpleButton from "../components/ui/buttons/SimpleButton";
+import '../styles/admin.css'
+import { supabase } from "../lib/supabase";
 
 export default function Admin() {
     const [tipoUsuario, setTipoUsuario] = useState<string | null>(null);
