@@ -563,6 +563,30 @@ ul{
     background-position: center;
 }
 
+#sobre .logo img{
+    height: 70px;
+}
+
+.espacoCard{
+    background-size: cover;
+    background-position: center;
+    aspect-ratio: 9/10;
+    justify-content: end;
+    overflow: hidden;
+    p, h1{
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    }
+    .fade{
+        background-image: linear-gradient(transparent, var(--verdeEscuro));
+        padding: 30px;
+        width: 100%;
+        height: 70%;
+        justify-content: end;
+    }
+}
+#convivencia{background-image: url(assets/img/sobre/Sede\ administrativa_.webp);}
+#salaverde{background-image: url(assets/img/sobre/Vista\ interna\ da\ sala\ verde.webp);}
+
 @media (width > 850px) {
     body{
         padding-top: 0;
