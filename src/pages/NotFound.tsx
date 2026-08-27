@@ -17,9 +17,7 @@ export default function NotFound(){
                         <SimpleButton path="/">Início</SimpleButton>
                         <SimpleButton path="/Explorar">Mapa</SimpleButton>
                         <SimpleButton path="/Trilhas">Trilhas</SimpleButton>
-                        <SimpleButton path="/">Pontos de Interesse</SimpleButton>
-                        <SimpleButton path="/">Plantas</SimpleButton>
-                        <SimpleButton path="/">Observação de Pássaros</SimpleButton>
+                        <SimpleButton path="/Pontos">Pontos de Interesse</SimpleButton>
                     </div>
                 </div>
             </section>
