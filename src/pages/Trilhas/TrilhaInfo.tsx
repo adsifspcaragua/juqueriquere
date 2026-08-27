@@ -1,7 +1,7 @@
 interface PontoInteresse {
     nome: string;
-    latitude?: string;
-    longitude?: string;
+    latitude?: number | null; 
+    longitude?: number | null;
 }
 export default interface Trilha {
     id: number;

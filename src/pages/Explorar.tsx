@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { db } from "../lib/dexie";
+import { db, type PontoInteresseDB } from "../lib/dexie";
 import type Trilha from './Trilhas/TrilhaInfo';
 import CardTrilha from '../components/ui/CardTrilha.tsx';
 import CardPonto from '../components/ui/CardPonto.tsx';
@@ -10,7 +10,7 @@ import SimpleButton from '../components/ui/buttons/SimpleButton.tsx';
 
 export default function Explorar() {
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
-
+    const [pontosDados, setPontosDados] = useState<PontoInteresseDB[]>();
 
     const [trilhaSelecionada, setTrilhaSelecionada] = useState<number | undefined>(undefined);
 
@@ -22,10 +22,21 @@ export default function Explorar() {
             if (data.length > 0) {
                 setTrilhaSelecionada(data[0].id);
             }
+
         }
 
         loadData();
     }, []);
+
+    //carrega os pontos quando a trilhaSelecionada muda de valor
+    useEffect(() => {
+        async function carregarPontos() {
+            if(!trilhaSelecionada) return;
+            const pontos = await db.pontos_interesse.where('trilha_id').equals(Number(trilhaSelecionada)).toArray();
+            if(pontos)setPontosDados(pontos)
+        }
+        carregarPontos();
+    }, [trilhaSelecionada]);
 
     const trilhaAtual =
         trilhas.find((t) => t.id === trilhaSelecionada) ?? trilhas[0];
@@ -53,11 +64,11 @@ export default function Explorar() {
         />
     ));
 
-    const pontosList = (trilhaAtual.pontos_interesse ?? []).map((ponto, index) => (
+    const pontosList = (pontosDados ?? []).map((ponto, index) => (
         <CardPonto
             key={index}
             ponto={ponto}
-            trilha={trilhaAtual}
+            trilhaId={trilhaAtual.id}
         />
     ));
 

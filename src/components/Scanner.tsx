@@ -1,108 +1,82 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import SimpleButton from "./ui/buttons/SimpleButton";
-import './Scanner.css';
+import './styles/Scanner.css';
 
 export default function Scanner({ onClose }: { onClose: () => void }) {
   const qrRef = useRef<Html5Qrcode | null>(null);
+  const isStartingRef = useRef(false);
+  const onCloseRef = useRef(onClose);
 
   useEffect(() => {
-    if (qrRef.current) return;
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
-    const html5QrCode = new Html5Qrcode("reader");
-    qrRef.current = html5QrCode;
-
-    const start = async () => {
-      await html5QrCode.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 250, height: 250 } },
-        async (decodedText) => {
-          const path = decodedText.startsWith("/")
-            ? decodedText
-            : `/${decodedText}`;
-
-          if (/^\/trilha\/\d+\/?$/.test(path)) {
-            window.location.href = path;
-          } else {
-            alert("QR inválido");
-          }
-
-          await stop();   
-          onClose();
-        },
-        () => { }
-      );
-    };
-
-    const stop = async () => {
-      try {
-        if (qrRef.current) {
-          await qrRef.current.stop().catch(() => { });
-          qrRef.current.clear();
-          qrRef.current = null;
-        }
-
-        // 🔥 FORÇA desligar a câmera (resolve o problema)
-        const video = document.querySelector("#reader video") as HTMLVideoElement;
-
-        if (video && video.srcObject) {
-          const stream = video.srcObject as MediaStream;
-          stream.getTracks().forEach((track) => track.stop());
-          video.srcObject = null;
-        }
-
-      } catch (err) {
-        console.warn("Erro ao parar câmera:", err);
-      }
-    };
-
-    start();
-
-    return () => {
-      stop();
-    };
-  }, []);
-
-  const handleClose = async () => {
+  const stopScanner = useCallback(async () => {
     try {
       if (qrRef.current) {
-        await qrRef.current.stop().catch(() => { });
+        if (qrRef.current.isScanning) {
+          await qrRef.current.stop().catch(() => {});
+        }
         qrRef.current.clear();
         qrRef.current = null;
       }
 
-      // 🔥 força matar qualquer stream restante
-      const videos = document.querySelectorAll("#reader video");
-
-      videos.forEach((video: any) => {
+      document.querySelectorAll<HTMLVideoElement>("#reader video").forEach((video) => {
         if (video.srcObject) {
-          const stream = video.srcObject as MediaStream;
-          stream.getTracks().forEach((track) => track.stop());
+          (video.srcObject as MediaStream).getTracks().forEach((track) => track.stop());
           video.srcObject = null;
         }
       });
 
-      // 🔥 limpa DOM manualmente (ESSENCIAL)
       const reader = document.getElementById("reader");
       if (reader) reader.innerHTML = "";
+    } catch (err) {}
+  }, []);
 
-      // 🔥 pequeno delay pra garantir que browser finalize stream
-      setTimeout(() => {
-        onClose();
-      }, 100);
+  const handleClose = useCallback(async () => {
+    await stopScanner();
+    setTimeout(() => {onCloseRef.current();}, 100);
+  }, [stopScanner]);
 
-    } catch (err) {
-      console.warn("Erro ao fechar scanner:", err);
-      onClose();
-    }
-  };
+  useEffect(() => {
+    if (qrRef.current || isStartingRef.current) return;
+
+    isStartingRef.current = true;
+    qrRef.current = new Html5Qrcode("reader");
+
+    qrRef.current.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      async (decodedText) => {
+        const path = decodedText.startsWith("/") ? decodedText : `/${decodedText}`;
+
+        if (/^\/trilha\/\d+\/?$/.test(path)) {
+          window.location.href = path;
+        } else {
+          alert("QR inválido");
+        }
+
+        await stopScanner();
+        onCloseRef.current();
+      }, () => {}
+    ).finally(() => {
+      isStartingRef.current = false;
+    });
+
+    return () => {
+      stopScanner();
+    };
+  }, [stopScanner]);
 
   return (
     <div className="leitorQR" onClick={handleClose}>
       <div className="QRcontainer vertical" onClick={(e) => e.stopPropagation()}>
-        <h1>Aponte a câmera<br></br>para um código QR</h1>
+        <h1>Aponte a câmera<br />para um código QR</h1>
         <div id="reader" />
-        <SimpleButton onClick={() => handleClose()} tema="dark" icon="X" raio="10">Fechar</SimpleButton>
+        <SimpleButton onClick={handleClose} tema="dark" icon="X" raio="10">
+          Fechar
+        </SimpleButton>
       </div>
     </div>
   );

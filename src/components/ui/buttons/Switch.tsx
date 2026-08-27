@@ -1,5 +1,5 @@
 import SimpleButton from "./SimpleButton";
-import './Switch.css';
+import '../../styles/Switch.css';
 
 interface SwitchProps {
     options: string[];

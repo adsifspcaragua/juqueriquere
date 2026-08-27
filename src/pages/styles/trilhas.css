@@ -1,0 +1,8 @@
+.cardTrilha.carrosselCard{
+    height: 100%;
+}
+.listaGrid{
+    align-items: stretch;
+    display: grid;
+    grid-auto-rows: 1fr;
+}

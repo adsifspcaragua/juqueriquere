@@ -1,88 +1,76 @@
-import {useEffect, useRef, isValidElement, type ReactNode} from 'react';
+import { useEffect, useRef, useState, isValidElement, type ReactNode } from 'react';
 import SimpleButton from './buttons/SimpleButton';
-import './DraggableCarousel.css';
+import '../styles/DraggableCarousel.css';
 
 interface CarouselProps {
     items: ReactNode[];
     activeId?: string | number;
     onChange?: (id: string | number) => void;
+    emptyImage?: string;
 }
 
 const NativeCarousel = ({
     items,
     activeId,
-    onChange
+    onChange,
+    emptyImage,
 }: CarouselProps) => {
-
+    const [index, setIndex] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
-
     const scrollTimeout = useRef<number | null>(null);
+
+    // Funções auxiliares
+    const getCardWidth = (): number => {
+        const firstCard = containerRef.current?.children[0] as HTMLElement;
+        return firstCard ? firstCard.offsetWidth + 10 : 0; // 10 é o gap
+    };
+
+    const getIdFromIndex = (idx: number): string | number => {
+        const currentItem = items[idx];
+        if (isValidElement(currentItem)) {
+            const props = currentItem.props as { id?: string | number };
+            if (props.id !== undefined) return props.id;
+        }
+        return idx;
+    };
 
     // EXTERNO -> INTERNO
     useEffect(() => {
+        console.log(items)
+        if (activeId === undefined || items.length === 0) return;
 
-        if (activeId === undefined) return;
-
-        const index = items.findIndex((item) => {
+        const idx = items.findIndex((item) => {
             if (isValidElement(item)) {
-                const props = item.props as {
-                    id?: string | number
-                };
+                const props = item.props as { id?: string | number };
                 return props.id === activeId;
             }
             return false;
         });
 
-        if (index === -1) return;
+        if (idx !== -1 && idx !== index) {
+            setIndex(idx);
+            containerRef.current?.scrollTo({
+                left: idx * getCardWidth(),
+                behavior: 'smooth',
+            });
+        }
+    }, [activeId, items, index]);
 
-        const container = containerRef.current;
-        if (!container) return;
+    // INTERNO -> EXTERNO (Cliques nas setas)
+    const handleArrow = (direction: number) => {
+        const nextIndex = index + direction;
+        if (nextIndex < 0 || nextIndex >= items.length) return;
 
-        const firstCard = container.children[0] as HTMLElement;
-        if (!firstCard) return;
-
-        const gap = 10;
-
-        const cardWidth =
-            firstCard.offsetWidth + gap;
-
-        container.scrollTo({
-            left: index * cardWidth,
-            behavior: 'smooth'
+        setIndex(nextIndex);
+        containerRef.current?.scrollTo({
+            left: nextIndex * getCardWidth(),
+            behavior: 'smooth',
         });
 
-    }, [activeId]);
+        onChange?.(getIdFromIndex(nextIndex));
+    };
 
-    // INTERNO -> EXTERNO
-    const handleArrow = (i: number) => {
-
-        const container = containerRef.current;
-        if (!container) return;
-
-        const firstCard = container.children[0] as HTMLElement;
-        if (!firstCard) return;
-        if (!firstCard && i < 0) return;
-        const cardWidth = firstCard.offsetWidth + 10;
-        const index = Math.round(
-            container.scrollLeft / cardWidth
-        );
-        const currentItem = items[index + i];
-
-        if (!currentItem) return;
-        let currentId: string | number = index;
-        if (isValidElement(currentItem)) {
-
-            const props = currentItem.props as {
-                id?: string | number
-            };
-
-            if (props.id !== undefined) {
-                currentId = props.id;
-            }
-        }
-        onChange?.(currentId);
-    }
-
+    // INTERNO -> EXTERNO (Scroll manual)
     const handleScroll = () => {
         if (scrollTimeout.current) {
             clearTimeout(scrollTimeout.current);
@@ -90,71 +78,58 @@ const NativeCarousel = ({
 
         scrollTimeout.current = setTimeout(() => {
             const container = containerRef.current;
+            const cardWidth = getCardWidth();
+            if (!container || cardWidth === 0) return;
 
-            if (!container) return;
+            const newIndex = Math.round(container.scrollLeft / cardWidth);
 
-            const firstCard = container.children[0] as HTMLElement;
-
-            if (!firstCard) return;
-
-            const cardWidth = firstCard.offsetWidth + 10;
-
-            const index = Math.round(
-                container.scrollLeft / cardWidth
-            );
-
-            const currentItem = items[index];
-            if (!currentItem) return;
-
-            let currentId: string | number = index;
-            if (isValidElement(currentItem)) {
-
-                const props = currentItem.props as {
-                    id?: string | number
-                };
-
-                if (props.id !== undefined) {
-                    currentId = props.id;
-                }
+            if (newIndex !== index && newIndex >= 0 && newIndex < items.length) {
+                setIndex(newIndex);
+                onChange?.(getIdFromIndex(newIndex));
             }
-
-            onChange?.(currentId);
-
         }, 100);
     };
 
     return (
         <div className="carrosselContainer">
-
-            <div className="circleButton left">
-                <SimpleButton
-                    icon="Left"
-                    onClick={() => handleArrow(-1)}
-                />
-            </div>
+            {index > 0 && (
+                <div className="circleButton left">
+                    <SimpleButton
+                        icon="Left"
+                        onClick={() => handleArrow(-1)}
+                    />
+                </div>
+            )}
 
             <div
                 ref={containerRef}
                 className="carrossel"
                 onScroll={handleScroll}
             >
-                {items.map((item, index) => (
-                    <div
-                        key={index}
-                        className="carrosselCard"
-                    >
-                        {item}
+                {items.length > 0 ? (
+                    items.map((item, idx) => (
+                        <div key={idx} className="carrosselCard">
+                            {item}
+                        </div>
+                    ))
+                ) : emptyImage ? (
+                    <div className="carrosselCard empty">
+                        <img
+                            src={emptyImage}
+                            alt="Nenhuma imagem disponível"
+                        />
                     </div>
-                ))}
+                ) : null}
             </div>
 
-            <div className="circleButton right">
-                <SimpleButton
-                    icon="Right"
-                    onClick={() => handleArrow(1)}
-                />
-            </div>
-
+            {index < items.length - 1 && items.length > 0 && (
+                <div className="circleButton right">
+                    <SimpleButton
+                        icon="Right"
+                        onClick={() => handleArrow(1)}
+                    />
+                </div>
+            )}
         </div>
     );
 };

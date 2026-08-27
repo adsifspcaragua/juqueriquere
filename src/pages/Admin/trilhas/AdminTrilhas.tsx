@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { db } from "../../lib/dexie";
-import { supabase } from "../../lib/supabase";
-import SimpleButton from "../../components/ui/buttons/SimpleButton";
-import Select from "../../components/ui/form/Select";
-import type Trilha from "../Trilhas/TrilhaInfo";
+import { db } from "../../../lib/dexie";
+import { supabase } from "../../../lib/supabase";
+import SimpleButton from "../../../components/ui/buttons/SimpleButton";
+import Select from "../../../components/ui/form/Select";
+import type Trilha from "../../Trilhas/TrilhaInfo";
 import { createPortal } from "react-dom";
 
 
@@ -24,7 +24,19 @@ export default function AdminTrilhas() {
         // 2. remove do Dexie (cache/offline)
         await db.trilhas.delete(trilhaSelecionada.id);
 
-        // 3. atualiza UI
+        try{
+            const { error: erroDeletar } = await supabase
+            .from("trilhas")
+            .delete()
+            .eq('id', trilhaSelecionada.id);
+
+        if (erroDeletar) throw erroDeletar;
+        } catch (error : any){
+            alert("erro ao deletar \n tente novamente mais tarde.")
+            console.log(error)
+        }
+        
+
         setTrilhas((prev) =>
             prev.filter((t) => t.id !== trilhaSelecionada.id)
         );
@@ -39,13 +51,23 @@ export default function AdminTrilhas() {
 }
 
     const order = {
-        "Nome A-Z": (a: any, b: any) => a.nome.localeCompare(b.nome),
-        "Nome Z-A": (a: any, b: any) => b.nome.localeCompare(a.nome),
+        "Nome A-Z": (a: Trilha, b: Trilha) =>
+            a.nome.localeCompare(b.nome, "pt-BR"),
+
+        "Nome Z-A": (a: Trilha, b: Trilha) =>
+            b.nome.localeCompare(a.nome, "pt-BR"),
+
+        "ID Crescente": (a: Trilha, b: Trilha) =>
+            a.id - b.id,
+
+        "ID Decrescente": (a: Trilha, b: Trilha) =>
+            b.id - a.id,
+
     } as const;
 
     type OrderKey = keyof typeof order;
 
-    const [orderKey, setOrderKey] = useState<OrderKey>("Nome A-Z");
+    const [orderKey, setOrderKey] = useState<OrderKey>("ID Crescente");
     const [search, setSearch] = useState("");
 
     const [modalDelete, setModalDelete] = useState(false);
@@ -73,9 +95,15 @@ export default function AdminTrilhas() {
         setTrilhaSelecionada(null);
     };
 
+    const trilhasFiltradas = trilhas
+    .filter((trilha) =>
+        trilha.nome.toLowerCase().includes(search.toLowerCase())
+    )
+    .sort(order[orderKey]);
+
     return (
         <>
-            <div className="paddingHeader"></div>
+            <div className="paddingHeader2"></div>
 
             <section className="conteudo vertical gap15">
 
@@ -87,7 +115,7 @@ export default function AdminTrilhas() {
                     Voltar
                 </SimpleButton>
 
-                <div className="card vertical gap5">
+                <div className="card vertical gap5 adminCard" id="adminTrilhasCard">
 
                     <h1>
                         Gerenciar Trilhas
@@ -142,37 +170,45 @@ export default function AdminTrilhas() {
                     </div>,
                     document.body
                 )}
+                
 
                 {modalDelete && (
-                    <div className="modal">
-                        <div className="modal-content">
+                    createPortal(
+                        <div className = "modal vertical center" >
+                            <div className="modal-content card vertical gap15">
 
-                            <h2>
-                                Deseja excluir:
-                                <br />
+                                <h2>
+                                    Deseja excluir <br/>
+                                    {trilhaSelecionada?.nome}?
+                                </h2>
 
-                                {trilhaSelecionada?.nome}?
-                            </h2>
+                                <p>Esta ação não pode ser revertida.</p>
 
-                            <button onClick={excluirTrilha}>
-                                Excluir
-                            </button>
+                                <div className="horizontal btnFull gap15">
+                                    <SimpleButton tema="dark" icon="X" raio="10" onClick={cancelar}>
+                                        Manter
+                                    </SimpleButton>
 
-                            <button
-                                onClick={cancelar}
-                            >
-                                Cancelar
-                            </button>
-                        </div>
-                    </div>
+                                    <SimpleButton tema="red" icon="Trash" raio="10" onClick={excluirTrilha}>
+                                        Excluir
+                                    </SimpleButton>
+                                </div>
+
+                            </div>
+                    </div>, 
+                    document.body
+                    )
 
                 )}
 
-                <div className="vertical gap5">
-                    <h2>Trilhas cadastradas</h2>
-
+                <div className="vertical gap15">
                     <div className="vertical gap5">
-                        {trilhas.map((trilha) => (
+                        <h1>Trilhas cadastradas</h1>
+                        <p>{trilhasFiltradas.length} trilha(s) encontrada(s).</p>
+                    </div>
+
+                    <div className="listaGrid">
+                        {trilhasFiltradas.map((trilha) => (
                             <div
                                 className="card horizontal gap5 justify"
                                 key={trilha.id}
@@ -198,6 +234,7 @@ export default function AdminTrilhas() {
 
             </section>
 
+            {createPortal(<div className="paddingFooter"></div>,document.body)}
         </>
     );
 }

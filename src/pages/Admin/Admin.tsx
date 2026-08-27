@@ -1,6 +1,6 @@
+import SimpleButton from "../../components/ui/buttons/SimpleButton";
+import '../styles/admin.css'
 import { useState, useEffect } from "react";
-import SimpleButton from "../components/ui/buttons/SimpleButton";
-import './styles/admin.css'
 import { supabase } from "../lib/supabase";
 
 export default function Admin() {

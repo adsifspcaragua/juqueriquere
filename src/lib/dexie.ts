@@ -1,10 +1,14 @@
 import Dexie from "dexie";
 import type { Table } from "dexie";
 
-interface PontoInteresseDB {
+export interface PontoInteresseDB {
+  id: number;
+  trilha_id: number;
   nome: string;
-  latitude?: string;
-  longitude?: string;
+  descricao: string;
+  planta?: string;
+  latitude?: number | null; 
+  longitude?: number | null;
 }
 
 interface RamalDB {

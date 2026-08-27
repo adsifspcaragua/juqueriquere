@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { icons } from "../icons";
-import './SimpleButton.css';
+import '../../styles/SimpleButton.css';
 interface props {
     path?: string;
     children?: React.ReactNode;

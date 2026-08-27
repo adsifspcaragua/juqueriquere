@@ -12,16 +12,16 @@ import Pontos from "./pages/Trilhas/Pontos.tsx";
 import Ponto from "./pages/Trilhas/Ponto.tsx";
 
 import Sobre from "./pages/Sobre.tsx";
-import Mapa from "./pages/Mapa.tsx";
+
 import Explorar from "./pages/Explorar.tsx";
-import Admin from "./pages/Admin.tsx";
+import Admin from "./pages/Admin/Admin.tsx";
 import Login from "./pages/Admin/Login.tsx";
 
-import AdminTrilhas from "./pages/Admin/AdminTrilhas.tsx";
-import CadastrarTrilha from "./pages/Admin/CadastrarTrilha.tsx";
-import EditarTrilha from "./pages/Admin/EditarTrilha.tsx";
+import AdminTrilhas from "./pages/Admin/trilhas/AdminTrilhas.tsx";
+import CadastrarTrilha from "./pages/Admin/trilhas/CadastrarTrilha.tsx";
+import EditarTrilha from "./pages/Admin/trilhas/EditarTrilha.tsx";
 
-import AdminPontos from "./pages/Admin/AdminPontos.tsx";
+import AdminPontos from "./pages/Admin/pontos/AdminPontos.tsx";
 import AdminSobre from "./pages/Admin/AdminSobre.tsx";
 
 import CadastrarUsuario from "./pages/Admin/CadastrarUsuario.tsx";
@@ -34,7 +34,8 @@ import Scanner from "./components/Scanner.tsx";
 import Logo from './assets/logo.webp';
 
 import { useSync } from "./lib/hooks/useSync.ts";
-import CadastrarPontoInteresse from "./pages/Admin/CadastrarPonto.tsx";
+import CadastrarPontoInteresse from "./pages/Admin/pontos/CadastrarPonto.tsx";
+import EditarPonto from "./pages/Admin/pontos/EditarPonto.tsx";
 
 
 function PageTransition({ children }: { children: React.ReactNode }) {
@@ -163,14 +164,6 @@ function AnimatedRoutes() {
 							}
 						/>
 						<Route
-							path="/mapa"
-							element={
-								<PageTransition>
-									<Mapa />
-								</PageTransition>
-							}
-						/>
-						<Route
 							path="/trilhas/"
 							element={
 								<PageTransition>
@@ -195,7 +188,7 @@ function AnimatedRoutes() {
 							}
 						/>
 						<Route
-							path="/trilha/:id/ponto/:nomePonto"
+							path="/trilha/:id/ponto/:idPonto"
 							element={
 								<PageTransition>
 									<Ponto />
@@ -265,6 +258,16 @@ function AnimatedRoutes() {
 								<ProtectedRoute>
 									<PageTransition>
 										<AdminPontos />
+									</PageTransition>
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="/admin/pontos/editar/:id"
+							element={
+								<ProtectedRoute>
+									<PageTransition>
+										<EditarPonto />
 									</PageTransition>
 								</ProtectedRoute>
 							}

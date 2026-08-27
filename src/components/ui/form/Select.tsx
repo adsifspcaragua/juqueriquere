@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import './Select.css';
+import '../../styles/Select.css';
 import SimpleButton from "../buttons/SimpleButton";
 interface SelectProps {
     children?: React.ReactNode;

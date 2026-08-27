@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import SimpleButton from './buttons/SimpleButton';
 import Menu from './Menu';
-import './Header.css';
+import '../styles/Header.css';
 
 export default function Header() {
     const [openScanner, setOpenScanner] = useState(false);

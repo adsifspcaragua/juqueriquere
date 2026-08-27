@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import { sincronizarTrilhas } from "../services/sync";
-import { sincronizarPontos } from "../services/sync";
+import { sincronizarImagens, sincronizarTrilhas, sincronizarPontos } from "../services/sync";
 
 export function useSync() {
   useEffect(() => {
@@ -10,6 +9,7 @@ export function useSync() {
       try {
         await sincronizarTrilhas();
         await sincronizarPontos();
+        await sincronizarImagens();
       } catch (err) {
         console.error("Erro na sincronização:", err);
       }

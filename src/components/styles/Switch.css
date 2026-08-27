@@ -69,12 +69,3 @@
         color: var(--verdeClaro);
     }
 }
-
-@media (width > 850px){
-    .switch, .switch-dark, .switch-traced, .switch-traced-dark{
-        width: fit-content;
-        .btn, a{
-            width: fit-content;
-        }
-    }
-}

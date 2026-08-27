@@ -4,6 +4,7 @@ import Select from '../../components/ui/form/Select.tsx';
 import CardTrilha from '../../components/ui/CardTrilha.tsx';
 import type Trilha from './TrilhaInfo';
 import { createPortal } from "react-dom";
+import '../styles/trilhas.css'
 
 export default function Trilhas() {
 
@@ -22,7 +23,7 @@ export default function Trilhas() {
     useEffect(() => {
         async function loadData() {
             const data = await db.trilhas.toArray();
-            setTrilhas(data as Trilha[]);
+            if(data)setTrilhas(data as Trilha[]);
         }
 
         loadData();
@@ -70,7 +71,7 @@ export default function Trilhas() {
                 document.body
             )}
 
-            <div className="paddingHeader"></div>
+            <div className="paddingHeader2"></div>
 
             <section>
                 <div className="conteudo vertical">
@@ -92,6 +93,8 @@ export default function Trilhas() {
                     </div>
                 </div>
             </section>
+
+            {createPortal(<div className="paddingFooter"></div>,document.body)}
         </>
     );
 }
