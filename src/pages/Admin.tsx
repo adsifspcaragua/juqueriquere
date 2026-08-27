@@ -1,7 +1,36 @@
+import { useState, useEffect } from "react";
 import SimpleButton from "../components/ui/buttons/SimpleButton";
 import './styles/admin.css'
+import { supabase } from "../lib/supabase";
 
 export default function Admin() {
+    const [tipoUsuario, setTipoUsuario] = useState<string | null>(null);
+
+    useEffect(() => {
+        buscarUsuario();
+    }, []);
+
+    async function buscarUsuario() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from("usuarios")
+      .select("tipo")
+      .eq("auth_id", user.id)
+      .single();
+
+    if (error) {
+      console.error("Erro ao buscar usuário:", error);
+      return;
+    }
+
+    setTipoUsuario(data.tipo);
+  }
+
 
     return (
         <>
@@ -10,7 +39,7 @@ export default function Admin() {
 
                 <h1>Administração do Site</h1>
                 <p>Gerencie conteúdos, trilhas, pontos de interesse, alertas e demais informações do Catálogo Digital PNMJ. Mantenha os dados atualizados para oferecer aos visitantes uma experiência informativa, acessível e segura.</p>
-                
+
                 <div className="conteudo gap15 desktopWrap3">
                     <div className="card vertical gap5">
                         <h2>Trilhas</h2>
@@ -29,6 +58,13 @@ export default function Admin() {
                         <p>Atualize as informações institucionais do projeto e do parque, garantindo que os visitantes tenham acesso a conteúdos claros e relevantes sobre a plataforma.</p>
                         <SimpleButton path="/admin/sobre" tema="dark" raio="10">Gerenciar Informações</SimpleButton>
                     </div>
+                    {tipoUsuario === "MASTER" && (      
+                        <div className="card vertical gap5">
+                        <h2>Cadastrar Usuário</h2>
+                        <p>Atualize as informações institucionais do projeto e do parque, garantindo que os visitantes tenham acesso a conteúdos claros e relevantes sobre a plataforma.</p>
+                        <SimpleButton path="/admin/usuarios/cadastrar" tema="dark" raio="10">Gerenciar Informações</SimpleButton>
+                        </div>
+                    )}
                 </div>
             </section>
         </>

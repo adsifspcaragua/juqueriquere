@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { db } from "../../lib/dexie";
+import { supabase } from "../../lib/supabase";
 import SimpleButton from "../../components/ui/buttons/SimpleButton";
 import Select from "../../components/ui/form/Select";
 import type Trilha from "../Trilhas/TrilhaInfo";
@@ -9,17 +10,33 @@ import { createPortal } from "react-dom";
 export default function AdminTrilhas() {
 
     async function excluirTrilha() {
-        if (!trilhaSelecionada) return;
+    if (!trilhaSelecionada) return;
 
+    try {
+        // 1. remove do Supabase (banco principal)
+        const { error } = await supabase
+            .from("trilhas")
+            .delete()
+            .eq("id", trilhaSelecionada.id);
+
+        if (error) throw error;
+
+        // 2. remove do Dexie (cache/offline)
         await db.trilhas.delete(trilhaSelecionada.id);
 
+        // 3. atualiza UI
         setTrilhas((prev) =>
             prev.filter((t) => t.id !== trilhaSelecionada.id)
         );
 
         setModalDelete(false);
         setTrilhaSelecionada(null);
+
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao excluir trilha");
     }
+}
 
     const order = {
         "Nome A-Z": (a: any, b: any) => a.nome.localeCompare(b.nome),

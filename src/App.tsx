@@ -24,6 +24,8 @@ import EditarTrilha from "./pages/Admin/EditarTrilha.tsx";
 import AdminPontos from "./pages/Admin/AdminPontos.tsx";
 import AdminSobre from "./pages/Admin/AdminSobre.tsx";
 
+import CadastrarUsuario from "./pages/Admin/CadastrarUsuario.tsx";
+
 import Header from './components/ui/Header.tsx';
 import Footer from "./components/ui/Footer.tsx";
 import SimpleButton from "./components/ui/buttons/SimpleButton.tsx";
@@ -239,9 +241,12 @@ function AnimatedRoutes() {
 						<Route
 							path="/admin/trilhas/cadastrar"
 							element={
+								<ProtectedRoute>
 									<PageTransition>
 										<CadastrarTrilha />
 									</PageTransition>
+								</ProtectedRoute>
+
 							}
 						/>
 						<Route
@@ -280,6 +285,16 @@ function AnimatedRoutes() {
 								<ProtectedRoute>
 									<PageTransition>
 										<AdminSobre />
+									</PageTransition>
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="/admin/usuarios/cadastrar"
+							element={
+								<ProtectedRoute>
+									<PageTransition>
+										<CadastrarUsuario/>
 									</PageTransition>
 								</ProtectedRoute>
 							}
