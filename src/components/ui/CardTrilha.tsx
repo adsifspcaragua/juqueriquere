@@ -19,7 +19,7 @@ export default function CardTrilha({ trilha, id }: Props): JSX.Element {
     const { Dificuldade, Distancia, Tempo } = icons.dark;
 
     const [imagem, setImagem] = useState<string>();
-    
+
 
     useEffect(() => {
         async function loadData() {
@@ -29,21 +29,30 @@ export default function CardTrilha({ trilha, id }: Props): JSX.Element {
             }
 
             const imagemDb = await db.imagens.where('trilha_id').equals(Number(id)).first();
-            
+
             if (imagemDb) {
                 setImagem(`url(${imagemDb.caminho_arquivo})`);
             } else {
                 setImagem(`url(${trilhaGeneric})`);
             }
         }
-
+      try {
+        console.time('tempo')
         loadData();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        console.log("hello", imagem)
+        console.timeLog('tempo')
+        console.timeEnd('tempo')
+
+      }
     }, []);
 
 
     return (
-        <Link 
-        to={`/trilha/${id}`} 
+        <Link
+        to={`/trilha/${id}`}
         className={imagem ?
             `cardTrilha carrosselCard` : `cardTrilha carrosselCard`
         }
