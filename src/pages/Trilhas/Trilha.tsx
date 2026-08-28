@@ -66,14 +66,19 @@ export default function Trilha() {
             const pontos = await db.pontos_interesse.where('trilha_id').equals(Number(id)).toArray();
             setPontosDados(pontos)
 
-            const imagens = await db.imagens.where('trilha_id').equals(Number(id)).toArray();
-            setImagemArray(imagens.map(img => img.caminho_arquivo).filter(Boolean) as string[]);
-            setTrilha(trilhaConvertida);
-
-            setLoading(false);
+          const imagens = await db.imagens.where('trilha_id').equals(Number(id)).toArray();
+          console.log(imagens)
+          setImagemArray(imagens.map(img => img.caminho_arquivo).filter(Boolean) as string[]);
+          setTrilha(trilhaConvertida);
         }
-
+      try {
         carregar();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        console.log("carregado");
+        setLoading(false);
+      }
     }, [id]);
 
     if (loading) {
