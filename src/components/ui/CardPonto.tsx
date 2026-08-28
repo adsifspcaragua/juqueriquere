@@ -21,41 +21,37 @@ interface Props {
     imagem?: string;
 }
 
-export default function CardPonto({ ponto, trilhaId  /*Temporário*/ }: Props) {
-    if (!ponto.nome) return null; // Retorna null se o ponto não tiver nome
+export default function CardPonto({ ponto, trilhaId }: Props) {
     const [imagem, setImagem] = useState<string>();
-    
 
     useEffect(() => {
+        if (!ponto.id) return;
         async function loadData() {
-
             const imagemDb = await db.imagens.where('ponto_interesse_id').equals(Number(ponto.id)).first();
-            
             if (imagemDb) {
                 setImagem(`url(${imagemDb.caminho_arquivo})`);
             } else {
                 setImagem(`url(${trilhaGeneric})`);
             }
         }
-
         loadData();
-    }, []);
+    }, [ponto.id]);
 
     const location = useLocation();
     const pageName = location.pathname.split("/").filter(Boolean).pop() || "explorar";
 
+    if (!ponto.nome) return null;
+
     return (
-        <Link 
-        to={`/trilha/${trilhaId}/ponto/${ponto.id}?from=${pageName}`}
-        className={imagem ?
-            `cardTrilha carrosselCard` : `cardTrilha carrosselCard`
-        }
-        style={ {backgroundImage : imagem} }
+        <Link
+            to={`/trilha/${trilhaId}/ponto/${ponto.id}?from=${pageName}`}
+            className="cardTrilha carrosselCard"
+            style={{ backgroundImage: imagem }}
         >
             <div className='cardTrilha cardPonto carrosselCard'>
                 <div className="info vertical">
-                <h2>{ponto.nome}</h2>
-                {ponto.planta && <h3>{ponto.planta}</h3>}
+                    <h2>{ponto.nome}</h2>
+                    {ponto.planta && <h3>{ponto.planta}</h3>}
                 </div>
             </div>
         </Link>
