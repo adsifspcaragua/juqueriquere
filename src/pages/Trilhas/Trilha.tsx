@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { usePageTitle } from "../../lib/hooks/usePageTitle";
 
 import { db, type PontoInteresseDB } from "../../lib/dexie";
 
@@ -33,6 +34,7 @@ export default function Trilha() {
     const [pontosDados, setPontosDados] = useState<PontoInteresseDB[]>();
     const [pontoSelecionado, setPontoSelecionado] = useState<string>();
 
+    usePageTitle(trilha?.nome);
 
     useEffect(() => {
         async function carregar() {

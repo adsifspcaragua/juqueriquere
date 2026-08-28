@@ -1,3 +1,5 @@
+import { usePageTitle } from "../lib/hooks/usePageTitle";
+
 import img_sede_administrativa from '../assets/img/sobre/Sede administrativa_.webp'
 import img_bancos_lixeiras from '../assets/img/sobre/Bancos + lixeiras de recicláveis.webp'
 import img_entrada_banheiros from '../assets/img/sobre/entrada dos banheiros.webp'
@@ -18,6 +20,7 @@ import Logo from '../assets/logo.webp';
 import SimpleButton from '../components/ui/buttons/SimpleButton'
 
 export default function Sobre(){
+    usePageTitle("Sobre");
 
     return(
         <>

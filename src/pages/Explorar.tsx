@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { usePageTitle } from "../lib/hooks/usePageTitle";
+
 import { db, type PontoInteresseDB } from "../lib/dexie";
 import type Trilha from './Trilhas/TrilhaInfo';
 import CardTrilha from '../components/ui/CardTrilha.tsx';
@@ -9,6 +11,8 @@ import './styles/explorar.css';
 import SimpleButton from '../components/ui/buttons/SimpleButton.tsx';
 
 export default function Explorar() {
+    usePageTitle("Mapa");
+
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
     const [pontosDados, setPontosDados] = useState<PontoInteresseDB[]>();
 
@@ -102,7 +106,7 @@ export default function Explorar() {
                     </div>
                     <div className="vertical gap15">
                         <div className="vertical gap15">
-                            <h4>Pontos de interesse na trilha:</h4>
+                            <h4>Pontos de interesse nesta trilha:</h4>
                             <div className="vertical gap5" id='pontosList'>
                                 {pontosList}
                             </div>
