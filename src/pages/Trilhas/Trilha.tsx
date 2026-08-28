@@ -68,8 +68,8 @@ export default function Trilha() {
 
             const imagens = await db.imagens.where('trilha_id').equals(Number(id)).toArray();
             setImagemArray(imagens.map(img => img.caminho_arquivo).filter(Boolean) as string[]);
-
             setTrilha(trilhaConvertida);
+
             setLoading(false);
         }
 
@@ -110,15 +110,15 @@ export default function Trilha() {
 
     const findCarousselID = (
         targetName: string,
-        list: any[]
+        list: PontoInteresseDB[]
     ) => {
         const normalizedTarget = normalize(targetName);
 
         return list.find(
-            (ponto: any) =>
-                normalize(String(ponto.key)) ===
+            (ponto: PontoInteresseDB) =>
+                normalize(String(ponto.nome)) ===
                 normalizedTarget
-        )?.props.id;
+        )?.nome;
     };
 
     const options = {
@@ -203,7 +203,7 @@ export default function Trilha() {
                             )}
                             {aba === "Mapa da trilha" && (
                                 <div className="vertical card gap15 switchCard">
-                                    
+
                                     {(trilha.ramais ?? []).length >
                                         0 && (
                                             <Switch
@@ -220,7 +220,7 @@ export default function Trilha() {
                                             />
                                         )
                                     }
-                                    
+
                                     <div className="desktopWrap gap30">
                                         <div className="vertical gap5">
                                             <h1>Mapa da trilha</h1>
@@ -234,7 +234,7 @@ export default function Trilha() {
                                                         setPontoSelecionado(
                                                             findCarousselID(
                                                                 nome,
-                                                                pontosList
+                                                                pontosDados ?? []
                                                             )
                                                         )
                                                     }

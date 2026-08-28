@@ -55,7 +55,7 @@ export default function Sobre(){
                 </p>
 
                 <div className="linhaPontilhadaLight"></div>
-                
+
                 <h1>Espaços do Parque</h1>
                 <div className="carrossel horizontal">
                     <div className="carrosselCard espacoCard vertical" id='convivencia'>
@@ -103,7 +103,7 @@ export default function Sobre(){
                     </div>
                     <div className="vertical card" id="cardHorario">
                         <h1>Horário de funcionamento</h1>
-                        <p>O parque está aberto para visitações de terça à sexta-feira das 9h30 às 16h30, e aos sábados, domingos e feriados das 9h às 16h.</p>
+                        <p>O parque está aberto para visitações de terça à sexta-feira das 9h30 às 16h30, e aos sábados, domingos e feriados das 9h às 16h.</p>
                     </div>
                     <div className="vertical card" id='cardEndereco'>
                         <h1>Endereço</h1>
