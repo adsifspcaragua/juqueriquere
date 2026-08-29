@@ -37,49 +37,46 @@ export default function Trilha() {
     usePageTitle(trilha?.nome);
 
     useEffect(() => {
-        async function carregar() {
+    async function carregar() {
+        try {
             const resultado = await db.trilhas.get(id);
 
             if (!resultado) {
-                setLoading(false);
                 return;
             }
 
             const trilhaConvertida: TrilhaType = {
                 ...resultado,
                 id: resultado.id ?? 0,
-
                 pontos_interesse:
                     typeof resultado.pontos_interesse === "string"
                         ? JSON.parse(resultado.pontos_interesse)
                         : resultado.pontos_interesse ?? [],
-
                 ramais:
                     typeof resultado.ramais === "string"
                         ? JSON.parse(resultado.ramais)
                         : resultado.ramais ?? [],
-
                 pontos_no_mapa: Array.isArray(resultado.pontos_no_mapa)
                     ? resultado.pontos_no_mapa
                     : [],
             } as TrilhaType;
-            const pontos = await db.pontos_interesse.where('trilha_id').equals(Number(id)).toArray();
-            setPontosDados(pontos)
 
-          const imagens = await db.imagens.where('trilha_id').equals(Number(id)).toArray();
-          console.log(imagens)
-          setImagemArray(imagens.map(img => img.caminho_arquivo).filter(Boolean) as string[]);
-          setTrilha(trilhaConvertida);
+            const pontos = await db.pontos_interesse.where('trilha_id').equals(Number(id)).toArray();
+            setPontosDados(pontos);
+
+            const imagens = await db.imagens.where('trilha_id').equals(Number(id)).toArray();
+            setImagemArray(imagens.map(img => img.caminho_arquivo).filter(Boolean) as string[]);
+            
+            setTrilha(trilhaConvertida);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
         }
-      try {
-        carregar();
-      } catch (error) {
-        console.error(error);
-      } finally {
-        console.log("carregado");
-        setLoading(false);
-      }
-    }, [id]);
+    }
+
+    carregar();
+}, [id]);
 
     if (loading) {
         return (
