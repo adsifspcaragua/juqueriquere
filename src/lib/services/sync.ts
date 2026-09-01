@@ -1,6 +1,8 @@
 import { supabase } from "../supabase";
 import { db } from "../dexie";
 
+
+//necessita de melhora para não baixar imagens que já estão no dexie e baixar uma quantidade limitada para o offline
 async function baixarImagem(
     caminhoArquivo: string
 ): Promise<Blob | undefined> {
