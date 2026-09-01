@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { usePageTitle } from "../lib/hooks/usePageTitle";
+
 import { db, type PontoInteresseDB } from "../lib/dexie";
 import type Trilha from './Trilhas/TrilhaInfo';
 import CardTrilha from '../components/ui/CardTrilha.tsx';
@@ -9,6 +11,8 @@ import './styles/explorar.css';
 import SimpleButton from '../components/ui/buttons/SimpleButton.tsx';
 
 export default function Explorar() {
+    usePageTitle("Mapa");
+
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
     const [pontosDados, setPontosDados] = useState<PontoInteresseDB[]>();
 
@@ -77,7 +81,7 @@ export default function Explorar() {
             <div className="paddingHeader"></div>
             <section className="conteudo vertical gap30 desktopWrap">
 
-                <div className="vertical gap5">
+                <div className="vertical gap15">
                     <h1>Mapa geral do Parque</h1>
                     <div className="mapa">
                         {/* Repasse o array de IDs (trilha + ramais) e garanta que o onClick atualize o estado da trilha principal */}
@@ -88,30 +92,21 @@ export default function Explorar() {
                     </div>
                 </div>
 
-                <div className="vertical gap30">
-                    <div className="vertical gap5">
-                        <h1>Trilhas</h1>
+                <div className="vertical gap15">
+                    <div className="vertical gap15">
+                        <div className="horizontal justify center">
+                            <h1>Trilhas</h1>
+                            <SimpleButton path='/trilhas' tema='none'>Todas as Trilhas</SimpleButton>
+                        </div>
                         <DraggableCarousel
                             items={trilhasList}
                             activeId={trilhaSelecionada}
                             onChange={(id) => setTrilhaSelecionada(Number(id))}
                         />
-                        <SimpleButton path='/trilhas'>Todas as Trilhas</SimpleButton>
                     </div>
                     <div className="vertical gap15">
-                        <div className="vertical gap5">
-                            <h1>Pontos de interesse</h1>
-                            <div className="horizontal gap5 scroll">
-                                {trilhas.map((trilha) => (
-                                    <button
-                                        key={trilha.id}
-                                        onClick={() => setTrilhaSelecionada(trilha.id)}
-                                        className={trilhaSelecionada === trilha.id ? 'ativo' : ''}
-                                    >
-                                        {trilha.nome}
-                                    </button>
-                                ))}
-                            </div>
+                        <div className="vertical gap15">
+                            <h4>Pontos de interesse nesta trilha:</h4>
                             <div className="vertical gap5" id='pontosList'>
                                 {pontosList}
                             </div>

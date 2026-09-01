@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { usePageTitle } from "../../lib/hooks/usePageTitle";
+
 import { db } from "../../lib/dexie";
 import Select from '../../components/ui/form/Select.tsx';
 import CardTrilha from '../../components/ui/CardTrilha.tsx';
@@ -7,6 +9,8 @@ import { createPortal } from "react-dom";
 import '../styles/trilhas.css'
 
 export default function Trilhas() {
+
+    usePageTitle("Trilhas");
 
     const order = {
         "Nome A-Z": (a: any, b: any) => a.nome.localeCompare(b.nome),

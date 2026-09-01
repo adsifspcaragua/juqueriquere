@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { usePageTitle } from "../../lib/hooks/usePageTitle";
 
 import { db, type PontoInteresseDB } from "../../lib/dexie";
 
@@ -33,36 +34,35 @@ export default function Trilha() {
     const [pontosDados, setPontosDados] = useState<PontoInteresseDB[]>();
     const [pontoSelecionado, setPontoSelecionado] = useState<string>();
 
+    usePageTitle(trilha?.nome);
 
     useEffect(() => {
-        async function carregar() {
+    async function carregar() {
+        try {
             const resultado = await db.trilhas.get(id);
 
             if (!resultado) {
-                setLoading(false);
                 return;
             }
 
             const trilhaConvertida: TrilhaType = {
                 ...resultado,
                 id: resultado.id ?? 0,
-
                 pontos_interesse:
                     typeof resultado.pontos_interesse === "string"
                         ? JSON.parse(resultado.pontos_interesse)
                         : resultado.pontos_interesse ?? [],
-
                 ramais:
                     typeof resultado.ramais === "string"
                         ? JSON.parse(resultado.ramais)
                         : resultado.ramais ?? [],
-
                 pontos_no_mapa: Array.isArray(resultado.pontos_no_mapa)
                     ? resultado.pontos_no_mapa
                     : [],
             } as TrilhaType;
+
             const pontos = await db.pontos_interesse.where('trilha_id').equals(Number(id)).toArray();
-            setPontosDados(pontos)
+            setPontosDados(pontos);
 
             const imagens = await db.imagens.where('trilha_id').equals(Number(id)).toArray();
             const urls = imagens
@@ -72,11 +72,15 @@ export default function Trilha() {
             setImagemArray(urls);
 
             setTrilha(trilhaConvertida);
+        } catch (error) {
+            console.error(error);
+        } finally {
             setLoading(false);
         }
+    }
 
-        carregar();
-    }, [id]);
+    carregar();
+}, [id]);
 
     if (loading) {
         return (
@@ -112,15 +116,15 @@ export default function Trilha() {
 
     const findCarousselID = (
         targetName: string,
-        list: any[]
+        list: PontoInteresseDB[]
     ) => {
         const normalizedTarget = normalize(targetName);
 
         return list.find(
-            (ponto: any) =>
-                normalize(String(ponto.key)) ===
+            (ponto: PontoInteresseDB) =>
+                normalize(String(ponto.nome)) ===
                 normalizedTarget
-        )?.props.id;
+        )?.nome;
     };
 
     const options = {
@@ -206,6 +210,7 @@ export default function Trilha() {
                             {aba === "Mapa da trilha" && (
                                 <div className="vertical card gap15 switchCard">
 
+
                                     {(trilha.ramais ?? []).length >
                                         0 && (
                                             <Switch
@@ -223,6 +228,7 @@ export default function Trilha() {
                                         )
                                     }
 
+
                                     <div className="desktopWrap gap30">
                                         <div className="vertical gap5">
                                             <h1>Mapa da trilha</h1>
@@ -236,7 +242,7 @@ export default function Trilha() {
                                                         setPontoSelecionado(
                                                             findCarousselID(
                                                                 nome,
-                                                                pontosList
+                                                                pontosDados ?? []
                                                             )
                                                         )
                                                     }

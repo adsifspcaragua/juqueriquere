@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { usePageTitle } from "../../lib/hooks/usePageTitle";
+
 import Select from '../../components/ui/form/Select.tsx';
 import CardPonto from '../../components/ui/CardPonto.tsx';
 import { createPortal } from "react-dom";
@@ -7,6 +9,8 @@ import { db, type PontoInteresseDB } from '../../lib/dexie.ts';
 
 
 export default function Pontos() {
+    usePageTitle("Pontos de Interesse");
+
     const order = {
         "Nome A-Z": (a: any, b: any) => a.nome.localeCompare(b.nome),
         "Nome Z-A": (a: any, b: any) => b.nome.localeCompare(a.nome),

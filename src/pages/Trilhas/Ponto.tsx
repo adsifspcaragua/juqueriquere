@@ -1,5 +1,6 @@
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
+import { usePageTitle } from "../../lib/hooks/usePageTitle";
 
 import { db, type PontoInteresseDB } from '../../lib/dexie';
 
@@ -19,6 +20,8 @@ export default function Ponto() {
     const [trilha, setTrilha] = useState<TrilhaType | undefined>(undefined);
     const [ponto, setPontoDados] = useState<PontoInteresseDB>();
     const [imagens, setImagens] = useState<string[]>();
+
+    usePageTitle(ponto?.nome);
 
     useEffect(() => {
         async function carregar() {

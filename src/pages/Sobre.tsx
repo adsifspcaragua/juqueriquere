@@ -1,3 +1,5 @@
+import { usePageTitle } from "../lib/hooks/usePageTitle";
+
 import img_sede_administrativa from '../assets/img/sobre/Sede administrativa_.webp'
 import img_bancos_lixeiras from '../assets/img/sobre/Bancos + lixeiras de recicláveis.webp'
 import img_entrada_banheiros from '../assets/img/sobre/entrada dos banheiros.webp'
@@ -18,80 +20,74 @@ import Logo from '../assets/logo.webp';
 import SimpleButton from '../components/ui/buttons/SimpleButton'
 
 export default function Sobre(){
+    usePageTitle("Sobre");
 
     return(
         <>
             <div className="paddingHeader"></div>
             <section className='vertical conteudo' id='sobre'>
+                <div className="logo"><img src={Logo} alt="Logo Parque"/></div>
 
-                <div className="bannerInicio horizontal">
-                    <div className="conteudo vertical">
-                        <img src={Logo} alt="Logo Parque" />
-                        <p>
-                            O Parque Natural Municipal do Juqueriquerê (PNMJ) é um refúgio de biodiversidade em Caraguatatuba, que combina a preservação da Mata Atlântica com a beleza da flora e fauna às margens do maior rio da região. O espaço oferece uma experiência tranquila e educativa, contando com trilhas ecológicas, torre de observação e um deck panorâmico, sendo o destino ideal para quem busca lazer contemplativo fora do ambiente urbano e do circuito tradicional de praias
-                        </p>
-                    </div>
+                <div className='carrossel horizontal galeria'>
+                    <img src={img_sede_administrativa} className="carrosselCard" alt="Sede Administrativa"></img>
+                    <img src={img_bancos_lixeiras} alt="Bancos e Lixeiras de Recicláveis" className="carrosselCard"></img>
+                    <img src={img_entrada_banheiros} alt="Entrada dos Banheiros" className="carrosselCard"></img>
+                    <img src={img_estante_livros} alt="Estante de Livros" className="carrosselCard"></img>
+                    <img src={img_vista_sala_verde} alt="Vista da Sala Verde" className="carrosselCard"></img>
+                    <img src={img_bicicletario} alt="Bicicletário" className="carrosselCard"></img>
+                    <img src={img_doca_caiaques} alt="Doca dos Caiaques" className="carrosselCard"></img>
+                    <img src={img_entrada_sede_area_verde} alt="Entrada da Sede da Área Verde" className="carrosselCard"></img>
+                    <img src={img_lateral_esquerda_piquenique} alt="Lateral Esquerda da Área de Piquenique" className="carrosselCard"></img>
+                    <img src={img_placa_aves} alt="Placa de Aves" className="carrosselCard"></img>
+                    <img src={img_placa_caraguata} alt="Placa de Caraguatá" className="carrosselCard"></img>
+                    <img src={img_placa_esquilos} alt="Placa de Esquilos" className="carrosselCard"></img>
+                    <img src={img_placa_orientacoes_entrada} alt="Placa de Orientações da Entrada" className="carrosselCard"></img>
+                    <img src={img_placa_programa_mar_lixo} alt="Placa do Programa O Mar Não Está para Lixo" className="carrosselCard"></img>
+                    <img src={img_placa_roteiro_aguas} alt="Placa do Roteiro das Águas" className="carrosselCard"></img>
+                    <img src={img_vagas_especiais_bicicletario} alt="Vagas Especiais e Bicicletário" className="carrosselCard"></img>
                 </div>
 
-                <div className="vertical desktopWrap gap30">
-                    <div className="vertical gap5 w50">
-                        <h2>Galeria de imagens</h2>
-                        <div className='carrossel horizontal galeria'>
-                            <img src={img_sede_administrativa}  className="carrosselCard" alt="Sede Administrativa"></img>
-                            <img src={img_bancos_lixeiras} alt="Bancos e Lixeiras de Recicláveis" className="carrosselCard"></img>
-                            <img src={img_entrada_banheiros} alt="Entrada dos Banheiros" className="carrosselCard"></img>
-                            <img src={img_estante_livros} alt="Estante de Livros" className="carrosselCard"></img>
-                            <img src={img_vista_sala_verde} alt="Vista da Sala Verde" className="carrosselCard"></img>
-                            <img src={img_bicicletario} alt="Bicicletário" className="carrosselCard"></img>
-                            <img src={img_doca_caiaques} alt="Doca dos Caiaques" className="carrosselCard"></img>
-                            <img src={img_entrada_sede_area_verde} alt="Entrada da Sede da Área Verde" className="carrosselCard"></img>
-                            <img src={img_lateral_esquerda_piquenique} alt="Lateral Esquerda da Área de Piquenique" className="carrosselCard"></img>
-                            <img src={img_placa_aves} alt="Placa de Aves" className="carrosselCard"></img>
-                            <img src={img_placa_caraguata} alt="Placa de Caraguatá" className="carrosselCard"></img>
-                            <img src={img_placa_esquilos} alt="Placa de Esquilos" className="carrosselCard"></img>
-                            <img src={img_placa_orientacoes_entrada} alt="Placa de Orientações da Entrada" className="carrosselCard"></img>
-                            <img src={img_placa_programa_mar_lixo} alt="Placa do Programa O Mar Não Está para Lixo" className="carrosselCard"></img>
-                            <img src={img_placa_roteiro_aguas} alt="Placa do Roteiro das Águas" className="carrosselCard"></img>
-                            <img src={img_vagas_especiais_bicicletario} alt="Vagas Especiais e Bicicletário" className="carrosselCard"></img>
-                        </div>
-                    </div>
+                <p>
+                    Localizado às margens do Rio Juqueriquerê, é a primeira unidade de proteção integral da cidade, voltada à preservação da biodiversidade local, conservação dos ecossistemas e apoio à pesquisa científica.
+                    <br />
+                    <br />
+                    Com uma área aproximada de 35.000m2 destaca-se no cenário nacional de Unidades de Conservação. A área tem papel crucial por estar inserida na maior bacia hidrográfica do Litoral Norte — a do Rio Juqueriquerê — em uma região de intensa urbanização.
+                </p>
 
-                    <div className="vertical gap15 w50">
-                        <div className="vertical gap5">
+                <div className="linhaPontilhadaLight"></div>
+
+                <h1>Espaços do Parque</h1>
+                <div className="carrossel horizontal">
+                    <div className="carrosselCard espacoCard vertical" id='convivencia'>
+                        <div className="fade vertical gap5">
                             <h1>Área de Convivência</h1>
                             <p>
                                 Principal espaço de recepção e descanso do parque, totalmente integrado à natureza. Conta com jardins de Mata Atlântica, áreas de piquenique, observatório de aves, Sala Verde, comedouros para fauna e infraestrutura acessível.
                             </p>
                         </div>
-                    
-                        <div className="vertical gap5">
-                            <h2>Observações e Pontos de Interesse</h2>
-                            <ul>
-                                <li>Pavimentação acessível em bloquetes</li>
-                                <li>Sem obstáculos relevantes</li>
-                                <li>Possui banheiros acessíveis, bebedouro, bicicletário e estacionamento</li>
-                                <li>Disponível cadeira Julietti para PCD (até 70 kg)</li>
-                                <li>Observatório de aves com cerca de 10 m de altura</li>
-                                <li>Vista panorâmica da copa das árvores e do parque</li>
-                                <li>Bromélias de grande porte</li>
-                                <li>Exemplares de Ingá e árvores “Olho-de-boi”</li>
-                                <li>Área de piquenique sombreada</li>
-                                <li>Sala Verde para educação ambiental</li>
-                                <li>Biblioteca e estante de livros educativos</li>
-                                <li>Boxes de exposição temática</li>
-                                <li>Comedouros para aves, esquilos e borboletas</li>
-                                <li>Placas educativas sobre fauna e flora</li>
-                            </ul>
+                    </div>
+
+                    <div className="carrosselCard espacoCard vertical" id='salaverde'>
+                        <div className="fade vertical gap5">
+                            <h1>Sala Verde</h1>
+                            <p>
+                                Espaço dedicado à educação ambiental, utilizado para palestras, oficinas, atividades educativas e ações de conscientização sobre a preservação da natureza. Integrada ao ambiente natural do parque, a Sala Verde proporciona um local acolhedor para ...
+                            </p>
                         </div>
                     </div>
                 </div>
 
+                <div className="linhaPontilhadaLight"></div>
+
                 <div className="vertical gap5">
-                    <h2>Acessibilidade</h2>
+                    <h1>Acessibilidade</h1>
                     <p>O PNMJ oferece às pessoas com deficiência (PCD) a cadeira Julietti, que suporta até 70 kg para percorrer as trilhas com conforto.</p>
                 </div>
 
+                <div className="linhaPontilhadaLight"></div>
+
                 <div className="vertical gap15 desktopWrap3">
+                    <h1>Visite o Parque</h1>
                     <div className="vertical card" id='cardGrupo'>
                         <h1>Visitas em grupos</h1>
                         <p>
@@ -107,7 +103,7 @@ export default function Sobre(){
                     </div>
                     <div className="vertical card" id="cardHorario">
                         <h1>Horário de funcionamento</h1>
-                        <p>O parque está aberto para visitações de terça à sexta-feira das 9h30 às 16h30, e aos sábados, domingos e feriados das 9h às 16h.</p>
+                        <p>O parque está aberto para visitações de terça à sexta-feira das 9h30 às 16h30, e aos sábados, domingos e feriados das 9h às 16h.</p>
                     </div>
                     <div className="vertical card" id='cardEndereco'>
                         <h1>Endereço</h1>
