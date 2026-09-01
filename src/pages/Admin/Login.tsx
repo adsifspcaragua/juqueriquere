@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../../lib/supabase";
 
 import { login } from "../../lib/auth";
 
@@ -23,14 +24,24 @@ export default function Login() {
             return;
         }
 
+        const { data } = await supabase.auth.registerPasskey();
+
+        if (error) {
+            console.error("Erro ao cadastrar Passkey:");
+        } else {
+            console.log("Passkey cadastrada:", data);
+        }
+
         navigate("/admin");
     }
-    
+
     const handleKeyDown = (e: any) => {
         if (e.key === 'Enter') {
             fazerLogin();
         }
     };
+
+
 
     return (
         <div className="desktopWrap3">

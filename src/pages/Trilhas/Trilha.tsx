@@ -65,7 +65,11 @@ export default function Trilha() {
             setPontosDados(pontos)
 
             const imagens = await db.imagens.where('trilha_id').equals(Number(id)).toArray();
-            setImagemArray(imagens.map(img => img.caminho_arquivo).filter(Boolean) as string[]);
+            const urls = imagens
+                .filter(img => img.arquivo instanceof Blob)
+                .map(img => URL.createObjectURL(img.arquivo!));
+
+            setImagemArray(urls);
 
             setTrilha(trilhaConvertida);
             setLoading(false);
@@ -201,7 +205,7 @@ export default function Trilha() {
                             )}
                             {aba === "Mapa da trilha" && (
                                 <div className="vertical card gap15 switchCard">
-                                    
+
                                     {(trilha.ramais ?? []).length >
                                         0 && (
                                             <Switch
@@ -218,7 +222,7 @@ export default function Trilha() {
                                             />
                                         )
                                     }
-                                    
+
                                     <div className="desktopWrap gap30">
                                         <div className="vertical gap5">
                                             <h1>Mapa da trilha</h1>

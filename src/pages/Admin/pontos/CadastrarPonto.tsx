@@ -4,11 +4,11 @@ import { db, type ImagemDB } from "../../../lib/dexie.ts";
 import SimpleButton from "../../../components/ui/buttons/SimpleButton.tsx";
 import DraggableCarousel from "../../../components/ui/DraggableCarousel.tsx";
 import AutoResizeTextarea from "../../../utils/AutoResizeTextarea.tsx";
-import { convertToWebPBase64 } from "../../../utils/imageConverter.ts";
+import { convertToWebP } from "../../../utils/imageConverter.ts";
 
 // Importações necessárias para simular a página Ponto.tsx no preview
 import TrilhasMap from "../../../components/ui/TrilhasMap.tsx";
-import "../../styles/ponto.css"; 
+import "../../styles/ponto.css";
 
 interface Trilha {
     id: number;
@@ -20,7 +20,7 @@ export default function CadastrarPontoInteresse() {
 
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
     const [trilhaSelecionada, setTrilhaSelecionada] = useState<number | null>(null);
-    
+
     const [imagensSelecionadas, setImagensSelecionadas] = useState<File[]>([]);
     const [imagensBase64, setImagensBase64] = useState<string[]>([]);
     const [carregando, setCarregando] = useState(false);
@@ -49,18 +49,39 @@ export default function CadastrarPontoInteresse() {
         carregarTrilhas();
     }, []);
 
-    async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-        if (e.target.files) {
-            const files = Array.from(e.target.files);
-            const novosBase64: string[] = [];
-            for (const file of files) {
-                const base64 = await convertToWebPBase64(file, 0.8);
-                novosBase64.push(base64);
-            }
-            setImagensBase64(novosBase64);
-            setImagensSelecionadas(files);
+
+    async function handleFileChange(
+        e: React.ChangeEvent<HTMLInputElement>
+    ) {
+        if (!e.target.files) return;
+
+        const files = Array.from(e.target.files);
+
+        const novosBase64: string[] = [];
+
+        for (const file of files) {
+            const base64 = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+
+                reader.onload = () => {
+                    resolve(reader.result as string);
+                };
+
+                reader.onerror = () => {
+                    reject(new Error("Erro ao carregar imagem."));
+                };
+
+                reader.readAsDataURL(file);
+            });
+
+            novosBase64.push(base64);
         }
+
+        setImagensSelecionadas(files);
+        setImagensBase64(novosBase64);
     }
+
+
 
     function handleRemoveImage(indexToRemove: number) {
         setImagensSelecionadas((prev) => prev.filter((_, idx) => idx !== indexToRemove));
@@ -70,7 +91,7 @@ export default function CadastrarPontoInteresse() {
     // --- GERA OS DADOS PARA O PREVIEW ---
     function handleAtivarPreview() {
         if (!formRef.current) return;
-        
+
         const formData = new FormData(formRef.current);
         setDadosPreview({
             nome: formData.get("nome") as string,
@@ -111,7 +132,7 @@ export default function CadastrarPontoInteresse() {
 
             if (imagensSelecionadas.length > 0) {
                 const promessasImagens = imagensSelecionadas.map(async (file, index) => {
-                    const stringWebPBase64 = await convertToWebPBase64(file, 0.8);
+                    const stringWebPBase64 = await convertToWebP(file, 0.8);
                     return {
                         trilha_id: null,
                         ponto_interesse_id: novoPonto.id,
@@ -139,7 +160,7 @@ export default function CadastrarPontoInteresse() {
             setImagensSelecionadas([]);
             setImagensBase64([]);
             setPreviewAtivo(false);
-            
+
         } catch (error: any) {
             console.error(error);
             alert(`Erro ao cadastrar: ${error.message || error}`);
@@ -196,7 +217,7 @@ export default function CadastrarPontoInteresse() {
                                         <TrilhasMap id={trilhaSelecionada ? [trilhaSelecionada] : []} />
                                     </div>
                                 )}
-                            
+
                                 <div className="vertical gap5">
                                     <p>Aparece em:</p>
                                     <SimpleButton tema='dark' raio='10'>{nomeTrilhaSelecionada}</SimpleButton>
@@ -245,53 +266,53 @@ export default function CadastrarPontoInteresse() {
 
                     <div className="vertical gap5">
                         <label>Nome:</label>
-                        <input 
-                            name="nome" 
-                            required 
-                            disabled={carregando} 
-                            defaultValue={dadosPreview?.nome ?? ""} 
+                        <input
+                            name="nome"
+                            required
+                            disabled={carregando}
+                            defaultValue={dadosPreview?.nome ?? ""}
                         />
                     </div>
 
                     <div className="vertical gap5">
                         <label>Nome Científico / Planta (Opcional):</label>
-                        <input 
-                            name="planta" 
-                            disabled={carregando} 
-                            defaultValue={dadosPreview?.planta ?? ""} 
+                        <input
+                            name="planta"
+                            disabled={carregando}
+                            defaultValue={dadosPreview?.planta ?? ""}
                         />
                     </div>
 
                     <div className="vertical gap5">
                         <label>Descrição:</label>
-                        <AutoResizeTextarea 
-                            name="descricao" 
-                            placeholder="Descreva o ponto de interesse..." 
-                            disabled={carregando} 
-                            defaultValue={dadosPreview?.descricao ?? ""} 
+                        <AutoResizeTextarea
+                            name="descricao"
+                            placeholder="Descreva o ponto de interesse..."
+                            disabled={carregando}
+                            defaultValue={dadosPreview?.descricao ?? ""}
                         />
                     </div>
 
                     <div className="horizontal gap15">
                         <div>
                             <label>Latitude:</label>
-                            <input 
-                                type="number" 
-                                step="any" 
-                                name="latitude" 
-                                disabled={carregando} 
-                                defaultValue={dadosPreview?.latitude ?? ""} 
+                            <input
+                                type="number"
+                                step="any"
+                                name="latitude"
+                                disabled={carregando}
+                                defaultValue={dadosPreview?.latitude ?? ""}
                             />
                         </div>
 
                         <div>
                             <label>Longitude:</label>
-                            <input 
-                                type="number" 
-                                step="any" 
-                                name="longitude" 
-                                disabled={carregando} 
-                                defaultValue={dadosPreview?.longitude ?? ""} 
+                            <input
+                                type="number"
+                                step="any"
+                                name="longitude"
+                                disabled={carregando}
+                                defaultValue={dadosPreview?.longitude ?? ""}
                             />
                         </div>
                     </div>
@@ -315,12 +336,12 @@ export default function CadastrarPontoInteresse() {
                                     items={imagensSelecionadas.map((file, idx) => (
                                         <div key={idx} className="uploadPreview vertical gap5 carrosselCard">
                                             <img src={imagensBase64[idx]} alt={file.name} />
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 onClick={() => handleRemoveImage(idx)}
                                                 disabled={carregando}
                                             >
-                                                Remover 
+                                                Remover
                                             </button>
                                             <p>{file.name}</p>
                                         </div>
@@ -332,17 +353,17 @@ export default function CadastrarPontoInteresse() {
 
                     {/* Botões de Ação na parte inferior do formulário */}
                     <div className="horizontal gap15" style={{ marginTop: '10px' }}>
-                        <button 
-                            type="button" 
-                            className="btn-preview" 
+                        <button
+                            type="button"
+                            className="btn-preview"
                             onClick={handleAtivarPreview}
                             style={{ background: '#4a5568', color: '#fff', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer', flex: 1 }}
                         >
                             Visualizar Preview da Página
                         </button>
-                        
-                        <button 
-                            type="submit" 
+
+                        <button
+                            type="submit"
                             disabled={carregando}
                             style={{ flex: 1 }}
                         >

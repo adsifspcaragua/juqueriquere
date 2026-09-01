@@ -4,6 +4,14 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    allowedHosts: ['frontend_web', 'my-custom-domain.com'], // Explicit list
+    // OR allow all hosts (not recommended for security)
+    // allowedHosts: true
+  },
+  preview: {
+    allowedHosts: ['frontend_web', 'my-custom-domain.com']
+  },
   plugins: [react(),
   VitePWA({
     registerType: 'autoUpdate',
@@ -55,6 +63,7 @@ export default defineConfig({
       cleanupOutdatedCaches: true,
       clientsClaim: true,
       skipWaiting: true,
+
 
       navigateFallback: '/index.html',
       runtimeCaching: [

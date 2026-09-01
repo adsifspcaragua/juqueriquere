@@ -7,7 +7,7 @@ export interface PontoInteresseDB {
   nome: string;
   descricao: string;
   planta?: string;
-  latitude?: number | null; 
+  latitude?: number | null;
   longitude?: number | null;
 }
 
@@ -43,8 +43,18 @@ export interface ImagemDB {
   id: number;
   trilha_id?: number | null;
   ponto_interesse_id?: number | null;
+
+  // Caminho do arquivo no Supabase Storage
   caminho_arquivo: string;
+
   legenda?: string;
+
+  // Cópia local para funcionamento offline
+  arquivo?: Blob;
+
+  // URL temporária criada a partir do Blob
+  // Não é persistida; pode ser criada em runtime.
+  url_local?: string;
 }
 
 export interface MetadataDB {
@@ -66,7 +76,17 @@ export class JuqueriquereDB extends Dexie {
     this.version(1).stores({
       trilhas: "id",
       pontos_interesse: "id,trilha_id",
-      ramais: "id,trilha_id",
+      ramais: "id",
+      informacoes_parque: "id",
+      imagens: "id,trilha_id,ponto_interesse_id",
+      metadata: "chave"
+    });
+
+    // Nova versão para permitir o campo arquivo.
+    this.version(2).stores({
+      trilhas: "id",
+      pontos_interesse: "id,trilha_id",
+      ramais: "id",
       informacoes_parque: "id",
       imagens: "id,trilha_id,ponto_interesse_id",
       metadata: "chave"

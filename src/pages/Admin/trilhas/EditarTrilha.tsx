@@ -5,53 +5,162 @@ import { supabase } from "../../../lib/supabase";
 import SimpleButton from "../../../components/ui/buttons/SimpleButton";
 import DraggableCarousel from "../../../components/ui/DraggableCarousel";
 import AutoResizeTextarea from "../../../utils/AutoResizeTextarea.tsx";
-import { convertToWebPBase64 } from "../../../utils/imageConverter.ts";
+import { convertToWebP } from "../../../utils/imageConverter.ts";
+import { uploadImagem } from "../../../lib/services/images.ts";
 
 export default function EditarTrilha() {
+
     const { id } = useParams();
     const [trilha, setTrilha] = useState<any>(null);
     const [carregando, setCarregando] = useState(false);
+    const [imagensSalvasUrls, setImagensSalvasUrls] = useState<Record<number, string>>({});
 
     // Estados para controle das imagens
     const [imagensSalvas, setImagensSalvas] = useState<ImagemDB[]>([]);
     const [imagensDeletadasIds, setImagensDeletadasIds] = useState<number[]>([]);
     const [novasImagens, setNovasImagens] = useState<File[]>([]);
     const [novasImagensBase64, setNovasImagensBase64] = useState<string[]>([]);
-    
+
     useEffect(() => {
         async function load() {
-            const data = await db.trilhas.get(Number(id));
-            setTrilha(data);
+            try {
+                const idNumerico = Number(id);
 
-            const imgs = await db.imagens.where("trilha_id").equals(Number(id)).toArray();
-            setImagensSalvas(imgs);
+                console.log(" ID da trilha:", id);
+                console.log(" ID numérico:", idNumerico);
+
+                if (!id || Number.isNaN(idNumerico)) {
+                    console.error("ID da trilha inválido:", id);
+                    setTrilha(null);
+                    return;
+                }
+
+                // Primeiro tenta buscar no Dexie
+                let data = await db.trilhas.get(idNumerico);
+
+                // Se não encontrar offline, busca no Supabase
+                if (!data) {
+                    console.log("Trilha não encontrada no Dexie. Buscando no Supabase...");
+
+                    const { data: trilhaSupabase, error } = await supabase
+                        .from("trilhas")
+                        .select("*")
+                        .eq("id", idNumerico)
+                        .single();
+
+                    if (error) {
+                        console.error("Erro ao buscar trilha:", error);
+                        setTrilha(null);
+                        return;
+                    }
+
+                    data = trilhaSupabase;
+
+                    // Guarda no Dexie para funcionar offline depois
+                    await db.trilhas.put(data);
+                }
+
+                console.log("Trilha carregada:", data);
+
+                setTrilha(data);
+
+                const imgs = await db.imagens
+                    .where("trilha_id")
+                    .equals(idNumerico)
+                    .toArray();
+
+                console.log("Imagens encontradas:", imgs);
+
+                setImagensSalvas(imgs);
+
+                const urls: Record<number, string> = {};
+
+                for (const img of imgs) {
+                    if (img.arquivo instanceof Blob && img.id != null) {
+                        urls[img.id] = URL.createObjectURL(img.arquivo);
+                    }
+                }
+
+                setImagensSalvasUrls(urls);
+            } catch (error) {
+                console.error("Erro ao carregar trilha:", error);
+                setTrilha(null);
+            }
+        }
+
+        async function loadUser() {
+            const { data } = await supabase.auth.getSession();
+            console.log("Sessão:", data.session);
         }
 
         load();
+        loadUser();
+
+        return () => {
+            setImagensSalvasUrls((urls) => {
+                Object.values(urls).forEach((url) => {
+                    URL.revokeObjectURL(url);
+                });
+
+                return {};
+            });
+        };
     }, [id]);
 
     // Manipula a seleção de novos arquivos (igual ao cadastro, mas adicionando à lista)
-    async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-        if (e.target.files) {
-            const files = Array.from(e.target.files);
-            const novosBase64: string[] = [];
 
-            for (const file of files) {
-                const base64 = await convertToWebPBase64(file, 0.8);
-                novosBase64.push(base64);
-            }
+    async function handleFileChange(
+        e: React.ChangeEvent<HTMLInputElement>
+    ) {
+        if (!e.target.files) return;
 
-            setNovasImagensBase64((prev) => [...prev, ...novosBase64]);
-            setNovasImagens((prev) => [...prev, ...files]);
+        const files = Array.from(e.target.files);
+        const novosBase64: string[] = [];
+
+        for (const file of files) {
+            const base64 = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+
+                reader.onload = () => {
+                    resolve(reader.result as string);
+                };
+
+                reader.onerror = () => {
+                    reject(new Error("Erro ao carregar imagem."));
+                };
+
+                reader.readAsDataURL(file);
+            });
+
+            novosBase64.push(base64);
         }
+
+        setNovasImagens((prev) => [...prev, ...files]);
+        setNovasImagensBase64((prev) => [...prev, ...novosBase64]);
     }
+
 
     // Remove uma imagem que já estava salva no banco (coloca o ID na fila de exclusão)
     function handleRemoveSavedImage(img: ImagemDB, indexToRemove: number) {
         if (img.id) {
             setImagensDeletadasIds((prev) => [...prev, img.id!]);
+
+            const url = imagensSalvasUrls[img.id];
+
+            if (url) {
+                URL.revokeObjectURL(url);
+            }
+
+            setImagensSalvasUrls((prev) => {
+                const novas = { ...prev };
+                delete novas[img.id!];
+                return novas;
+            });
         }
-        setImagensSalvas((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+
+        setImagensSalvas((prev) =>
+            prev.filter((_, idx) => idx !== indexToRemove)
+        );
     }
 
     // Remove uma imagem nova que acabou de ser selecionada
@@ -103,43 +212,72 @@ export default function EditarTrilha() {
 
             // Salva as novas imagens (se houver) no Supabase e no Dexie
             if (novasImagens.length > 0) {
-                const promessasImagens = novasImagens.map(async (file, index) => {
-                    const stringWebPBase64 = await convertToWebPBase64(file, 0.8);
-                    // Conta quantas imagens restaram para continuar a numeração da legenda
-                    const totalExistentes = imagensSalvas.length; 
-                    return {
+                const novasImagensSalvas: ImagemDB[] = [];
+
+                const totalExistentes = imagensSalvas.length;
+
+                for (let index = 0; index < novasImagens.length; index++) {
+                    const file = novasImagens[index];
+
+                    // Converte a imagem para WebP
+                    const blobWebP = await convertToWebP(file, 0.8);
+
+                    // Caminho REAL dentro do Storage
+                    const caminho = `trilhas/${id}/${totalExistentes + index + 1}.webp`;
+
+                    console.log("Processando imagem:", {
+                        arquivoOriginal: file.name,
+                        tamanhoOriginal: file.size,
+                        tamanhoWebP: blobWebP.size,
+                        caminho,
+                    });
+
+                    // 1. Envia o arquivo físico para o Storage
+                    await uploadImagem(blobWebP, caminho);
+
+                    // 2. Cria registro da tabela imagens
+                    novasImagensSalvas.push({
+                        id: Date.now() + index,
                         trilha_id: Number(id),
                         ponto_interesse_id: null,
-                        caminho_arquivo: stringWebPBase64,
-                        legenda: `Imagem ${totalExistentes + index + 1} da trilha ${trilhaAtualizada.nome}`
-                    };
-                });
-
-                const dadosImagens = await Promise.all(promessasImagens);
-
-                const { data: novasImagensSalvas, error: erroImagens } = await supabase
-                    .from("imagens")
-                    .insert(dadosImagens)
-                    .select();
-
-                if (erroImagens) throw erroImagens;
-
-                if (novasImagensSalvas) {
-                    await db.imagens.bulkPut(novasImagensSalvas as ImagemDB[]);
-                    // Atualiza o estado local para unificar as imagens
-                    setImagensSalvas((prev) => [...prev, ...(novasImagensSalvas as ImagemDB[])]);
+                        caminho_arquivo: caminho,
+                        legenda: `Imagem ${totalExistentes + index + 1} da trilha ${trilhaAtualizada.nome}`,
+                        arquivo: blobWebP,
+                    });
                 }
 
-                // Limpa o estado temporário de uploads
-                setNovasImagens([]);
-                setNovasImagensBase64([]);
+                // 3. Salva somente os metadados no Supabase
+                const dadosImagens = novasImagensSalvas.map((imagem) => ({
+                    trilha_id: imagem.trilha_id,
+                    ponto_interesse_id: imagem.ponto_interesse_id,
+                    caminho_arquivo: imagem.caminho_arquivo,
+                    legenda: imagem.legenda,
+                }));
+
+                const { data: imagensInseridas, error: erroImagens } =
+                    await supabase
+                        .from("imagens")
+                        .insert(dadosImagens)
+                        .select();
+
+                if (erroImagens) {
+                    console.error("Erro ao salvar imagens no banco:", erroImagens);
+                    throw erroImagens;
+                }
+
+                console.log("Imagens salvas no banco:", imagensInseridas);
+
+                // 4. Salva o Blob no Dexie para funcionar offline
+                const imagensDexie = imagensInseridas.map((imagem, index) => ({
+                    ...imagem,
+                    arquivo: novasImagensSalvas[index].arquivo,
+                }));
+
+                await db.imagens.bulkPut(imagensDexie);
+
+                console.log("Imagens salvas no Dexie:", imagensDexie);
+
             }
-
-            // Atualiza os dados da trilha no Dexie local
-            await db.trilhas.put(trilhaAtualizada);
-            setTrilha(trilhaAtualizada);
-
-            alert("Trilha e imagens atualizadas com sucesso!");
         } catch (error: any) {
             console.error(error);
             alert(`Erro ao atualizar: ${error.message || error}`);
@@ -232,9 +370,12 @@ export default function EditarTrilha() {
                                         // Renderiza as imagens que já estão salvas no banco
                                         ...imagensSalvas.map((img, idx) => (
                                             <div key={`salva-${img.id || idx}`} className="uploadPreview vertical gap5 carrosselCard">
-                                                <img src={img.caminho_arquivo} alt={img.legenda} />
-                                                <button 
-                                                    type="button" 
+                                                <img
+                                                    src={imagensSalvasUrls[img.id] ?? ""}
+                                                    alt={img.legenda}
+                                                />
+                                                <button
+                                                    type="button"
                                                     onClick={() => handleRemoveSavedImage(img, idx)}
                                                     disabled={carregando}
                                                     className="btn-red"
@@ -248,8 +389,8 @@ export default function EditarTrilha() {
                                         ...novasImagens.map((file, idx) => (
                                             <div key={`nova-${idx}`} className="uploadPreview vertical gap5 carrosselCard">
                                                 <img src={novasImagensBase64[idx]} alt={file.name} />
-                                                <button 
-                                                    type="button" 
+                                                <button
+                                                    type="button"
                                                     onClick={() => handleRemoveNewImage(idx)}
                                                     disabled={carregando}
                                                 >

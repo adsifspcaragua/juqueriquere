@@ -5,7 +5,8 @@ import { db, type ImagemDB, type PontoInteresseDB } from "../../../lib/dexie.ts"
 import SimpleButton from "../../../components/ui/buttons/SimpleButton.tsx";
 import DraggableCarousel from "../../../components/ui/DraggableCarousel.tsx";
 import AutoResizeTextarea from "../../../utils/AutoResizeTextarea.tsx";
-import { convertToWebPBase64 } from "../../../utils/imageConverter.ts";
+import { convertToWebP } from "../../../utils/imageConverter.ts";
+import { uploadImagem } from "../../../lib/services/images.ts";
 
 interface Trilha {
     id: number;
@@ -20,7 +21,7 @@ export default function EditarPontoInteresse() {
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
     const [pontoAtual, setPontoAtual] = useState<PontoInteresseDB | null>(null);
     const [trilhaSelecionada, setTrilhaSelecionada] = useState<number | null>(null);
-    
+
     // Controle de imagens existentes no banco
     const [imagensAntigas, setImagensAntigas] = useState<ImagemDB[]>([]);
     const [imagensParaRemover, setImagensParaRemover] = useState<number[]>([]);
@@ -28,7 +29,7 @@ export default function EditarPontoInteresse() {
     // Controle de novas imagens a serem adicionadas
     const [imagensNovas, setImagensNovas] = useState<File[]>([]);
     const [imagensBase64, setImagensBase64] = useState<string[]>([]);
-    
+
     const [carregando, setCarregando] = useState(true);
 
     useEffect(() => {
@@ -56,7 +57,7 @@ export default function EditarPontoInteresse() {
                         .select("*")
                         .eq("id", id)
                         .single();
-                    
+
                     if (pontoError) throw pontoError;
                     if (pontoData) {
                         setPontoAtual(pontoData);
@@ -73,7 +74,7 @@ export default function EditarPontoInteresse() {
                         .from("imagens")
                         .select("*")
                         .eq("ponto_interesse_id", id);
-                        
+
                     if (imagensData) setImagensAntigas(imagensData);
                 }
 
@@ -89,18 +90,31 @@ export default function EditarPontoInteresse() {
     }, [id]);
 
     async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-        if (e.target.files) {
-            const files = Array.from(e.target.files);
-            const novosBase64: string[] = [];
+        if (!e.target.files) return;
 
-            for (const file of files) {
-                const base64 = await convertToWebPBase64(file, 0.8);
-                novosBase64.push(base64);
-            }
+        const files = Array.from(e.target.files);
+        const novosBase64: string[] = [];
 
-            setImagensBase64((prev) => [...prev, ...novosBase64]);
-            setImagensNovas((prev) => [...prev, ...files]);
+        for (const file of files) {
+            const base64 = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+
+                reader.onload = () => {
+                    resolve(reader.result as string);
+                };
+
+                reader.onerror = () => {
+                    reject(new Error("Erro ao carregar imagem."));
+                };
+
+                reader.readAsDataURL(file);
+            });
+
+            novosBase64.push(base64);
         }
+
+        setImagensBase64((prev) => [...prev, ...novosBase64]);
+        setImagensNovas((prev) => [...prev, ...files]);
     }
 
     function handleRemoveNovaImagem(indexToRemove: number) {
@@ -153,7 +167,7 @@ export default function EditarPontoInteresse() {
                     .in("id", imagensParaRemover);
 
                 if (erroDeleteImagens) throw erroDeleteImagens;
-                
+
                 await db.imagens.bulkDelete(imagensParaRemover);
             }
 
@@ -185,7 +199,7 @@ export default function EditarPontoInteresse() {
 
             alert("Ponto de interesse atualizado com sucesso!");
             navigate("/admin/pontos"); // Volta para a lista após salvar
-            
+
         } catch (error: any) {
             console.error(error);
             alert(`Erro ao atualizar: ${error.message || error}`);
@@ -230,50 +244,50 @@ export default function EditarPontoInteresse() {
 
                     <div className="vertical gap5">
                         <label>Nome:</label>
-                        <input 
-                            name="nome" 
-                            defaultValue={pontoAtual?.nome} 
-                            required 
-                            disabled={carregando} 
+                        <input
+                            name="nome"
+                            defaultValue={pontoAtual?.nome}
+                            required
+                            disabled={carregando}
                         />
                     </div>
 
                     <div className="vertical gap5">
                         <label>Descrição:</label>
                         {/* Verifique se AutoResizeTextarea aceita a prop defaultValue, caso contrário ajuste no seu componente */}
-                        <AutoResizeTextarea 
-                            name="descricao" 
-                            defaultValue={pontoAtual?.descricao || ""} 
-                            placeholder="Descreva o ponto de interesse..." 
-                            disabled={carregando} 
+                        <AutoResizeTextarea
+                            name="descricao"
+                            defaultValue={pontoAtual?.descricao || ""}
+                            placeholder="Descreva o ponto de interesse..."
+                            disabled={carregando}
                         />
                     </div>
 
                     <div className="horizontal gap15">
                         <div>
                             <label>Latitude:</label>
-                            <input 
-                                type="number" 
-                                step="any" 
-                                name="latitude" 
-                                defaultValue={pontoAtual?.latitude || ""} 
-                                disabled={carregando} 
+                            <input
+                                type="number"
+                                step="any"
+                                name="latitude"
+                                defaultValue={pontoAtual?.latitude || ""}
+                                disabled={carregando}
                             />
                         </div>
 
                         <div>
                             <label>Longitude:</label>
-                            <input 
-                                type="number" 
-                                step="any" 
-                                name="longitude" 
-                                defaultValue={pontoAtual?.longitude || ""} 
-                                disabled={carregando} 
+                            <input
+                                type="number"
+                                step="any"
+                                name="longitude"
+                                defaultValue={pontoAtual?.longitude || ""}
+                                disabled={carregando}
                             />
                         </div>
                     </div>
 
-                    <hr style={{ opacity: 0.2, margin: '10px 0' }}/>
+                    <hr style={{ opacity: 0.2, margin: '10px 0' }} />
 
                     {/* IMAGENS EXISTENTES */}
                     {imagensAntigas.length > 0 && (
@@ -283,8 +297,8 @@ export default function EditarPontoInteresse() {
                                 items={imagensAntigas.map((imagem) => (
                                     <div key={imagem.id} className="uploadPreview vertical gap5 carrosselCard">
                                         <img src={imagem.caminho_arquivo} alt="Imagem salva" />
-                                        <button 
-                                            type="button" 
+                                        <button
+                                            type="button"
                                             onClick={() => handleRemoveImagemAntiga(imagem)}
                                             disabled={carregando}
                                             className="btn-red"
@@ -317,12 +331,12 @@ export default function EditarPontoInteresse() {
                                     items={imagensNovas.map((file, idx) => (
                                         <div key={idx} className="uploadPreview vertical gap5 carrosselCard">
                                             <img src={imagensBase64[idx]} alt={file.name} />
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 onClick={() => handleRemoveNovaImagem(idx)}
                                                 disabled={carregando}
                                             >
-                                                Remover 
+                                                Remover
                                             </button>
                                             <p>{file.name}</p>
                                         </div>
