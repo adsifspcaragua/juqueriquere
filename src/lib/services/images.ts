@@ -4,7 +4,7 @@ export async function uploadImagem(
     arquivo: File | Blob,
     caminho: string
 ) {
-    console.log("📤 Enviando imagem para o Storage:");
+    console.log("Enviando imagem para o Storage:");
     console.log("Caminho:", caminho);
     console.log("Tipo:", arquivo.type);
     console.log("Tamanho:", arquivo.size);
