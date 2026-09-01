@@ -6,7 +6,6 @@ import SimpleButton from "../../../components/ui/buttons/SimpleButton.tsx";
 import DraggableCarousel from "../../../components/ui/DraggableCarousel.tsx";
 import AutoResizeTextarea from "../../../utils/AutoResizeTextarea.tsx";
 import { convertToWebP } from "../../../utils/imageConverter.ts";
-import { uploadImagem } from "../../../lib/services/images.ts";
 
 interface Trilha {
     id: number;
@@ -174,7 +173,7 @@ export default function EditarPontoInteresse() {
             // 3. Adiciona as novas imagens selecionadas
             if (imagensNovas.length > 0) {
                 const promessasImagens = imagensNovas.map(async (file, index) => {
-                    const stringWebPBase64 = await convertToWebPBase64(file, 0.8);
+                    const stringWebPBase64 = await convertToWebP(file, 0.8);
                     return {
                         trilha_id: null,
                         ponto_interesse_id: Number(id),

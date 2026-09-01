@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { db, type ImagemDB } from "../../../lib/dexie";
+import { db, type ImagemDB, type TrilhaDB } from "../../../lib/dexie";
 import { supabase } from "../../../lib/supabase";
 import SimpleButton from "../../../components/ui/buttons/SimpleButton";
 import DraggableCarousel from "../../../components/ui/DraggableCarousel";
@@ -57,7 +57,7 @@ export default function EditarTrilha() {
                     data = trilhaSupabase;
 
                     // Guarda no Dexie para funcionar offline depois
-                    await db.trilhas.put(data);
+                    await db.trilhas.put(data as TrilhaDB);
                 }
 
                 console.log("Trilha carregada:", data);
