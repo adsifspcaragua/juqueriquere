@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ProtectedRoute from "./components/Protected.tsx";
+import { usePageTitle } from "./lib/hooks/usePageTitle.ts";
 
 import ScrollToTop from "./components/Scroll.tsx";
 
@@ -52,6 +53,8 @@ function PageTransition({ children }: { children: React.ReactNode }) {
 }
 
 const HomePage = () => {
+	usePageTitle("Início");
+	
 	const [openScanner, setOpenScanner] = useState(false);
 
 	return (

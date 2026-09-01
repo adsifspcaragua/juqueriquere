@@ -8,6 +8,9 @@ footer{
     img{
         height: 70px;
     }
+    p{
+        text-align: center;
+    }
 }
 
 @media (width > 850px){

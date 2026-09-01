@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const SITE_NAME = "Parque Natural Municipal do Juqueriquerê";
+const SITE_NAME = "Parque Natural Municipal Juqueriquerê";
 
 export function usePageTitle(title?: string) {
 	useEffect(() => {
