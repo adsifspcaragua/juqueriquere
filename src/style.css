@@ -103,8 +103,14 @@ body{
     background-position: center;
     align-items: end;
     padding: 20px;
+    margin: 0 5%;
+    margin-top: 30px;
     border-radius: 20px;
     margin-bottom: 20px;
+
+    .paddingHeader{
+        display: none;
+    }
 
     .conteudo{
         width: 100%;
@@ -605,10 +611,19 @@ ul{
         flex-direction: row;
     }
     .bannerInicio{
+        margin: 0;
+        margin-bottom: 30px;
+        border-radius: 0;
+        padding: 5%;
+
+        .paddingHeader{
+            display: flex;
+        }
+
         align-items: center;
         .conteudo {
             width: 50%;
-            margin: 50px 0;
+            margin: 0;
         }
     }
     .img-fade{
@@ -620,18 +635,23 @@ ul{
     #capivara{
         background-image: url(./assets/img/CapivaraDesktop.webp);
     }
+    #scannercard{
+        height: 100%;
+    }
     #CarrosselInicio{
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         margin: 0;
-        padding: 0;
+        padding: 0 !important;
         gap: 20px;
         width: 70%;
         justify-content: space-between;
         overflow: hidden;
-    }
-    .carrosselCard{
-        min-width: none;
-        min-width: 30%;
+
+        #trilhas, #especies{
+            min-width: 0 !important;
+            width: 100% !important;
+        }
     }
 
     #detalheTrilha{

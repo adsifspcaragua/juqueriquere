@@ -59,25 +59,23 @@ const HomePage = () => {
 
 	return (
 		<PageTransition>
-			<div className="paddingHeader"></div>
+			<div className="bannerInicio horizontal">
+				<div className="conteudo vertical">
+					<div className="paddingHeader"></div>
+					<img src={Logo} alt="Logo Parque" />
+
+					<p>
+						Localizado às margens do Rio Juqueriquerê, o Parque Natural Municipal do Juqueriquerê é a primeira unidade de conservação de proteção integral municipal, cujos objetivos básicos são a preservação dos ecossistemas e biodiversidade e a realização de pesquisa científica.
+					</p>
+
+					<SimpleButton raio="10" path="/sobre/">
+						Mais informações
+					</SimpleButton>
+				</div>
+			</div>
 
 			<section className="conteudo vertical" id="inicio">
 				<div className="vertical">
-
-					<div className="bannerInicio horizontal">
-						<div className="conteudo vertical">
-							<img src={Logo} alt="Logo Parque" />
-
-							<p>
-								Localizado às margens do Rio Juqueriquerê, o Parque Natural Municipal do Juqueriquerê é a primeira unidade de conservação de proteção integral municipal, cujos objetivos básicos são a preservação dos ecossistemas e biodiversidade e a realização de pesquisa científica.
-							</p>
-
-							<SimpleButton raio="10" path="/sobre/">
-								Mais informações
-							</SimpleButton>
-						</div>
-					</div>
-
 					<div className="vertical" id="scannercard">
 						<div className="vertical">
 							<h1>Vamos explorar?</h1>
@@ -132,6 +130,12 @@ const HomePage = () => {
 
 				</div>
 			</section>
+
+			<section>
+				<h1>Mais vistos</h1>
+				<h4>!!! Lista de trilhas mais vistas vai aqui !!!</h4>
+			</section>
+			<br />
 
 			{openScanner && (
 				<Scanner onClose={() => setOpenScanner(false)} />
