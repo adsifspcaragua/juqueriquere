@@ -147,6 +147,7 @@ body{
     background-position: center bottom;
 
     padding: 20px;
+    justify-content: space-between;
     gap: 15px;
     border-radius: 20px;
 
@@ -504,6 +505,7 @@ ul{
     img{width: 22px;}
 }
 .linhaVertical{min-height: 100%;width: 1px !important;border-right: 1px solid var(--verdeClaro);}
+.linhaHorizontal{height: 1px;min-width: 100% !important;border-top: 1px solid var(--verdeClaro);}
 
 /*--  --*/
 .listaGrid{
