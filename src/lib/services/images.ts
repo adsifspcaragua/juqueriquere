@@ -22,7 +22,7 @@ export async function uploadImagem(
         throw error;
     }
 
-    console.log("✅ Imagem enviada:", data);
+    console.log("Imagem enviada:", data);
 
     return data;
 }
