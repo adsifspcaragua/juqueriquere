@@ -17,7 +17,7 @@ export default function Footer(){
                 <div className="horizontal gap30" id="linksFooter">
                     <div className="vertical gap5">
                         <Link to={"/"}>Início</Link>
-                        <Link to={"/explorar"}>Mapa</Link>
+                        <Link to={"/Mapa"}>Mapa</Link>
                         <Link to={"/sobre"}>Sobre o parque</Link>
                     </div>
                     <div className="vertical gap5">

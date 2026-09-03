@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { supabase } from "../../../lib/supabase.ts";
-import { db, type ImagemDB, type PontoInteresseDB } from "../../../lib/dexie.ts";
-import SimpleButton from "../../../components/ui/buttons/SimpleButton.tsx";
-import DraggableCarousel from "../../../components/ui/DraggableCarousel.tsx";
-import AutoResizeTextarea from "../../../utils/AutoResizeTextarea.tsx";
-import { convertToWebP } from "../../../utils/imageConverter.ts";
+import { supabase } from "../../../../lib/supabase.ts";
+import { db, type ImagemDB, type PontoInteresseDB } from "../../../../lib/dexie.ts";
+import SimpleButton from "../../../../components/ui/buttons/SimpleButton.tsx";
+import DraggableCarousel from "../../../../components/ui/DraggableCarousel.tsx";
+import AutoResizeTextarea from "../../../../utils/AutoResizeTextarea.tsx";
+import { convertToWebP } from "../../../../utils/imageConverter.ts";
+import ProtectedRoute from "../../../../components/Protected.tsx";
 
 interface Trilha {
     id: number;
@@ -212,7 +213,7 @@ export default function EditarPontoInteresse() {
     }
 
     return (
-        <>
+        <ProtectedRoute>
             <div className="paddingHeader"></div>
 
             <section className="conteudo vertical gap15">
@@ -352,6 +353,6 @@ export default function EditarPontoInteresse() {
                     </div>
                 </form>
             </section>
-        </>
+        </ProtectedRoute>
     );
 }

@@ -44,76 +44,76 @@ export default function Login() {
 
 
     return (
-        <div className="desktopWrap3">
-            <div></div>
+            <div className="desktopWrap3">
+                <div></div>
 
-            <section className="vertical gap15" id="loginPage">
+                <section className="vertical gap15" id="loginPage">
 
-                <div className="paddingHeader"></div>
+                    <div className="paddingHeader"></div>
 
-                <SimpleButton
-                    type="back"
-                    icon="setaBack"
-                    path="/"
-                >
-                    Voltar para Início
-                </SimpleButton>
+                    <SimpleButton
+                        type="back"
+                        icon="setaBack"
+                        path="/"
+                    >
+                        Voltar para Início
+                    </SimpleButton>
 
-                <div className="card vertical center">
+                    <div className="card vertical center">
 
-                    <img
-                        src={LogoDark}
-                        alt="Logo"
-                        className="logo"
-                    />
-
-                    <div className="linhaPontilhadaDark"></div>
-
-                    <div className="vertical gap5">
-                        <h2>Administração do Site</h2>
-
-                        <p>
-                            Faça login para administrar o sistema.
-                        </p>
-                    </div>
-
-                    <div className="campoLogin horizontal center">
-                        <img src={User} alt="" />
-
-                        <input
-                            type="email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            onKeyDown={handleKeyDown} // Adicionado aqui
+                        <img
+                            src={LogoDark}
+                            alt="Logo"
+                            className="logo"
                         />
+
+                        <div className="linhaPontilhadaDark"></div>
+
+                        <div className="vertical gap5">
+                            <h2>Administração do Site</h2>
+
+                            <p>
+                                Faça login para administrar o sistema.
+                            </p>
+                        </div>
+
+                        <div className="campoLogin horizontal center">
+                            <img src={User} alt="" />
+
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                onKeyDown={handleKeyDown} // Adicionado aqui
+                            />
+                        </div>
+
+                        <div className="campoLogin horizontal center">
+                            <img src={Lock} alt="" />
+
+                            <input
+                                type="password"
+                                placeholder="Senha"
+                                value={senha}
+                                onChange={(e) => setSenha(e.target.value)}
+                                onKeyDown={handleKeyDown} // Adicionado aqui
+                            />
+                        </div>
+
+                        <div className="btnFull">
+                            <button
+                                type="button"
+                                onClick={fazerLogin}
+                            >
+                                Entrar
+                            </button>
+                        </div>
+
                     </div>
+                </section>
 
-                    <div className="campoLogin horizontal center">
-                        <img src={Lock} alt="" />
-
-                        <input
-                            type="password"
-                            placeholder="Senha"
-                            value={senha}
-                            onChange={(e) => setSenha(e.target.value)}
-                            onKeyDown={handleKeyDown} // Adicionado aqui
-                        />
-                    </div>
-
-                    <div className="btnFull">
-                        <button
-                            type="button"
-                            onClick={fazerLogin}
-                        >
-                            Entrar
-                        </button>
-                    </div>
-
-                </div>
-            </section>
-
-            <div></div>
-        </div>
+                <div></div>
+            </div>
     );
 }

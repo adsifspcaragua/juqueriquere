@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "../../../lib/supabase.ts";
-import { db, type ImagemDB } from "../../../lib/dexie.ts";
-import SimpleButton from "../../../components/ui/buttons/SimpleButton.tsx";
-import DraggableCarousel from "../../../components/ui/DraggableCarousel.tsx";
-import AutoResizeTextarea from "../../../utils/AutoResizeTextarea.tsx";
-import { convertToWebP } from "../../../utils/imageConverter.ts";
+import { supabase } from "../../../../lib/supabase.ts";
+import { db, type ImagemDB } from "../../../../lib/dexie.ts";
+import SimpleButton from "../../../../components/ui/buttons/SimpleButton.tsx";
+import DraggableCarousel from "../../../../components/ui/DraggableCarousel.tsx";
+import AutoResizeTextarea from "../../../../utils/AutoResizeTextarea.tsx";
+import { convertToWebP } from "../../../../utils/imageConverter.ts";
 
 // Importações necessárias para simular a página Ponto.tsx no preview
-import TrilhasMap from "../../../components/ui/TrilhasMap.tsx";
-import "../../styles/ponto.css";
+import TrilhasMap from "../../../../components/ui/TrilhasMap.tsx";
+import "../../_styles/ponto.css";
+import ProtectedRoute from "../../../../components/Protected.tsx";
 
 interface Trilha {
     id: number;
@@ -235,7 +236,7 @@ export default function CadastrarPontoInteresse() {
 
     // renderização do forms
     return (
-        <>
+        <ProtectedRoute>
             <div className="paddingHeader"></div>
 
             <section className="conteudo vertical gap15">
@@ -372,6 +373,6 @@ export default function CadastrarPontoInteresse() {
                     </div>
                 </form>
             </section>
-        </>
+        </ProtectedRoute>
     );
 }

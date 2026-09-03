@@ -1,19 +1,20 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { usePageTitle } from "../../lib/hooks/usePageTitle";
+import { usePageTitle } from "../../../lib/hooks/usePageTitle";
 
-import { db, type PontoInteresseDB } from "../../lib/dexie";
+import { db, type PontoInteresseDB } from "../../../lib/dexie";
 
-import NotFound from "../NotFound";
-import type TrilhaType from "./TrilhaInfo";
+import NotFound from "../../_components/NotFound";
+import type TrilhaType from "../../Trilhas/TrilhaInfo";
 
-import SimpleButton from "../../components/ui/buttons/SimpleButton";
-import TrilhasMap from "../../components/ui/TrilhasMap";
-import DraggableCarousel from "../../components/ui/DraggableCarousel";
-import { icons } from "../../components/ui/icons";
-import CardPonto from "../../components/ui/CardPonto";
-import Switch from "../../components/ui/buttons/Switch";
-import GaleriaImagens from "../../components/ui/GaleriaImagens";
+import SimpleButton from "../../../components/ui/buttons/SimpleButton";
+import TrilhasMap from "../../../components/ui/TrilhasMap";
+import DraggableCarousel from "../../../components/ui/DraggableCarousel";
+import { icons } from "../../../components/ui/icons";
+import CardPonto from "../../../components/ui/CardPonto";
+import Switch from "../../../components/ui/buttons/Switch";
+import GaleriaImagens from "../../../components/ui/GaleriaImagens";
+
 
 
 export default function Trilha() {
@@ -143,7 +144,7 @@ export default function Trilha() {
 
             <section className="conteudo vertical gap15">
                 <SimpleButton
-                    path="/explorar/"
+                    path="/Mapa/"
                     type="back"
                     icon="setaBack"
                 >

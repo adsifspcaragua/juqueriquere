@@ -1,7 +1,8 @@
 import SimpleButton from "../../components/ui/buttons/SimpleButton";
-import '../styles/admin.css'
+import '../_styles/admin.css'
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
+import ProtectedRoute from "../../components/Protected";
 
 export default function Admin() {
     const [tipoUsuario, setTipoUsuario] = useState<string | null>(null);
@@ -33,7 +34,7 @@ export default function Admin() {
 
 
     return (
-        <>
+        <ProtectedRoute>
             <div className="paddingHeader"></div>
             <section className="conteudo vertical gap15" id="adminHome">
 
@@ -67,6 +68,6 @@ export default function Admin() {
                     )}
                 </div>
             </section>
-        </>
+        </ProtectedRoute>
     );
 }

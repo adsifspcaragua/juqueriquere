@@ -1,16 +1,16 @@
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
-import { usePageTitle } from "../../lib/hooks/usePageTitle";
+import { usePageTitle } from "../../../../lib/hooks/usePageTitle.ts";
 
-import { db, type PontoInteresseDB } from '../../lib/dexie';
+import { db, type PontoInteresseDB } from '../../../../lib/dexie.ts';
 
-import NotFound from '../NotFound';
+import NotFound from '../../../_components/NotFound.tsx';
 
-import SimpleButton from '../../components/ui/buttons/SimpleButton';
-import TrilhasMap from '../../components/ui/TrilhasMap';
-import '../styles/ponto.css';
-import type TrilhaType from './TrilhaInfo';
-import GaleriaImagens from '../../components/ui/GaleriaImagens.tsx';
+import SimpleButton from '../../../../components/ui/buttons/SimpleButton.tsx';
+import TrilhasMap from '../../../../components/ui/TrilhasMap.tsx';
+import '../../../_styles/ponto.css';
+import type TrilhaType from '../../../Trilhas/TrilhaInfo.tsx';
+import GaleriaImagens from '../../../../components/ui/GaleriaImagens.tsx';
 
 export default function Ponto() {
     const { id, idPonto } = useParams<{ id: string; idPonto: string }>();
@@ -61,7 +61,7 @@ export default function Ponto() {
             default:
                 return (
                     <>
-                        <SimpleButton path="/explorar/" type='back' icon='setaBack'>Voltar para Mapa</SimpleButton>
+                        <SimpleButton path="/Mapa/" type='back' icon='setaBack'>Voltar para Mapa</SimpleButton>
                     </>
                 )
         }

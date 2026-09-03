@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { db } from "../../../lib/dexie";
-import { supabase } from "../../../lib/supabase";
-import SimpleButton from "../../../components/ui/buttons/SimpleButton";
-import Select from "../../../components/ui/form/Select";
-import type Trilha from "../../Trilhas/TrilhaInfo";
+import { db } from "../../../lib/dexie.ts";
+import { supabase } from "../../../lib/supabase.ts";
+import SimpleButton from "../../../components/ui/buttons/SimpleButton.tsx";
+import Select from "../../../components/ui/form/Select.tsx";
+import type Trilha from "../../Trilhas/TrilhaInfo.tsx";
 import { createPortal } from "react-dom";
+import ProtectedRoute from "../../../components/Protected.tsx";
 
 
 export default function AdminTrilhas() {
@@ -102,7 +103,7 @@ export default function AdminTrilhas() {
     .sort(order[orderKey]);
 
     return (
-        <>
+        <ProtectedRoute>
             <div className="paddingHeader2"></div>
 
             <section className="conteudo vertical gap15">
@@ -235,6 +236,6 @@ export default function AdminTrilhas() {
             </section>
 
             {createPortal(<div className="paddingFooter"></div>,document.body)}
-        </>
+        </ProtectedRoute>
     );
 }

@@ -1,16 +1,17 @@
 import { useRef, useState } from "react";
-import { supabase } from "../../../lib/supabase";
-import { db, type TrilhaDB } from "../../../lib/dexie";
+import { supabase } from "../../../../lib/supabase.ts";
+import { db, type TrilhaDB } from "../../../../lib/dexie.ts";
 
-import SimpleButton from "../../../components/ui/buttons/SimpleButton";
-import DraggableCarousel from "../../../components/ui/DraggableCarousel";
-import AutoResizeTextarea from "../../../utils/AutoResizeTextarea.tsx";
+import SimpleButton from "../../../../components/ui/buttons/SimpleButton.tsx";
+import DraggableCarousel from "../../../../components/ui/DraggableCarousel.tsx";
+import AutoResizeTextarea from "../../../../utils/AutoResizeTextarea.tsx";
 
 import {
     convertToWebP
-} from "../../../utils/imageConverter";
+} from "../../../../utils/imageConverter.ts";
 
-import { uploadImagem } from "../../../lib/services/images.ts";
+import { uploadImagem } from "../../../../lib/services/images.ts";
+import ProtectedRoute from "../../../../components/Protected.tsx";
 
 export default function CadastrarTrilha() {
     const formRef = useRef<HTMLFormElement>(null);
@@ -206,7 +207,7 @@ export default function CadastrarTrilha() {
     }
 
     return (
-        <>
+        <ProtectedRoute>
             <div className="paddingHeader"></div>
 
             <section className="conteudo vertical gap15">
@@ -421,6 +422,6 @@ export default function CadastrarTrilha() {
                 </form>
 
             </section>
-        </>
+        </ProtectedRoute>
     );
 }

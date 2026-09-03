@@ -6,6 +6,7 @@ import { createPortal } from "react-dom";
 import type Trilha from "../../Trilhas/TrilhaInfo";
 import distancia from "../../../assets/icons/Distancia-light.webp";
 import { supabase } from "../../../lib/supabase";
+import ProtectedRoute from "../../../components/Protected";
 
 export default function AdminPontos() {
 
@@ -79,7 +80,7 @@ export default function AdminPontos() {
     };
 
     return (
-        <>
+        <ProtectedRoute>
             <div className="paddingHeader2"></div>
 
             <section className="conteudo vertical gap15">
@@ -200,6 +201,6 @@ export default function AdminPontos() {
             </section>
 
             {createPortal(<div className="paddingFooter"></div>, document.body)}
-        </>
+        </ProtectedRoute>
     );
 }

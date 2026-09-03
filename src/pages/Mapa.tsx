@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { usePageTitle } from "../lib/hooks/usePageTitle";
+import { usePageTitle } from "../lib/hooks/usePageTitle.ts";
 
-import { db, type PontoInteresseDB } from "../lib/dexie";
-import type Trilha from './Trilhas/TrilhaInfo';
+import { db, type PontoInteresseDB } from "../lib/dexie.ts";
+import type Trilha from './Trilhas/TrilhaInfo.tsx';
 import CardTrilha from '../components/ui/CardTrilha.tsx';
 import CardPonto from '../components/ui/CardPonto.tsx';
 import TrilhasMap from '../components/ui/TrilhasMap.tsx';
 import DraggableCarousel from '../components/ui/DraggableCarousel.tsx';
-import './styles/explorar.css';
+import './_styles/explorar.css';
 import SimpleButton from '../components/ui/buttons/SimpleButton.tsx';
 
 export default function Explorar() {

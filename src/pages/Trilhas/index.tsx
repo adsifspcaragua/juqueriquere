@@ -6,7 +6,7 @@ import Select from '../../components/ui/form/Select.tsx';
 import CardTrilha from '../../components/ui/CardTrilha.tsx';
 import type Trilha from './TrilhaInfo';
 import { createPortal } from "react-dom";
-import '../styles/trilhas.css'
+import '../_styles/trilhas.css'
 
 export default function Trilhas() {
 

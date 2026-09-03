@@ -52,11 +52,11 @@ export default function Header() {
                     >Início</SimpleButton>
 
                     <SimpleButton
-                        path='/explorar'
+                        path='/Mapa'
                         tema='none'
                         icon='Explorar'
                         type='back'
-                    >Explorar</SimpleButton>
+                    >Mapa</SimpleButton>
 
                     <SimpleButton
                         path='/sobre'
@@ -88,7 +88,7 @@ export default function Header() {
                     />
 
                     <SimpleButton
-                        path='/explorar'
+                        path='/Mapa'
                         tema='none'
                         icon='Explorar'
                     />

@@ -1,4 +1,4 @@
-import SimpleButton from "../components/ui/buttons/SimpleButton";
+import SimpleButton from "../../components/ui/buttons/SimpleButton";
 
 export default function NotFound(){
     return(
@@ -15,7 +15,7 @@ export default function NotFound(){
                     <p>Aqui estão algumas sugestões para você se reencontrar:</p>
                     <div className="horizontal wrap">
                         <SimpleButton path="/">Início</SimpleButton>
-                        <SimpleButton path="/Explorar">Mapa</SimpleButton>
+                        <SimpleButton path="/Mapa">Mapa</SimpleButton>
                         <SimpleButton path="/Trilhas">Trilhas</SimpleButton>
                         <SimpleButton path="/Pontos">Pontos de Interesse</SimpleButton>
                     </div>

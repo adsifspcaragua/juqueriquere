@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { db, type ImagemDB, type TrilhaDB } from "../../../lib/dexie";
-import { supabase } from "../../../lib/supabase";
-import SimpleButton from "../../../components/ui/buttons/SimpleButton";
-import DraggableCarousel from "../../../components/ui/DraggableCarousel";
-import AutoResizeTextarea from "../../../utils/AutoResizeTextarea.tsx";
-import { convertToWebP } from "../../../utils/imageConverter.ts";
-import { uploadImagem } from "../../../lib/services/images.ts";
+import { db, type ImagemDB, type TrilhaDB } from "../../../../lib/dexie.ts";
+import { supabase } from "../../../../lib/supabase.ts";
+import SimpleButton from "../../../../components/ui/buttons/SimpleButton.tsx";
+import DraggableCarousel from "../../../../components/ui/DraggableCarousel.tsx";
+import AutoResizeTextarea from "../../../../utils/AutoResizeTextarea.tsx";
+import { convertToWebP } from "../../../../utils/imageConverter.ts";
+import { uploadImagem } from "../../../../lib/services/images.ts";
+import ProtectedRoute from "../../../../components/Protected.tsx";
 
 export default function EditarTrilha() {
 
@@ -293,7 +294,7 @@ export default function EditarTrilha() {
     const totalImagens = imagensSalvas.length + novasImagens.length;
 
     return (
-        <>
+        <ProtectedRoute>
             <div className="paddingHeader"></div>
 
             <section className="conteudo vertical gap15">
@@ -412,6 +413,6 @@ export default function EditarTrilha() {
                     </div>
                 </form>
             </section>
-        </>
+        </ProtectedRoute>
     );
 }

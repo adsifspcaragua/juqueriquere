@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { usePageTitle } from "../../lib/hooks/usePageTitle";
+import { usePageTitle } from "../lib/hooks/usePageTitle.ts";
 
-import Select from '../../components/ui/form/Select.tsx';
-import CardPonto from '../../components/ui/CardPonto.tsx';
+import Select from '../components/ui/form/Select.tsx';
+import CardPonto from '../components/ui/CardPonto.tsx';
 import { createPortal } from "react-dom";
-import { db, type PontoInteresseDB } from '../../lib/dexie.ts';
+import { db, type PontoInteresseDB } from '../lib/dexie.ts';
 //import SimpleButton from '../../components/ui/buttons/SimpleButton.tsx';
 
 

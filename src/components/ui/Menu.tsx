@@ -98,7 +98,7 @@ export default function Menu({ ativo, onChoice }: menuProps) {
 
                     <div className="menuLinks">
                         <SimpleButton path='/' raio='0' onClick={closeMenu}>Início</SimpleButton>
-                        <SimpleButton path='/explorar' raio='0' onClick={closeMenu}>Mapa</SimpleButton>
+                        <SimpleButton path='/Mapa' raio='0' onClick={closeMenu}>Mapa</SimpleButton>
                         <SimpleButton path='/sobre' raio='0' onClick={closeMenu}>Sobre</SimpleButton>
                     </div>
 
