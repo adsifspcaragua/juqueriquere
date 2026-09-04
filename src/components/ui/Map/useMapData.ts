@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 import { type FeatureCollection, type Geometry, type Feature, type Point } from 'geojson';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../../../lib/dexie';
-import trilhasPontosRaw from '../../../data/Trilhas PNMJ/PontosRaw.json'; 
+//import trilhasPontosRaw from '../../../data/Trilhas PNMJ/PontosRaw.json'; 
 import trilhasLinhasRaw from '../../../data/Trilhas PNMJ/TrilhasRaw.json';
 import { normalize } from './utils';
 
-const trilhasPontos = trilhasPontosRaw as unknown as FeatureCollection<Geometry>;
+//const trilhasPontos = trilhasPontosRaw as unknown as FeatureCollection<Geometry>;
 const trilhasLinhas = trilhasLinhasRaw as unknown as FeatureCollection<Geometry>;
 
 export function useMapData(id?: number | number[], highlight?: number | string | (number | string)[]) {
@@ -58,7 +58,7 @@ export function useMapData(id?: number | number[], highlight?: number | string |
 
     // Usaremos este Set para evitar duplicar pontos que já vieram do GeoJSON
     const pontosProcessadosGeoJSON = new Set<string>();
-
+    /*
     // 2. PROCESSAR PONTOS DO GEOJSON
     const pointsFromGeoJSON = trilhasPontos.features.map(feature => {
       const featName = normalize(feature.properties?.name || "");
@@ -90,7 +90,7 @@ export function useMapData(id?: number | number[], highlight?: number | string |
     }).filter(item => {
       if (!item.trailId) return false;
       return targetIds ? targetIds.includes(item.trailId) : true;
-    });
+    });*/
 
     // 3. PROCESSAR PONTOS EXCLUSIVOS DO BANCO DE DADOS (Dexie/Supabase)
     const pointsFromDB = (pontosInteresseDB || [])
@@ -128,8 +128,8 @@ export function useMapData(id?: number | number[], highlight?: number | string |
       });
 
     // 4. UNIR OS PONTOS
-    const points = [...pointsFromGeoJSON, ...pointsFromDB];
-
+    //const points = [...pointsFromGeoJSON, ...pointsFromDB];
+    const points = [...pointsFromDB];
     return { lines, points };
   }, [id, trilhas, pontosInteresseDB]); // pontosInteresseDB no array garante re-render ao sincronizar
 
