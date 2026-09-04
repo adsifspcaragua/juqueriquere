@@ -10,6 +10,8 @@ import DraggableCarousel from '../components/ui/DraggableCarousel.tsx';
 import './_styles/explorar.css';
 import SimpleButton from '../components/ui/buttons/SimpleButton.tsx';
 
+import { AnimatePresence, motion } from "framer-motion";
+
 export default function Explorar() {
     usePageTitle("Mapa");
 
@@ -68,13 +70,13 @@ export default function Explorar() {
         />
     ));
 
-    const pontosList = (pontosDados ?? []).map((ponto, index) => (
-        <CardPonto
-            key={index}
-            ponto={ponto}
-            trilhaId={trilhaAtual.id}
-        />
-    ));
+    // const pontosList = (pontosDados ?? []).map((ponto, index) => (
+    //     <CardPonto
+    //         key={index}
+    //         ponto={ponto}
+    //         trilhaId={trilhaAtual.id}
+    //     />
+    // ));
 
     return (
         <>
@@ -107,9 +109,62 @@ export default function Explorar() {
                     <div className="vertical gap15">
                         <div className="vertical gap15">
                             <h4>Pontos de interesse nesta trilha:</h4>
-                            <div className="vertical gap5" id='pontosList'>
-                                {pontosList}
-                            </div>
+                                {/* {pontosList} */}
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={trilhaSelecionada}
+                                        className="vertical"
+                                        id="pontosList"
+                                        initial="hidden"
+                                        animate="visible"
+                                        exit="exit"
+                                        variants={{
+                                            hidden: {},
+                                            visible: {
+                                                transition: {
+                                                    staggerChildren: 0.06,
+                                                },
+                                            },
+                                            exit: {
+                                                transition: {
+                                                    staggerChildren: 0.03,
+                                                    staggerDirection: -1,
+                                                },
+                                            },
+                                        }}
+                                    >
+                                        {(pontosDados ?? []).map((ponto) => (
+                                            <motion.div
+                                                key={ponto.id}
+                                                variants={{
+                                                    hidden: {
+                                                        opacity: 0,
+                                                        y: 15,
+                                                    },
+                                                    visible: {
+                                                        opacity: 1,
+                                                        y: 0,
+                                                        transition: {
+                                                            duration: 0.25,
+                                                        },
+                                                    },
+                                                    exit: {
+                                                        opacity: 0,
+                                                        y: -10,
+                                                        transition: {
+                                                            duration: 0.15,
+                                                        },
+                                                    },
+                                                }}
+                                            >
+                                                <CardPonto
+                                                    ponto={ponto}
+                                                    trilhaId={trilhaAtual.id}
+                                                />
+                                            </motion.div>
+                                        ))}
+                                    </motion.div>
+                                </AnimatePresence>
                         </div>
                         <SimpleButton path='/pontos'>Todos os Pontos de Interesse</SimpleButton>
                     </div>

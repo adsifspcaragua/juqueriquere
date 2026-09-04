@@ -1,51 +1,59 @@
 footer{
     background-color: #2c2c2c;
-    padding: 30px 5%;
-    padding-top: 60px;
+    padding: 7%;
     padding-bottom: 110px;
     align-items: center;
     justify-content: center;
     gap: 30px;
-    
-    .footerLogos{
-        gap: 15px !important;
-        width: fit-content;
-    }
-
-    .horizontal{
-        flex-direction: column;
-    }
 
     .linhaVertical{display: none;}
 
     img{
-        height: 60px;
+        width: 100%;
         object-fit: scale-down;
         object-position: left;
     }
     p{
         text-align: center;
     }
+
+    a{
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: underline;
+    }
+
+    #logoPNMJ{
+        height: 35px;
+    }
+    #logoSEMAAP{
+        height: 60px;
+    }
+
+    #linksFooter{
+        width: fit-content;
+        justify-content: center;
+    }
 }
 
 .conteudoFooter{
     width: 100%;
-    display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 40px;
 }
 
 @media (width > 850px){
     footer{
-        padding-bottom: 30px;
-        .horizontal{
+        padding: 30px 5%;
+        img{
+                width: unset;
+                height: 60px;
+                object-position: left;
+            }
+        #linksFooter{
             flex-direction: row;
         }
-    
-        .footerLogos{
-            gap: 30px !important;
-            .linhaVertical{display: flex;}
-            .linhaHorizontal{display: none;}
+        #bloco{
+            flex-direction: row;
         }
     }
     .conteudoFooter{
