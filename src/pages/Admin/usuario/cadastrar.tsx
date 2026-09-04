@@ -140,7 +140,7 @@ export default function CadastrarUsuario() {
                         <button
                             type="button"
                             onClick={() =>
-                                navigate("/admin/usuarios")
+                                navigate("/admin/usuario/list")
                             }
                         >
                             Cancelar
