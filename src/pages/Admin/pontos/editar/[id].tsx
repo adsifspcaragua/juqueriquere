@@ -251,6 +251,15 @@ export default function EditarPontoInteresse() {
                             disabled={carregando}
                         />
                     </div>
+                    <div className="vertical gap5">
+                        <label>Nome cientifico:</label>
+                        <input
+                            name="planta"
+                            defaultValue={pontoAtual?.planta}
+                            required
+                            disabled={carregando}
+                        />
+                    </div>
 
                     <div className="vertical gap5">
                         <label>Descrição:</label>
