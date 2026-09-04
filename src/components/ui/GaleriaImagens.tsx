@@ -6,7 +6,7 @@ interface GaleriaImagensProps {
 }
 
 export default function GaleriaImagens({ imagens }: GaleriaImagensProps) {
-    // Se o array não existir ou estiver vazio, usa a imagem de fallback
+    // Se o array não existir ou estiver vazio, usa a imagem de fallback 
     const imagensExibicao = imagens?.length ? imagens : [imgNotFound];
 
     const items = imagensExibicao.map((imagem, index) => (
