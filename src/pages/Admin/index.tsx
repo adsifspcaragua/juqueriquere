@@ -3,14 +3,40 @@ import '../_styles/admin.css'
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
 import ProtectedRoute from "../../components/Protected";
+import { logout } from '../../lib/auth';
+import { useNavigate } from 'react-router-dom';
+
+
+
+
 
 export default function Admin() {
     const [tipoUsuario, setTipoUsuario] = useState<string | null>(null);
     const [nomeUsuario, setNomeUsuario] = useState<string | null>(null);
+    const [user, setUser] = useState<any>(null);
+    const navigate = useNavigate();
+
+
+
 
 
     useEffect(() => {
         buscarUsuario();
+        // pega sessão inicial
+        supabase.auth.getUser().then(({ data }) => {
+            setUser(data.user);
+        });
+
+        // escuta mudanças (LOGIN / LOGOUT)
+        const { data: listener } = supabase.auth.onAuthStateChange(
+            (_event, session) => {
+                setUser(session?.user ?? null);
+            }
+        );
+
+        return () => {
+            listener.subscription.unsubscribe();
+        };
     }, []);
 
     async function buscarUsuario() {
@@ -34,6 +60,14 @@ export default function Admin() {
         setTipoUsuario(data.tipo);
         setNomeUsuario(data.name);
     }
+
+    async function handleLogout() {
+            await logout();
+    
+            if (location.pathname.startsWith('/admin')) {
+                navigate('/admin/login');
+            }
+        }
 
 
     return (
@@ -72,6 +106,14 @@ export default function Admin() {
                             >
                                 Minha Conta
                             </SimpleButton>
+
+                            {user ? (
+                                <SimpleButton raio="0" onClick={handleLogout}>
+                                    Logout
+                                </SimpleButton>
+                            ) : (
+                                null
+                            )}
                         </div>
                     </div>
 
