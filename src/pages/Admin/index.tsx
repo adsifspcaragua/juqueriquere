@@ -63,7 +63,7 @@ export default function Admin() {
                         <div className="card vertical gap5">
                         <h2>Cadastrar Usuário</h2>
                         <p>Atualize as informações institucionais do projeto e do parque, garantindo que os visitantes tenham acesso a conteúdos claros e relevantes sobre a plataforma.</p>
-                        <SimpleButton path="/admin/usuarios/cadastrar" tema="dark" raio="10">Gerenciar Informações</SimpleButton>
+                        <SimpleButton path="/admin/usuario/list" tema="dark" raio="10">Gerenciar Informações</SimpleButton>
                         </div>
                     )}
                 </div>
