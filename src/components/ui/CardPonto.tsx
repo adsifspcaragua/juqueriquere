@@ -45,14 +45,12 @@ export default function CardPonto({ ponto, trilhaId }: Props) {
     return (
         <Link
             to={`/trilha/${trilhaId}/ponto/${ponto.id}?from=${pageName}`}
-            className="cardTrilha carrosselCard"
+            className="cardPonto carrosselCard"
             style={{ backgroundImage: imagem }}
         >
-            <div className='cardTrilha cardPonto carrosselCard'>
-                <div className="info vertical">
-                    <h2>{ponto.nome}</h2>
-                    {ponto.planta && <h3>{ponto.planta}</h3>}
-                </div>
+            <div className="info vertical">
+                <h2>{ponto.nome}</h2>
+                {ponto.planta && <h3>{ponto.planta}</h3>}
             </div>
         </Link>
     );

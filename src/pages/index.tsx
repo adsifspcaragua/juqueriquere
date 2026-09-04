@@ -1,7 +1,5 @@
-
 import { useState } from "react";
 import { usePageTitle } from "../lib/hooks/usePageTitle.ts";
-
 
 import SimpleButton from "../components/ui/buttons/SimpleButton.tsx";
 import Scanner from "../components/Scanner.tsx";

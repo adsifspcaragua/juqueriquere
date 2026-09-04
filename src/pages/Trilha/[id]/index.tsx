@@ -99,16 +99,12 @@ export default function Trilha() {
         return <NotFound />;
     }
     const pontosList = (pontosDados ?? []).map(
-        (ponto, index) => (
-            <div
-                id={String(index)}
-                key={ponto.nome}
-            >
-                <CardPonto
-                    ponto={ponto}
-                    trilhaId={trilha.id}
-                />
-            </div>
+        (ponto) => (
+            <CardPonto
+                key={ponto.id}
+                ponto={ponto}
+                trilhaId={trilha.id}
+            />
         )
     );
 

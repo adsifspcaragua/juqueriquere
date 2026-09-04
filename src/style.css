@@ -22,7 +22,7 @@
     --texto: #5C5C5C;
 }
 
-h1, h2, h3, h4, p, a, li, i {
+h1, h2, h3, h4, h5, p, a, li, i {
     color: #fff;
 }
 h1, h2 {
@@ -32,7 +32,7 @@ h1, h2 {
 h1 {
     font-size: 24px;
 }
-p, a, h3, h4, li, i {
+p, a, h3, h4, h5, li, i {
     font-family: Inter, Arial, Helvetica, sans-serif;
 }
 p, a {
@@ -42,6 +42,9 @@ p, a {
 h3, h4{
     font-size: 20px;
     font-weight: 700;
+}
+h5{
+    font-size: 16px;
 }
 
 .horizontal{
@@ -134,6 +137,7 @@ body{
     border-radius: 20px;
     background-size: cover;
     background-position: center bottom;
+    background-color: var(--verdeClaro);
     h1{color: var(--verdeEscuro);}
     p{color: var(--texto);}
 }
@@ -366,6 +370,7 @@ option:checked {
     }
     .carrossel{
         padding-bottom: 0 !important;
+        margin: 0 -5%;
     }
 }
 #trilhaSwitch{
@@ -389,30 +394,6 @@ ul{
     padding-left: 15px;
     li::marker{color: #fff;}
     li{margin-bottom: 5px;}
-}
-
-.cardTrilhaInfo{
-    background-color: var(--verdeClaro);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 20px;
-    width: auto;
-    border-radius: 20px;
-    transition: transform .35s ease-in-out;
-    h2{
-        font-family: Inter, Arial, Helvetica, sans-serif;
-        font-size: 20px;
-        font-weight: 800;
-        color: var(--verdeEscuro);
-    }
-
-    p{
-        color: var(--texto);
-        display: flex;
-        width: fit-content;
-    }
-    
 }
 
 .scroll{
@@ -447,11 +428,9 @@ ul{
 }
 
 /* -- CARROSSEL -- */
-#CarrosselInicio{
-    .carrosselCard{
-        padding: 20px;
-        height: 200px;
-    }
+#CarrosselInicio.carrosselCard{
+    padding: 20px;
+    height: 200px;
 }
 
 .carrossel{
@@ -479,16 +458,13 @@ ul{
     padding: 20px;
     border-radius: 20px;
     justify-content: end;
+    background-position: center;
 }
-.galeria{
-    .carrosselCard{
-        aspect-ratio: 4/3 !important;
-        height: auto;
-        object-fit: cover;
-        padding: 0;
-    }
-}
-.carrosselCard:has(.cardTrilha.carrosselCard){
+
+.galeria.carrosselCard{
+    aspect-ratio: 4/3 !important;
+    height: auto;
+    object-fit: cover;
     padding: 0;
 }
 /* -- --------- -- */
