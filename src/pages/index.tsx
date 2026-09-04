@@ -6,6 +6,8 @@ import Scanner from "../components/Scanner.tsx";
 
 import Logo from '../assets/logo.webp';
 
+import { InstallPrompt } from "../utils/InstallPrompt.tsx";
+
 export default function index(){
     usePageTitle("Início");
 	
@@ -83,6 +85,10 @@ export default function index(){
 					</div>
 
 				</div>
+			</section>
+
+			<section>
+				<InstallPrompt/>
 			</section>
 
 			<section>
