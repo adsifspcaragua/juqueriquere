@@ -189,6 +189,8 @@ export default function EditarTrilha() {
                 atencao: formData.get("atencao") as string,
             };
 
+
+
             const { data: trilhaAtualizada, error: erroTrilha } = await supabase
                 .from("trilhas")
                 .update(dadosTrilha)
@@ -223,8 +225,11 @@ export default function EditarTrilha() {
                     // Converte a imagem para WebP
                     const blobWebP = await convertToWebP(file, 0.8);
 
+                    const nomeArquivo = `${crypto.randomUUID()}.webp`;
+
+
                     // Caminho REAL dentro do Storage
-                    const caminho = `trilhas/${id}/${totalExistentes + index + 1}.webp`;
+                    const caminho = `trilhas/${id}/${nomeArquivo}`;
 
                     console.log("Processando imagem:", {
                         arquivoOriginal: file.name,
@@ -274,17 +279,43 @@ export default function EditarTrilha() {
                     arquivo: novasImagensSalvas[index].arquivo,
                 }));
 
+                // Salva no Dexie
                 await db.imagens.bulkPut(imagensDexie);
 
-                console.log("Imagens salvas no Dexie:", imagensDexie);
+                // Adiciona as imagens à lista de imagens salvas
+                setImagensSalvas((prev) => [
+                    ...prev,
+                    ...imagensDexie
+                ]);
 
+                // Cria URLs locais para as novas imagens aparecerem imediatamente
+                setImagensSalvasUrls((prev) => {
+                    const novasUrls = { ...prev };
+
+                    imagensDexie.forEach((imagem) => {
+                        if (imagem.id != null && imagem.arquivo instanceof Blob) {
+                            novasUrls[imagem.id] = URL.createObjectURL(imagem.arquivo);
+                        }
+                    });
+
+                    return novasUrls;
+                });
+
+                // Limpa as imagens pendentes
+                setNovasImagens([]);
+                setNovasImagensBase64([]);
+
+                console.log("Imagens salvas no Dexie:", imagensDexie);
             }
         } catch (error: any) {
             console.error(error);
             alert(`Erro ao atualizar: ${error.message || error}`);
         } finally {
             setCarregando(false);
+            alert("Trilha Atualizada com sucesso")
+
         }
+
     }
 
     if (!trilha) {
@@ -348,7 +379,7 @@ export default function EditarTrilha() {
 
                     <div className="vertical gap5">
                         <label>Equipamento recomendado:</label>
-                        <AutoResizeTextarea name="equipamento_recommended" defaultValue={trilha.equipamento_recomendado} disabled={carregando} />
+                        <AutoResizeTextarea name="equipamento_recomendado" defaultValue={trilha.equipamento_recomendado} disabled={carregando} />
                     </div>
 
                     <div className="vertical gap5">

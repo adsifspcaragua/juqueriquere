@@ -134,8 +134,11 @@ export default function CadastrarTrilha() {
 
                     imagensConvertidas.push(blobWebP);
 
-                    const caminho =
-                        `trilhas/${novaTrilha.id}/${index + 1}.webp`;
+                    const nomeArquivo = `${crypto.randomUUID()}.webp`;
+
+
+                    // Caminho REAL dentro do Storage
+                    const caminho = `trilhas/${nomeArquivo}`;
 
                     await uploadImagem(
                         blobWebP,
