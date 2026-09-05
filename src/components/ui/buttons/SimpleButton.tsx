@@ -17,6 +17,7 @@ export default function SimpleButton({path, children, tema, icon, type, raio, on
         "dark": "btn-dark",
         "none": "btn-none",
         "red" : "btn-red",
+        "light": "btn-light",
     } as any;
     if(!icon) icon = 'seta';
     tema = (tema && icons[tema]) ? tema : 'default';

@@ -80,5 +80,23 @@ export const icons = {
         },
          "red": {
             "Trash"          : Trash
-        }
+        },
+        "light": {
+            "seta"          : seta,
+            "setaBack"      : setaBackDark,
+            "QR"            : QR,
+            "Home"          : home,
+            "Menu"          : menu,
+            "X"             : X,
+            "Explorar"      : Explorar,
+            "Sobre"         : Sobre,
+            "Dificuldade"   : Dificuldade,
+            "Distancia"     : Distancia,
+            "Tempo"         : Tempo,
+            "Plus"          : Plus,
+            "Filter"        : Filter,
+            "Edit"          : Edit,
+            "Left"          : Left,
+            "Right"         : Right
+        },
 } as any;

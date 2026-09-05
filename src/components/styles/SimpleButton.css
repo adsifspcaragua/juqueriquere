@@ -29,6 +29,10 @@
     background-color: #e53e3e;
     color: #fff;
 }
+.btn-light{
+    background-color: var(--verdeEscuroTransparente);
+    color: var(--verdeEscuro);
+}
 
 .circleButton{
     .btn{

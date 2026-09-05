@@ -1,72 +1,82 @@
 import { useState, useEffect } from 'react';
+import SimpleButton from '../components/ui/buttons/SimpleButton';
+import { createPortal } from "react-dom";
 
 export function InstallPrompt() {
-  // Guarda o evento nativo do navegador
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  // Controla se o nosso banner customizado deve aparecer
-  const [showBanner, setShowBanner] = useState(false);
+	const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+	const [showBanner, setShowBanner] = useState(false);
 
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (e: Event) => {
-      // Impede o navegador de mostrar o aviso padrão dele imediatamente
-      e.preventDefault();
-      // Salva o evento para usarmos quando o usuário clicar no nosso botão
-      setDeferredPrompt(e);
-      // Mostra o nosso banner na tela
-      setShowBanner(true);
-    };
+	useEffect(() => {
+		const handleBeforeInstallPrompt = (e: Event) => {
+			e.preventDefault();
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+			setDeferredPrompt(e);
+			setShowBanner(true);
+		};
 
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
-  }, []);
+		window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
+		return () => {
+			window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+		};
+	}, []);
 
-    // Dispara o pop-up nativo de instalação do navegador
-    deferredPrompt.prompt();
+	const handleInstallClick = async () => {
+		if (!deferredPrompt) return;
 
-    // Aguarda para ver se o usuário clicou em "Instalar" ou "Cancelar"
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    if (outcome === 'accepted') {
-      console.log('Usuário aceitou a instalação');
-    } else {
-      console.log('Usuário recusou a instalação');
-    }
+		deferredPrompt.prompt();
 
-    // O prompt só pode ser usado uma vez, então limpamos ele
-    setDeferredPrompt(null);
-    setShowBanner(false);
-  };
+		const { outcome } = await deferredPrompt.userChoice;
 
-  // Se não estiver pronto para instalar (ou já estiver instalado), não renderiza nada
-  if (!showBanner) return null;
+		if (outcome === 'accepted') {
+			console.log('Usuário aceitou a instalação');
+		} else {
+			console.log('Usuário recusou a instalação');
+		}
 
-  // Aqui você estiliza como quiser (exemplo com Tailwind CSS)
-  return (
-    <div style={{
-      position: 'fixed', bottom: '0', left: '0', width: '100%', 
-      backgroundColor: '#008A66', color: 'white', padding: '16px',
-      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      zIndex: 9999, boxShadow: '0 -2px 10px rgba(0,0,0,0.2)'
-    }}>
-      <div>
-        <h4 style={{ margin: 0, fontWeight: 'bold' }}>Instale o Juqueriquere</h4>
-        <p style={{ margin: 0, fontSize: '14px' }}>Acesse as trilhas offline de forma mais rápida!</p>
-      </div>
-      <button 
-        onClick={handleInstallClick} 
-        style={{
-          backgroundColor: 'white', color: '#008A66', border: 'none', 
-          padding: '8px 16px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer'
-        }}
-      >
-        Instalar
-      </button>
-    </div>
-  );
+		setDeferredPrompt(null);
+		setShowBanner(false);
+	};
+
+	const handleDismissClick = () => {
+		setShowBanner(false);
+	};
+
+	if (!showBanner) return null;
+
+	return (
+		<>
+			{createPortal(
+				<div className="modal vertical center">
+					<div className='pwaCard card vertical'>
+						<div className='vertical gap5'>
+							<h2>Instale o Juqueriquerê</h2>
+							<p>Acesse as trilhas offline de forma mais rápida!</p>
+						</div>
+
+						<div className='horizontal justifyCenter gap15'>
+							<SimpleButton
+								tema='light'
+								raio='10'
+								icon='none'
+								onClick={handleDismissClick}
+							>
+								Agora não
+							</SimpleButton>
+
+							<SimpleButton
+								tema='dark'
+								raio='10'
+								onClick={handleInstallClick}
+							>
+								Instalar
+							</SimpleButton>
+						</div>
+					</div>
+
+				</div>,
+				document.body
+			)}
+		</>
+	);
 }
