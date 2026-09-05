@@ -110,7 +110,7 @@ export default function Explorar() {
                     </div>
                     <div className="vertical gap15">
                         <div className="vertical gap15">
-                            <h4>Pontos de interesse nesta trilha:</h4>
+                            <h3>Pontos de interesse nesta trilha:</h3>
                                 {/* {pontosList} */}
                                 <AnimatePresence mode="wait">
                                     <motion.div

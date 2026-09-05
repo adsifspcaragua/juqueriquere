@@ -17,21 +17,18 @@
 :root{
     --verdeEscuro: #008A66;
     --verdeClaro: #CBFFF1;
+    --verdeEscuroTransparente: #008a6525;
     --verdeClaroTransparente: rgba(203, 255, 241, 0.75);
     --headerBackground: #3faa8ebb;
     --texto: #5C5C5C;
 }
 
-h1, h2, h3, h4, h5, p, a, li, i {
-    color: #fff;
-}
+h1, h2, h3, h4, h5, p, a, li, i {color: #fff;}
 h1, h2 {
     font-family: Heavitas, sans-serif;
     font-weight: 400;
 }
-h1 {
-    font-size: 24px;
-}
+h1 {font-size: 24px;}
 p, a, h3, h4, h5, li, i {
     font-family: Inter, Arial, Helvetica, sans-serif;
 }
@@ -39,13 +36,15 @@ p, a {
     font-size: 14px;
     text-decoration: none;
 }
-h3, h4{
+h3{
+    font-family: Inter, Arial, Helvetica, sans-serif;
     font-size: 20px;
     font-weight: 700;
 }
 h5{
     font-size: 16px;
 }
+a{width: fit-content;}
 
 .horizontal{
     display: flex;
@@ -71,6 +70,9 @@ h5{
 .gap30{
     gap: 30px !important;
 }
+
+.r10{border-radius: 10px;}
+.r20{border-radius: 20px;}
 
 .wrap{
     flex-wrap: wrap;

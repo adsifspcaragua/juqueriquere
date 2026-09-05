@@ -50,7 +50,7 @@ export default function CardPonto({ ponto, trilhaId }: Props) {
         >
             <div className="info vertical">
                 <h2>{ponto.nome}</h2>
-                {ponto.planta && <h3>{ponto.planta}</h3>}
+                {ponto.planta && <i>{ponto.planta}</i>}
             </div>
         </Link>
     );
