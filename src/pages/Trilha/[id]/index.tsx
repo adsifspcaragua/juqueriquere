@@ -8,7 +8,6 @@ import NotFound from "../../_components/NotFound";
 import type TrilhaType from "../../Trilhas/TrilhaInfo";
 
 import SimpleButton from "../../../components/ui/buttons/SimpleButton";
-import TrilhasMap from "../../../components/ui/TrilhasMap";
 import DraggableCarousel from "../../../components/ui/DraggableCarousel";
 import { icons } from "../../../components/ui/icons";
 import CardPonto from "../../../components/ui/CardPonto";
