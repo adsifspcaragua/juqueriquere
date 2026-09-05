@@ -1,3 +1,4 @@
+import React from 'react';
 import { GeoJSON } from 'react-leaflet';
 import { type Feature } from 'geojson';
 
@@ -14,32 +15,43 @@ export default function TrailsLayer({ lines, isLineHighlighted, onHover, onClick
     <>
       {lines.map((item, idx) => {
         const highlighted = isLineHighlighted(item.trailId, item.ramalId);
-        if (!highlighted) return null; // Remove as que não estão em destaque (ou ajuste opacity se preferir manter no DOM)
-
         const strokeColor = item.feature.properties?.stroke || "#4CAF50";
 
         return (
-          <GeoJSON
-            key={`trail-${idx}-${highlighted}`}
-            data={item.feature}
-            style={{
-              color: strokeColor,
-              weight: 6,
-              opacity: highlighted ? 0.8 : 0.3,
-              lineCap: 'round',
-              lineJoin: 'round'
-            }}
-            eventHandlers={{
-              mouseover: (e) => {
-                const domEvent = e.originalEvent as unknown as React.MouseEvent<SVGElement>;
-                if (item.trailId) onHover?.(domEvent, item.trailId, item.ramalId);
-              },
-              mouseout: () => onLeave?.(),
-              click: () => {
-                if (item.trailId) onClick?.(item.trailId, item.ramalId);
-              }
-            }}
-          />
+          <React.Fragment key={`trail-group-${idx}-${highlighted}`}>
+            <GeoJSON
+              data={item.feature}
+              style={{
+                color: 'transparent',
+                weight: 20, 
+                opacity: 0,
+                lineCap: 'round',
+                lineJoin: 'round'
+              }}
+              interactive={true}
+              eventHandlers={{
+                mouseover: (e) => {
+                  const domEvent = e.originalEvent as unknown as React.MouseEvent<SVGElement>;
+                  if (item.trailId) onHover?.(domEvent, item.trailId, item.ramalId);
+                },
+                mouseout: () => onLeave?.(),
+                click: () => {
+                  if (item.trailId) onClick?.(item.trailId, item.ramalId);
+                }
+              }}
+            />
+            <GeoJSON
+              data={item.feature}
+              style={{
+                color: strokeColor,
+                weight: highlighted ? 10 : 7,
+                opacity: highlighted ? 0.9 : 0.25,
+                lineCap: 'round',
+                lineJoin: 'round'
+              }}
+              interactive={false} 
+            />
+          </React.Fragment>
         );
       })}
     </>

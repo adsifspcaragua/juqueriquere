@@ -2,22 +2,21 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { usePageTitle } from "../../../../lib/hooks/usePageTitle.ts";
 
-import { db, type PontoInteresseDB } from '../../../../lib/dexie.ts';
+import { db, type PontoInteresseDB, type TrilhaDB } from '../../../../lib/dexie.ts';
 
 import NotFound from '../../../_components/NotFound.tsx';
 
 import SimpleButton from '../../../../components/ui/buttons/SimpleButton.tsx';
 import TrilhasMap from '../../../../components/ui/TrilhasMap.tsx';
 import '../../../_styles/ponto.css';
-import type TrilhaType from '../../../Trilhas/TrilhaInfo.tsx';
 import GaleriaImagens from '../../../../components/ui/GaleriaImagens.tsx';
-
+import Map from '../../../../components/ui/Map/Map.tsx';
 export default function Ponto() {
     const { id, idPonto } = useParams<{ id: string; idPonto: string }>();
     const [searchParams] = useSearchParams();
     let from = searchParams.get('from') || 'explorar';
     
-    const [trilha, setTrilha] = useState<TrilhaType | undefined>(undefined);
+    const [trilha, setTrilha] = useState<TrilhaDB>(undefined);
     const [ponto, setPontoDados] = useState<PontoInteresseDB>();
     const [imagens, setImagens] = useState<string[]>();
 
@@ -111,6 +110,7 @@ export default function Ponto() {
                             {ponto.latitude && ponto.longitude && (
                                 <div className="mapa">
                                     <TrilhasMap highlight={Object(ponto).nome} id={[trilha.id]} />
+                                    <Map pointId={Number(idPonto)} id={Number(id)}/>
                                 </div>
                             )}
                         

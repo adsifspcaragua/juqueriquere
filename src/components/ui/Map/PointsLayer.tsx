@@ -16,7 +16,6 @@ export default function PointsLayer({ points, isPointHighlighted, onHover, onCli
       {points.map((item, idx) => {
         const highlighted = isPointHighlighted(item.pointName, item.trailId);
         
-        // GeoJSON é [longitude, latitude], Leaflet usa [latitude, longitude]
         const coords = (item.feature.geometry as any).coordinates;
         const position: [number, number] = [coords[1], coords[0]]; 
 
@@ -24,12 +23,13 @@ export default function PointsLayer({ points, isPointHighlighted, onHover, onCli
           <CircleMarker
             key={`point-${idx}`}
             center={position}
-            radius={highlighted ? 6 : 0} // Esconde se não destacado
+            // Pontos não destacados continuam visíveis, mas ficam menores (raio 3)
+            radius={highlighted ? 6 : 3}
             fillColor="#fbc02d"
             color="#fae208"
-            weight={2}
-            fillOpacity={1}
-            interactive={highlighted}
+            weight={highlighted ? 2 : 1}
+            fillOpacity={highlighted ? 1 : 0.3} // Ficam meio transparentes no fundo
+            interactive={true} // Permite clicar em pontos de outras trilhas
             eventHandlers={{
               mouseover: (e) => {
                 const domEvent = e.originalEvent as unknown as React.MouseEvent<SVGElement>;
@@ -46,7 +46,7 @@ export default function PointsLayer({ points, isPointHighlighted, onHover, onCli
               }
             }}
           >
-            <Tooltip>{item.feature.properties?.name}</Tooltip>
+            <Tooltip>{item.feature.properties?.name || item.pointName}</Tooltip>
           </CircleMarker>
         );
       })}
