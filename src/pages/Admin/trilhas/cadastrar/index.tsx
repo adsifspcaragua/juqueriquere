@@ -1,3 +1,5 @@
+// CADASTRAR TRILHA
+
 import { useRef, useState } from "react";
 import { supabase } from "../../../../lib/supabase.ts";
 import { db, type TrilhaDB } from "../../../../lib/dexie.ts";
@@ -227,7 +229,7 @@ export default function CadastrarTrilha() {
 
                 <form
                     ref={formRef}
-                    className="card form vertical gap15"
+                    className="card vertical gap15"
                     onSubmit={handleSubmit}
                 >
 

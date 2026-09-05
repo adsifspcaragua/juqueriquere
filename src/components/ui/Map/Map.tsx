@@ -6,8 +6,11 @@ import { useMapData } from './useMapData';
 import TrailsLayer from './TrailsLayer';
 import PointsLayer from './PointsLayer';
 
+//revisar visual mais tarde
+
 interface MapProps {
-  id?: number | number[];
+  id?: number | string | (number | string)[]; // Tipagem atualizada para bater com o hook
+  pointId?: number | string | (number | string)[]; // <-- NOVO: adicionado o pointId
   onHover?: (event: React.MouseEvent<SVGElement>, trailId: number, ramalId?: string) => void;
   onClick?: (trailId: number, ramalId?: string) => void;
   onPointClick?: (pointName: string, trailId?: number) => void;
@@ -18,9 +21,16 @@ interface MapProps {
 // Coordenadas centrais aproximadas (ajustável)
 const MAP_CENTER: [number, number] = [-23.678, -45.4395]; 
 
-export default function Map({ id, onHover, onClick, onPointClick, onLeave, highlight }: MapProps) {
-  // Hook isolado lidando com a lógica de dados
-  const { filteredData, isLineHighlighted, isPointHighlighted } = useMapData(id, highlight);
+export default function Map({ 
+  id, 
+  pointId, 
+  onHover, 
+  onClick, 
+  onPointClick, 
+  onLeave, 
+  highlight
+}: MapProps) {
+  const { filteredData, isLineHighlighted, isPointHighlighted } = useMapData(id, highlight, pointId);
 
   return (
     <div style={{ height: '100%', width: '100%', minHeight: '600px' }}>

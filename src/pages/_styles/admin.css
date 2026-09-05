@@ -5,6 +5,28 @@
     }
 }
 
+.userImg{
+    background-color: var(--verdeEscuro);
+    width: 70px;
+    aspect-ratio: 1/1;
+    border-radius: 100%;
+}
+.userCard{
+    a, .btn{
+        width: 100%;
+        justify-content: center;
+    }
+}
+.userListCard{
+    background-color: var(--verdeEscuroTransparente);
+    border-radius: 10px;
+    h3{color: var(--verdeEscuro);}
+    .btn{
+        padding: 0;
+        background-color: transparent;
+    }
+}
+
 .modal{
     position: fixed;
     top: 0;
@@ -16,11 +38,13 @@
     backdrop-filter: blur(5px);
 }
 
-.form{
+form{
     label{
         color: var(--verdeEscuro);
         font-family: Inter, Arial, Helvetica, sans-serif;
         font-weight: 600;
+        width: fit-content;
+        white-space: nowrap ;
     }
     textarea{
         font-family: Inter, Arial, Helvetica, sans-serif;
@@ -108,6 +132,8 @@
         font-weight: 600;
     }
 }
+
+.btnCancel{background-color: #008a6543;color: var(--verdeEscuro);}
 
 @media (width > 850px){
     .modal .card{

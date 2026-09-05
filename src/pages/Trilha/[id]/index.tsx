@@ -8,12 +8,12 @@ import NotFound from "../../_components/NotFound";
 import type TrilhaType from "../../Trilhas/TrilhaInfo";
 
 import SimpleButton from "../../../components/ui/buttons/SimpleButton";
-import TrilhasMap from "../../../components/ui/TrilhasMap";
 import DraggableCarousel from "../../../components/ui/DraggableCarousel";
 import { icons } from "../../../components/ui/icons";
 import CardPonto from "../../../components/ui/CardPonto";
 import Switch from "../../../components/ui/buttons/Switch";
 import GaleriaImagens from "../../../components/ui/GaleriaImagens";
+import Map from "../../../components/ui/Map/Map";
 
 
 
@@ -230,9 +230,9 @@ export default function Trilha() {
                                         <div className="vertical gap5">
                                             <h1>Mapa da trilha</h1>
                                             <div className="mapa">
-                                                <TrilhasMap
-                                                    highlight={hl}
-                                                    id={[id]}
+                                                <Map
+                                                     highlight={hl}
+                                                    id={id}
                                                     onPointClick={(
                                                         nome
                                                     ) =>

@@ -1,7 +1,11 @@
+// CADASTRAR USUÁRIO
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../../lib/supabase";
 import ProtectedRoute from "../../../components/Protected";
+import "../../_styles/admin.css";
+import SimpleButton from "../../../components/ui/buttons/SimpleButton";
 
 export default function CadastrarUsuario() {
     const navigate = useNavigate();
@@ -70,15 +74,13 @@ export default function CadastrarUsuario() {
     return (
         <ProtectedRoute>
             <section className="vertical gap15" id="loginPage">
-
-                <div className="container">
+                <SimpleButton type="back" icon="setaBack" path="/admin/usuario/list">Voltar</SimpleButton>
+                <div className="vertical gap15 container card">
                     <h1>Cadastrar Usuário</h1>
 
-                    <form onSubmit={cadastrarUsuario}>
-
-                        <div>
+                    <form onSubmit={cadastrarUsuario} className="vertical gap15">
+                        <div className="vertical gap5">
                             <label>Login</label>
-
                             <input
                                 type="text"
                                 value={login}
@@ -89,9 +91,8 @@ export default function CadastrarUsuario() {
                             />
                         </div>
 
-                        <div>
+                        <div className="vertical gap5">
                             <label>Senha</label>
-
                             <input
                                 type="password"
                                 value={senha}
@@ -103,9 +104,8 @@ export default function CadastrarUsuario() {
                             />
                         </div>
 
-                        <div>
-                            <label>Tipo de usuário</label>
-
+                        <div className="horizontal gap15 center">
+                            <label>Tipo de usuário:</label>
                             <select
                                 value={tipo}
                                 onChange={(e) =>
@@ -128,24 +128,26 @@ export default function CadastrarUsuario() {
                             </p>
                         )}
 
-                        <button
-                            type="submit"
-                            disabled={carregando}
-                        >
-                            {carregando
-                                ? "Cadastrando..."
-                                : "Cadastrar Usuário"}
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={() =>
-                                navigate("/admin/usuario/list")
-                            }
-                        >
-                            Cancelar
-                        </button>
-
+                        <div className="vertical gap5">
+                            <button
+                                type="submit"
+                                disabled={carregando}
+                                className="r10"
+                            >
+                                {carregando
+                                    ? "Cadastrando..."
+                                    : "Cadastrar Usuário"}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    navigate("/admin/usuario/list")
+                                }
+                                className="btnCancel r10"
+                            >
+                                Cancelar
+                            </button>
+                        </div>
                     </form>
                 </div>
                 </section>

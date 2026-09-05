@@ -165,7 +165,7 @@ export default function Map({ id, onHover, onClick, onPointClick, onLeave, highl
               strokeWidth="10"
               strokeLinecap="round"
               strokeLinejoin="round"
-              opacity={highlighted ? "0.8" : "0"} // Modificado para esconder os que não estão no highlight (caso o CSS não cuide disso)
+              opacity={highlighted ? "0.8" : "0"}
               pointerEvents="none"
               className={`path ${highlighted ? 'highlighted' : 'not-highlighted'}`}
             />

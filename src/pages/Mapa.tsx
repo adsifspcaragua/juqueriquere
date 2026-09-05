@@ -5,7 +5,9 @@ import { db, type PontoInteresseDB } from "../lib/dexie.ts";
 import type Trilha from './Trilhas/TrilhaInfo.tsx';
 import CardTrilha from '../components/ui/CardTrilha.tsx';
 import CardPonto from '../components/ui/CardPonto.tsx';
-import TrilhasMap from '../components/ui/TrilhasMap.tsx';
+//import TrilhasMap from '../components/ui/TrilhasMap.tsx';
+import Map from '../components/ui/Map/Map.tsx';
+
 import DraggableCarousel from '../components/ui/DraggableCarousel.tsx';
 import './_styles/explorar.css';
 import SimpleButton from '../components/ui/buttons/SimpleButton.tsx';
@@ -87,7 +89,7 @@ export default function Explorar() {
                     <h1>Mapa geral do Parque</h1>
                     <div className="mapa">
                         {/* Repasse o array de IDs (trilha + ramais) e garanta que o onClick atualize o estado da trilha principal */}
-                        <TrilhasMap
+                        <Map
                             highlight={highlightIds}
                             onClick={(trailId, _ramalId) => setTrilhaSelecionada(trailId)}
                         />
@@ -108,7 +110,7 @@ export default function Explorar() {
                     </div>
                     <div className="vertical gap15">
                         <div className="vertical gap15">
-                            <h4>Pontos de interesse nesta trilha:</h4>
+                            <h3>Pontos de interesse nesta trilha:</h3>
                                 {/* {pontosList} */}
                                 <AnimatePresence mode="wait">
                                     <motion.div

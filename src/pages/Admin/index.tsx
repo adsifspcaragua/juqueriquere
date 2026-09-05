@@ -73,53 +73,33 @@ export default function Admin() {
     return (
         <ProtectedRoute>
             <div className="paddingHeader"></div>
-            <section className="conteudo vertical gap15" id="adminHome">
+            <section className="conteudo vertical gap30" id="adminHome">
 
-                <h1>Administração do Site</h1>
-                <p>Gerencie conteúdos, trilhas, pontos de interesse, alertas e demais informações do Catálogo Digital PNMJ. Mantenha os dados atualizados para oferecer aos visitantes uma experiência informativa, acessível e segura.</p>
+                <h1>Olá, {nomeUsuario}!</h1>
 
-                <section className="conteudo desktopWrap3 gap15">
-
-
-                    <div className="card horizontal gap5">
-                        <div>
-                            <img src="#" alt="Foto do usuário" />
-                        </div>
-
-
+                <div className="vertical card userCard">
+                    <div className="horizontal center gap15">
+                        <img src="#" alt="Foto do usuário" className="userImg" />
                         <div className="vertical">
                             <h2>{nomeUsuario || "Carregando..."}</h2>
-
-
-                            <p>
-                                Tipo de usuário: {tipoUsuario || "Carregando..."}
-                            </p>
-
-
-                            <p>----------------------------</p>
-
-
-                            <SimpleButton
-                                path="/admin/minha-conta"
-                                tema="dark"
-                                raio="10"
-                            >
-                                Minha Conta
-                            </SimpleButton>
-
-                            {user ? (
-                                <SimpleButton raio="0" onClick={handleLogout}>
-                                    Logout
-                                </SimpleButton>
-                            ) : (
-                                null
-                            )}
+                            <p>{tipoUsuario || "Carregando..."}</p>
                         </div>
                     </div>
 
+                    <div className="linhaPontilhadaDark" />
 
-                </section>
+                    <SimpleButton
+                        path="/admin/minha-conta"
+                        raio="10"
+                    >
+                        Minha Conta
+                    </SimpleButton>
+                </div>
 
+                <div className="vertical gap5">
+                    <h1>Administração do Site</h1>
+                    <p>Gerencie conteúdos, trilhas, pontos de interesse, alertas e demais informações do Catálogo Digital PNMJ. Mantenha os dados atualizados para oferecer aos visitantes uma experiência informativa, acessível e segura.</p>
+                </div>
 
                 <div className="conteudo gap15 desktopWrap3">
                     <div className="card vertical gap5">
@@ -145,6 +125,15 @@ export default function Admin() {
                             <p>Atualize as informações institucionais do projeto e do parque, garantindo que os visitantes tenham acesso a conteúdos claros e relevantes sobre a plataforma.</p>
                             <SimpleButton path="/admin/usuario/list" tema="dark" raio="10">Gerenciar Informações</SimpleButton>
                         </div>
+                    )}
+                </div>
+                <div className="card vertical gap15">
+                    {user ? (
+                        <SimpleButton tema="red" raio="10" onClick={handleLogout}>
+                            Sair
+                        </SimpleButton>
+                    ) : (
+                        null
                     )}
                 </div>
             </section>
