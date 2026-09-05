@@ -6,6 +6,8 @@ import { useMapData } from './useMapData';
 import TrailsLayer from './TrailsLayer';
 import PointsLayer from './PointsLayer';
 
+//revisar visual mais tarde
+
 interface MapProps {
   id?: number | string | (number | string)[]; // Tipagem atualizada para bater com o hook
   pointId?: number | string | (number | string)[]; // <-- NOVO: adicionado o pointId
@@ -21,14 +23,13 @@ const MAP_CENTER: [number, number] = [-23.678, -45.4395];
 
 export default function Map({ 
   id, 
-  pointId, // <-- NOVO: desestruturando das props
+  pointId, 
   onHover, 
   onClick, 
   onPointClick, 
   onLeave, 
   highlight
 }: MapProps) {
-  // Hook isolado lidando com a lógica de dados, agora recebendo o pointId
   const { filteredData, isLineHighlighted, isPointHighlighted } = useMapData(id, highlight, pointId);
 
   return (
