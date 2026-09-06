@@ -1,16 +1,14 @@
 import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css'; // Essencial para o mapa não quebrar visualmente
+import 'leaflet/dist/leaflet.css';
 
 import { useMapData } from './useMapData';
 import TrailsLayer from './TrailsLayer';
 import PointsLayer from './PointsLayer';
 
-//revisar visual mais tarde
-
 interface MapProps {
-  id?: number | string | (number | string)[]; // Tipagem atualizada para bater com o hook
-  pointId?: number | string | (number | string)[]; // <-- NOVO: adicionado o pointId
+  id?: number | string | (number | string)[];
+  pointId?: number | string | (number | string)[]; 
   onHover?: (event: React.MouseEvent<SVGElement>, trailId: number, ramalId?: string) => void;
   onClick?: (trailId: number, ramalId?: string) => void;
   onPointClick?: (pointName: string, trailId?: number) => void;
@@ -18,7 +16,7 @@ interface MapProps {
   highlight?: number | string | (number | string)[]; 
 }
 
-// Coordenadas centrais aproximadas (ajustável)
+// Coordenadas centrais (ajustável)
 const MAP_CENTER: [number, number] = [-23.678, -45.4395]; 
 
 export default function Map({ 
@@ -37,10 +35,9 @@ export default function Map({
       <MapContainer 
         center={MAP_CENTER} 
         zoom={50} 
-        scrollWheelZoom={true}
+        scrollWheelZoom={false}
         style={{ height: '100%', width: '100%' }}
       >
-        {/* Camada de Satélite (Esri World Imagery) */}
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
           attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
