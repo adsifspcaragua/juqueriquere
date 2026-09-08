@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { useMapData } from './useMapData';
 import TrailsLayer from './TrailsLayer';
 import PointsLayer from './PointsLayer';
+import { RecenterButton } from './RecenterButton';
 
 interface MapProps {
   id?: number | string | (number | string)[];
@@ -91,9 +92,11 @@ export default function Map({
         center={MAP_CENTER} 
         zoom={50} 
         scrollWheelZoom={false}
-        dragging={false}
+        dragging={!L.Browser.mobile}
         style={{ height: '100%', width: '100%' }}
       >
+        <RecenterButton center={MAP_CENTER} />
+        
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
           attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
@@ -112,6 +115,7 @@ export default function Map({
           </>
         ) : (
           <>
+            
             <TrailsLayer 
               lines={filteredData.lines}
               isLineHighlighted={isLineHighlighted}
