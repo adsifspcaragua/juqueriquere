@@ -7,63 +7,58 @@ import type Trilha from "../../Trilhas/TrilhaInfo.tsx";
 import { createPortal } from "react-dom";
 import ProtectedRoute from "../../../components/Protected.tsx";
 
+// <-- Importando o nosso novo componente
+import QrCodeModal from "../../../components/ui/QrCodeModal.tsx";
 
 export default function AdminTrilhas() {
 
     async function excluirTrilha() {
-    if (!trilhaSelecionada) return;
+        if (!trilhaSelecionada) return;
 
-    try {
-        // 1. remove do Supabase (banco principal)
-        const { error } = await supabase
-            .from("trilhas")
-            .delete()
-            .eq("id", trilhaSelecionada.id);
+        try {
+            const { error } = await supabase
+                .from("trilhas")
+                .delete()
+                .eq("id", trilhaSelecionada.id);
 
-        if (error) throw error;
+            if (error) throw error;
 
-        // 2. remove do Dexie (cache/offline)
-        await db.trilhas.delete(trilhaSelecionada.id);
+            await db.trilhas.delete(trilhaSelecionada.id);
 
-        try{
-            const { error: erroDeletar } = await supabase
-            .from("trilhas")
-            .delete()
-            .eq('id', trilhaSelecionada.id);
+            try{
+                const { error: erroDeletar } = await supabase
+                .from("trilhas")
+                .delete()
+                .eq('id', trilhaSelecionada.id);
 
-        if (erroDeletar) throw erroDeletar;
-        } catch (error : any){
-            alert("erro ao deletar \n tente novamente mais tarde.")
-            console.log(error)
+            if (erroDeletar) throw erroDeletar;
+            } catch (error : any){
+                alert("erro ao deletar \n tente novamente mais tarde.")
+                console.log(error)
+            }
+            
+            setTrilhas((prev) =>
+                prev.filter((t) => t.id !== trilhaSelecionada.id)
+            );
+
+            setModalDelete(false);
+            setTrilhaSelecionada(null);
+
+        } catch (err) {
+            console.error(err);
+            alert("Erro ao excluir trilha");
         }
-        
-
-        setTrilhas((prev) =>
-            prev.filter((t) => t.id !== trilhaSelecionada.id)
-        );
-
-        setModalDelete(false);
-        setTrilhaSelecionada(null);
-
-    } catch (err) {
-        console.error(err);
-        alert("Erro ao excluir trilha");
     }
-}
 
     const order = {
         "Nome A-Z": (a: Trilha, b: Trilha) =>
             a.nome.localeCompare(b.nome, "pt-BR"),
-
         "Nome Z-A": (a: Trilha, b: Trilha) =>
             b.nome.localeCompare(a.nome, "pt-BR"),
-
         "ID Crescente": (a: Trilha, b: Trilha) =>
             a.id - b.id,
-
         "ID Decrescente": (a: Trilha, b: Trilha) =>
             b.id - a.id,
-
     } as const;
 
     type OrderKey = keyof typeof order;
@@ -76,13 +71,15 @@ export default function AdminTrilhas() {
 
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
 
+    // --- ESTADOS DO QR CODE (Bem mais simples agora) ---
+    const [qrModalOpen, setQrModalOpen] = useState(false);
+    const [itemParaQrCode, setItemParaQrCode] = useState<any>(null);
 
     useEffect(() => {
         async function loadData() {
             const data = await db.trilhas.toArray();
             setTrilhas(data as Trilha[]);
         }
-
         loadData();
     }, []);
 
@@ -108,99 +105,72 @@ export default function AdminTrilhas() {
 
             <section className="conteudo vertical gap15">
 
-                <SimpleButton
-                    path="/admin/"
-                    type="back"
-                    icon="setaBack"
-                >
+                <SimpleButton path="/admin/" type="back" icon="setaBack">
                     Voltar
                 </SimpleButton>
 
                 <div className="card vertical gap5 adminCard" id="adminTrilhasCard">
-
-                    <h1>
-                        Gerenciar Trilhas
-                    </h1>
-
-                    <p>
-                        Cadastre, edite e organize as trilhas
-                        do parque.
-                    </p>
-
+                    <h1>Gerenciar Trilhas</h1>
+                    <p>Cadastre, edite e organize as trilhas do parque.</p>
                 </div>
 
                 {createPortal(
-
-                    <div
-                        className="horizontal gap5"
-                        id="filtros"
-                    >
-
+                    <div className="horizontal gap5" id="filtros">
                         <Select
                             options={Object.keys(order)}
                             value={orderKey}
-                            onChange={(value) =>
-                                setOrderKey(value as OrderKey)
-                            }
+                            onChange={(value) => setOrderKey(value as OrderKey)}
                             style="none"
                         />
-
                         <div className="pesquisa horizontal">
-
                             <div className="pesquisaIcon"></div>
-
                             <input
                                 type="text"
                                 placeholder="Pesquisar trilha..."
                                 value={search}
-                                onChange={(e) =>
-                                    setSearch(e.target.value)
-                                }
+                                onChange={(e) => setSearch(e.target.value)}
                             />
-
                         </div>
-
                         <div className="circleButton">
-                            <SimpleButton
-                                path="/admin/trilhas/cadastrar"
-                                icon="Plus"
-                            >
-                            </SimpleButton>
+                            <SimpleButton path="/admin/trilhas/cadastrar" icon="Plus" />
                         </div>
-
                     </div>,
                     document.body
                 )}
                 
-
+                {/* MODAL DE EXCLUSÃO */}
                 {modalDelete && (
                     createPortal(
-                        <div className = "modal vertical center" >
+                        <div className="modal vertical center">
                             <div className="modal-content card vertical gap15">
-
                                 <h2>
                                     Deseja excluir <br/>
                                     {trilhaSelecionada?.nome}?
                                 </h2>
-
                                 <p>Esta ação não pode ser revertida.</p>
-
                                 <div className="horizontal btnFull gap15">
                                     <SimpleButton tema="dark" icon="X" raio="10" onClick={cancelar}>
                                         Manter
                                     </SimpleButton>
-
                                     <SimpleButton tema="red" icon="Trash" raio="10" onClick={excluirTrilha}>
                                         Excluir
                                     </SimpleButton>
                                 </div>
-
                             </div>
-                    </div>, 
-                    document.body
+                        </div>, 
+                        document.body
                     )
-
                 )}
+
+                <QrCodeModal 
+                    isOpen={qrModalOpen} 
+                    onClose={() => {
+                        setQrModalOpen(false);
+                        setItemParaQrCode(null);
+                    }} 
+                    path={itemParaQrCode ? `/trilha/${itemParaQrCode.id}` : ''} 
+                    title={itemParaQrCode?.nome || ''} 
+                />
 
                 <div className="vertical gap15">
                     <div className="vertical gap5">
@@ -210,10 +180,7 @@ export default function AdminTrilhas() {
 
                     <div className="listaGrid">
                         {trilhasFiltradas.map((trilha) => (
-                            <div
-                                className="card horizontal gap5 justify"
-                                key={trilha.id}
-                            >
+                            <div className="card horizontal gap5 justify" key={trilha.id}>
                                 <div className="cardTrilhaCompacto vertical gap5">
                                     <h3>{trilha.nome}</h3>
                                     <p>{trilha.dificuldade}</p>
@@ -221,9 +188,23 @@ export default function AdminTrilhas() {
                                 </div>
 
                                 <div className="btnFull actions vertical gap5">
-                                    <SimpleButton  icon="Edit" tema="dark" raio="10" path={`/admin/trilhas/editar/${trilha.id}`}                                        >
+                                    {/* Botão que abre o modal informando o item selecionado */}
+                                    <SimpleButton 
+                                        icon="Scan" 
+                                        tema="dark" 
+                                        raio="10" 
+                                        onClick={() => {
+                                            setItemParaQrCode(trilha);
+                                            setQrModalOpen(true);
+                                        }}
+                                    >
+                                        QR Code
+                                    </SimpleButton>
+
+                                    <SimpleButton icon="Edit" tema="dark" raio="10" path={`/admin/trilhas/editar/${trilha.id}`}>
                                         Editar
                                     </SimpleButton>
+                                    
                                     <SimpleButton icon="Trash" tema="red" raio="10" onClick={() => abrirExcluir(trilha)}>
                                         Excluir
                                     </SimpleButton>
