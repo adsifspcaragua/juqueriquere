@@ -22,11 +22,6 @@ interface Props {
 export default function CardPonto({ ponto, trilhaId }: Props) {
     const [imagem, setImagem] = useState<string>(trilhaGeneric);
 
-    const location = useLocation();
-
-    const pageName =
-        location.pathname.split("/").filter(Boolean).pop() || "explorar";
-
     useEffect(() => {
         if (!ponto.id) return;
 
