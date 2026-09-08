@@ -7,10 +7,10 @@ import { db, type PontoInteresseDB, type TrilhaDB } from '../../../../lib/dexie.
 import NotFound from '../../../_components/NotFound.tsx';
 
 import SimpleButton from '../../../../components/ui/buttons/SimpleButton.tsx';
-import TrilhasMap from '../../../../components/ui/TrilhasMap.tsx';
+//import TrilhasMap from '../../../../components/ui/TrilhasMap.tsx';
 import '../../../_styles/ponto.css';
 import GaleriaImagens from '../../../../components/ui/GaleriaImagens.tsx';
-import Map from '../../../../components/ui/Map/Map.tsx';
+import Map from '../../../../components/ui/map/Map.tsx';
 
 export default function Ponto() {
     const { id, idPonto } = useParams<{ id: string; idPonto: string }>();
@@ -111,7 +111,6 @@ export default function Ponto() {
                         <div className="card desktopWrap gap15">
                             {ponto.latitude && ponto.longitude && (
                                 <div className="mapa">
-                                    <TrilhasMap highlight={Object(ponto).nome} id={[trilha.id]} />
                                     <Map pointId={Number(idPonto)} id={Number(id)}/>
                                 </div>
                             )}

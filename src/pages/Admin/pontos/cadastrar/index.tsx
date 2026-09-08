@@ -7,7 +7,7 @@ import AutoResizeTextarea from "../../../../utils/AutoResizeTextarea.tsx";
 import { convertToWebP } from "../../../../utils/imageConverter.ts";
 
 // Importações necessárias para simular a página Ponto.tsx no preview
-import TrilhasMap from "../../../../components/ui/TrilhasMap.tsx";
+import Map from "../../../../components/ui/map/Map.tsx";
 import "../../../_styles/ponto.css";
 import ProtectedRoute from "../../../../components/Protected.tsx";
 
@@ -215,7 +215,7 @@ export default function CadastrarPontoInteresse() {
                             <div className="card desktopWrap gap15">
                                 {dadosPreview.latitude && dadosPreview.longitude && (
                                     <div className="mapa">
-                                        <TrilhasMap id={trilhaSelecionada ? [trilhaSelecionada] : []} />
+                                        <Map id={trilhaSelecionada ? [trilhaSelecionada] : []} />
                                     </div>
                                 )}
 

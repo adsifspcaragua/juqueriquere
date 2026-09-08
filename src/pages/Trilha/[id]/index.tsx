@@ -13,7 +13,7 @@ import { icons } from "../../../components/ui/icons";
 import CardPonto from "../../../components/ui/CardPonto";
 import Switch from "../../../components/ui/buttons/Switch";
 import GaleriaImagens from "../../../components/ui/GaleriaImagens";
-import Map from "../../../components/ui/Map/Map";
+import Map from "../../../components/ui/map/Map";
 
 
 
