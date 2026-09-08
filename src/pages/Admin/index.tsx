@@ -16,10 +16,6 @@ export default function Admin() {
     const [user, setUser] = useState<any>(null);
     const navigate = useNavigate();
 
-
-
-
-
     useEffect(() => {
         buscarUsuario();
         // pega sessão inicial

@@ -1,12 +1,20 @@
 import { useMemo } from 'react';
-import { type FeatureCollection, type Geometry, type Feature, type Point } from 'geojson';
+import { type Geometry, type Feature, type Point } from 'geojson';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../../../lib/dexie';
-import trilhasLinhasRaw from '../../../data/Trilhas PNMJ/TrilhasRaw.json';
 import { normalize } from './utils';
 
-// Mantemos apenas o GeoJSON das linhas (trilhas)
-const trilhasLinhas = trilhasLinhasRaw as unknown as FeatureCollection<Geometry>;
+type LineData = {
+  feature: Feature<Geometry>;
+  trailId: number;
+  ramalId?: string;
+};
+
+// Função auxiliar para verificar se a geometria é uma linha
+const isLineGeometry = (geom?: Geometry | null): boolean => {
+  if (!geom) return false;
+  return geom.type === 'LineString' || geom.type === 'MultiLineString';
+};
 
 export function useMapData(
   id?: number | string | (number | string)[], 
@@ -22,7 +30,6 @@ export function useMapData(
     return arr.map(h => typeof h === 'string' ? normalize(h) : h);
   }, [highlight]);
 
-  // Lógica para Trilhas
   const targetIds = useMemo(() => id !== undefined ? (Array.isArray(id) ? id : [id]) : null, [id]);
   
   const targetTrailIds = useMemo(() => {
@@ -39,7 +46,6 @@ export function useMapData(
     return ids;
   }, [targetIds, trilhas]);
 
-  // Lógica para Pontos
   const targetPointIds = useMemo(() => pointId !== undefined ? (Array.isArray(pointId) ? pointId : [pointId]) : null, [pointId]);
   
   const normalizedTargetPoints = useMemo(() => {
@@ -47,56 +53,61 @@ export function useMapData(
     return targetPointIds.map(p => typeof p === 'string' ? normalize(p) : p);
   }, [targetPointIds]);
 
-
   const filteredData = useMemo(() => {
     if (!trilhas) return { lines: [], points: [] };
 
     const isSingleId = id !== undefined && !Array.isArray(id);
 
-    // 1. PROCESSAR LINHAS DO GEOJSON
-    const lines = trilhasLinhas.features.map(feature => {
-      const rawName = feature.properties?.name || feature.properties?.Name || feature.properties?.NOME || feature.properties?.nome || "";
-      const featName = normalize(rawName);
-      const featIdFromMap = feature.properties?.id ?? feature.id;
-      
-      let trailId: number | undefined = undefined;
-      let ramalId: string | undefined = undefined;
+    // 1. EXTRAIR LINHAS APENAS DO BANCO DE DADOS
+    const dbLines: LineData[] = [];
 
-      for (const t of trilhas) {
-        const normTrailName = normalize(t.nome);
+    trilhas.forEach(t => {
+      if (t.geometria && t.id) {
+        let features: Feature<Geometry>[] = [];
 
-        if (t.ramais && Array.isArray(t.ramais)) {
-          const ramalEncontrado = t.ramais.find(r => {
-            if (!r) return false;
-            const rIdStr = String(r.id);
-            const rNomeNorm = normalize(r.nome || "");
-            const matchId = featIdFromMap !== undefined && rIdStr === String(featIdFromMap);
-            const matchName = featName && rNomeNorm && (featName.includes(rNomeNorm) || rNomeNorm.includes(featName));
-            return matchId || matchName;
+        if (t.geometria.type === 'FeatureCollection' && Array.isArray(t.geometria.features)) {
+          features = t.geometria.features;
+        } else if (t.geometria.type === 'Feature') {
+          features = [t.geometria];
+        } else if (t.geometria.type) {
+          features = [{
+            type: 'Feature',
+            geometry: t.geometria,
+            properties: {}
+          }];
+        }
+
+        // Filtra estritamente apenas os elementos que são linhas
+        features
+          .filter(feat => isLineGeometry(feat.geometry))
+          .forEach(feat => {
+            const featureComPropriedades: Feature<Geometry> = {
+              ...feat,
+              properties: {
+                ...feat.properties,
+                name: feat.properties?.name || t.nome,
+                color: t.cor_identificacao || feat.properties?.color,
+                stroke: t.cor_identificacao || feat.properties?.stroke,
+              }
+            };
+
+            dbLines.push({
+              feature: featureComPropriedades,
+              trailId: t.id!,
+            });
           });
-          
-          if (ramalEncontrado) {
-            trailId = t.id;
-            ramalId = String(ramalEncontrado.id);
-            break;
-          }
-        }
-
-        if (featName && normTrailName && (normTrailName === featName || normTrailName.includes(featName) || featName.includes(normTrailName))) {
-          trailId = t.id;
-          break;
-        }
       }
-      return { feature, trailId, ramalId };
-    }).filter(item => {
+    });
+
+    const allLines = dbLines.filter(item => {
       if (item.trailId === undefined) return false;
       if (isSingleId) return targetTrailIds.has(item.trailId);
       return true; 
     });
 
-    // 2. PROCESSAR PONTOS (APENAS DO DEXIE/DB)
+    // 2. PONTOS DE INTERESSE DO BD
     const pointsFromDB = (pontosInteresseDB || [])
-      .filter(poi => poi.latitude && poi.longitude) // Filtra apenas se houver coordenadas (sem checar duplicação com geojson)
+      .filter(poi => poi.latitude && poi.longitude)
       .map(poi => {
         const poiName = normalize(poi.nome || "");
         const syntheticFeature: Feature<Point> = {
@@ -115,7 +126,6 @@ export function useMapData(
       }).filter(item => {
         if (item.trailId === undefined) return false;
 
-        // FILTRO DO POINT ID (DB filtra pelo nome normalizado ou ID real)
         if (normalizedTargetPoints && targetPointIds) {
           const matchName = normalizedTargetPoints.includes(item.pointName);
           const matchId = item.dbId !== undefined && targetPointIds.includes(item.dbId);
@@ -126,7 +136,7 @@ export function useMapData(
         return true;
       });
 
-    return { lines, points: pointsFromDB };
+    return { lines: allLines, points: pointsFromDB };
   }, [id, trilhas, pontosInteresseDB, targetTrailIds, targetPointIds, normalizedTargetPoints]);
 
   const highlightedTrailIdsByPoint = useMemo(() => {

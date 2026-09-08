@@ -1,5 +1,3 @@
-// CADASTRAR TRILHA
-
 import { useRef, useState } from "react";
 import { supabase } from "../../../../lib/supabase.ts";
 import { db, type TrilhaDB } from "../../../../lib/dexie.ts";
@@ -7,11 +5,10 @@ import { db, type TrilhaDB } from "../../../../lib/dexie.ts";
 import SimpleButton from "../../../../components/ui/buttons/SimpleButton.tsx";
 import DraggableCarousel from "../../../../components/ui/DraggableCarousel.tsx";
 import AutoResizeTextarea from "../../../../utils/AutoResizeTextarea.tsx";
+import Map from "../../../../components/ui/map/Map.tsx";
 
-import {
-    convertToWebP
-} from "../../../../utils/imageConverter.ts";
-
+import { convertToWebP, fileToBase64 } from "../../../../utils/imageConverter.ts";
+import { convertKmlToGeoJson } from "../../../../utils/kmlConverter.ts";
 import { uploadImagem } from "../../../../lib/services/images.ts";
 import ProtectedRoute from "../../../../components/Protected.tsx";
 
@@ -22,90 +19,94 @@ export default function CadastrarTrilha() {
     const [imagensBase64, setImagensBase64] = useState<string[]>([]);
     const [carregando, setCarregando] = useState(false);
 
+    const [geojsonTrilha, setGeojsonTrilha] = useState<any>(null);
+    const [nomeArquivoKml, setNomeArquivoKml] = useState<string | null>(null);
+    const [corIdentificacao, setCorIdentificacao] = useState("#000000");
 
-    async function handleFileChange(
-        e: React.ChangeEvent<HTMLInputElement>
-    ) {
+    async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         if (!e.target.files) return;
 
         const files = Array.from(e.target.files);
-
-        const novosBase64: string[] = [];
-
-        for (const file of files) {
-            const base64 = await new Promise<string>((resolve, reject) => {
-                const reader = new FileReader();
-
-                reader.onload = () => {
-                    resolve(reader.result as string);
-                };
-
-                reader.onerror = () => {
-                    reject(new Error("Erro ao carregar imagem."));
-                };
-
-                reader.readAsDataURL(file);
-            });
-
-            novosBase64.push(base64);
+        
+        try {
+            const novosBase64 = await Promise.all(files.map(fileToBase64));
+            
+            setImagensSelecionadas(files);
+            setImagensBase64(novosBase64);
+        } catch (error) {
+            console.error(error);
+            alert("Erro ao carregar a visualização das imagens.");
         }
-
-        setImagensSelecionadas(files);
-        setImagensBase64(novosBase64);
     }
-
-
 
     function handleRemoveImage(indexToRemove: number) {
-        setImagensSelecionadas((prev) =>
-            prev.filter((_, idx) => idx !== indexToRemove)
+        setImagensSelecionadas((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+        setImagensBase64((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+    }
+    // Função para filtrar e remover a linha clicada
+    function handleRemoveLine(indexToRemove: number) {
+        if (!geojsonTrilha) return;
+
+        const novasFeatures = geojsonTrilha.features.filter(
+            (_: any, idx: number) => idx !== indexToRemove
         );
 
-        setImagensBase64((prev) =>
-            prev.filter((_, idx) => idx !== indexToRemove)
-        );
+        if (novasFeatures.length === 0) {
+            setGeojsonTrilha(null);
+        } else {
+            setGeojsonTrilha({
+                ...geojsonTrilha,
+                features: novasFeatures
+            });
+        }
     }
 
-    async function handleSubmit(
-        e: React.FormEvent<HTMLFormElement>
-    ) {
+    async function handleKmlChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setNomeArquivoKml(file.name);
+
+        try {
+            const geojsonConvertido = await convertKmlToGeoJson(file);
+            setGeojsonTrilha(geojsonConvertido);
+            console.log("KML processado com sucesso:", geojsonConvertido);
+        } catch (error: any) {
+            console.error(error);
+            alert(error.message);
+            setNomeArquivoKml(null);
+            setGeojsonTrilha(null);
+        }
+    }
+
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setCarregando(true);
 
         try {
             const formData = new FormData(e.currentTarget);
 
-          
-
             const dadosTrilhaSupabase = {
                 nome: formData.get("nome") as string,
-                cor_identificacao: formData.get("cor_identificacao") as string,
+                cor_identificacao: corIdentificacao,
                 dificuldade: formData.get("dificuldade") as string,
                 extensao: formData.get("extensao") as string,
                 duracao: formData.get("duracao") as string,
                 descricao_curta: formData.get("descricao_curta") as string,
                 descricao: formData.get("descricao") as string,
-                equipamento_recomendado:
-                    formData.get("equipamento_recomendado") as string,
+                equipamento_recomendado: formData.get("equipamento_recomendado") as string,
                 atencao: formData.get("atencao") as string,
+                geometria: geojsonTrilha, 
             };
 
-            const {
-                data: novaTrilha,
-                error: erroTrilha
-            } = await supabase
+            const { data: novaTrilha, error: erroTrilha } = await supabase
                 .from("trilhas")
                 .insert(dadosTrilhaSupabase)
                 .select()
                 .single();
 
-            if (erroTrilha) {
-                throw erroTrilha;
-            }
-
-            if (!novaTrilha) {
-                throw new Error("Não foi possível criar a trilha.");
-            }
+            if (erroTrilha) throw erroTrilha;
+            if (!novaTrilha) throw new Error("Não foi possível criar a trilha.");
 
             const trilhaParaDexie: TrilhaDB = {
                 ...novaTrilha,
@@ -116,96 +117,56 @@ export default function CadastrarTrilha() {
 
             await db.trilhas.put(trilhaParaDexie);
 
-
             if (imagensSelecionadas.length > 0) {
                 const dadosImagens = [];
                 const imagensConvertidas: Blob[] = [];
 
-                for (
-                    let index = 0;
-                    index < imagensSelecionadas.length;
-                    index++
-                ) {
+                for (let index = 0; index < imagensSelecionadas.length; index++) {
                     const file = imagensSelecionadas[index];
-
-                    // Converte a imagem para WebP
-                    const blobWebP = await convertToWebP(
-                        file,
-                        0.8
-                    );
-
+                    const blobWebP = await convertToWebP(file, 0.8);
+                    
                     imagensConvertidas.push(blobWebP);
 
                     const nomeArquivo = `${crypto.randomUUID()}.webp`;
-
-
-                    // Caminho REAL dentro do Storage
                     const caminho = `trilhas/${nomeArquivo}`;
 
-                    await uploadImagem(
-                        blobWebP,
-                        caminho
-                    );
+                    await uploadImagem(blobWebP, caminho);
 
                     dadosImagens.push({
                         trilha_id: novaTrilha.id,
                         ponto_interesse_id: null,
                         caminho_arquivo: caminho,
-                        legenda:
-                            `Imagem ${index + 1} da trilha ${novaTrilha.nome}`,
+                        legenda: `Imagem ${index + 1} da trilha ${novaTrilha.nome}`,
                     });
                 }
 
-                const {
-                    data: novasImagens,
-                    error: erroImagens
-                } = await supabase
+                const { data: novasImagens, error: erroImagens } = await supabase
                     .from("imagens")
                     .insert(dadosImagens)
                     .select();
 
-                if (erroImagens) {
-                    throw erroImagens;
-                }
-
-               
+                if (erroImagens) throw erroImagens;
 
                 if (novasImagens) {
-                    const imagensParaDexie = novasImagens.map(
-                        (imagem, index) => ({
-                            ...imagem,
-                            arquivo: imagensConvertidas[index]
-                        })
-                    );
-
-                    await db.imagens.bulkPut(
-                        imagensParaDexie
-                    );
+                    const imagensParaDexie = novasImagens.map((imagem, index) => ({
+                        ...imagem,
+                        arquivo: imagensConvertidas[index]
+                    }));
+                    await db.imagens.bulkPut(imagensParaDexie);
                 }
             }
 
-          
-
-            alert(
-                "Trilha e imagens cadastradas com sucesso!"
-            );
-
+            alert("Trilha e imagens cadastradas com sucesso!");
             formRef.current?.reset();
-
             setImagensSelecionadas([]);
             setImagensBase64([]);
+            setGeojsonTrilha(null);
+            setNomeArquivoKml(null);
+            setCorIdentificacao("#000000");
 
         } catch (error: any) {
-            console.error(
-                "Erro ao cadastrar trilha:",
-                error
-            );
-
-            alert(
-                `Erro ao cadastrar: ${error?.message || error
-                }`
-            );
-
+            console.error("Erro ao cadastrar trilha:", error);
+            alert(`Erro ao cadastrar: ${error?.message || error}`);
         } finally {
             setCarregando(false);
         }
@@ -216,216 +177,130 @@ export default function CadastrarTrilha() {
             <div className="paddingHeader"></div>
 
             <section className="conteudo vertical gap15">
-
-                <SimpleButton
-                    path="/admin/trilhas"
-                    type="back"
-                    icon="setaBack"
-                >
+                <SimpleButton path="/admin/trilhas" type="back" icon="setaBack">
                     Voltar
                 </SimpleButton>
 
                 <h1>Cadastrar Trilha</h1>
 
-                <form
-                    ref={formRef}
-                    className="card vertical gap15"
-                    onSubmit={handleSubmit}
-                >
-
+                <form ref={formRef} className="card vertical gap15" onSubmit={handleSubmit}>
+                    
                     <div className="vertical gap5">
                         <label>Nome:</label>
-
-                        <input
-                            name="nome"
-                            placeholder="Ex: Trilha da Capivara"
-                            required
-                            disabled={carregando}
-                        />
+                        <input name="nome" placeholder="Ex: Trilha da Capivara" required disabled={carregando} />
                     </div>
 
-                    <div className="vertical gap5">
-                        <label>Cor:</label>
-
-                        <input
-                            name="cor_identificacao"
-                            placeholder="Ex: Verde"
-                            disabled={carregando}
-                        />
+                    <div className="vertical gap5" style={{ background: "#f0f8ff", padding: "10px", borderRadius: "8px", border: "1px dashed #ccc" }}>
+                        <label>Arquivo de Rota (KML):</label>
+                        <input type="file" accept=".kml" onChange={handleKmlChange} disabled={carregando} />
+                        {nomeArquivoKml && (
+                            <p style={{ fontSize: "0.9rem", color: "green", margin: 0 }}>
+                             {nomeArquivoKml} carregado ({geojsonTrilha?.features?.length || 0} linha(s) encontrada(s)).
+                            </p>
+                        )}
                     </div>
 
-                    <div className="horizontal gap15">
-
+                    {geojsonTrilha && (
                         <div className="vertical gap5">
-                            <label>Dificuldade:</label>
-
-                            <select
-                                name="dificuldade"
-                                disabled={carregando}
-                            >
-                                <option>Fácil</option>
-                                <option>Moderada</option>
-                                <option>Difícil</option>
-                            </select>
+                            <label>
+                                <strong>Pré-visualização da Rota:</strong>
+                                <span style={{ fontSize: "0.85rem", color: "#666", marginLeft: "8px" }}>
+                                    (Clique em uma linha para removê-la)
+                                </span>
+                            </label>
+                            <div style={{ height: "380px", width: "100%" }}>
+                                <Map 
+                                    previewGeoJson={geojsonTrilha} 
+                                    previewColor={corIdentificacao} 
+                                    onDeleteLine={handleRemoveLine}
+                                />
+                            </div>
                         </div>
-
-                        <div className="vertical gap5">
-                            <label>Extensão:</label>
-
-                            <input
-                                name="extensao"
-                                placeholder="Ex: 2,5 km"
-                                disabled={carregando}
-                            />
-                        </div>
-
-                        <div className="vertical gap5">
-                            <label>Duração:</label>
-
-                            <input
-                                name="duracao"
-                                placeholder="Ex: 1h 30min"
-                                disabled={carregando}
-                            />
-                        </div>
-
-                    </div>
+                    )}
 
                     <div className="vertical gap5">
-                        <label>Descrição curta:</label>
-
-                        <AutoResizeTextarea
-                            name="descricao_curta"
-                            placeholder="Resumo da trilha em poucas palavras..."
-                            disabled={carregando}
+                        <label>Cor de Identificação (Hexadecimal):</label>
+                        <input 
+                            type="color" 
+                            name="cor_identificacao" 
+                            value={corIdentificacao}
+                            onChange={(e) => setCorIdentificacao(e.target.value)}
+                            required 
+                            disabled={carregando} 
+                            style={{ height: "40px", width: "100%", cursor: "pointer" }} 
                         />
                     </div>
 
                     <div className="vertical gap5">
-                        <label>Descrição:</label>
-
-                        <AutoResizeTextarea
-                            name="descricao"
-                            placeholder="Descreva o percurso..."
-                            disabled={carregando}
-                        />
+                        <label>Dificuldade:</label>
+                        <select name="dificuldade" required disabled={carregando}>
+                            <option value="">Selecione...</option>
+                            <option value="Fácil">Fácil</option>
+                            <option value="Moderado">Moderada</option>
+                            <option value="Difícil">Difícil</option>
+                        </select>
                     </div>
 
                     <div className="vertical gap5">
-                        <label>
-                            Equipamento recomendado:
-                        </label>
-
-                        <AutoResizeTextarea
-                            name="equipamento_recomendado"
-                            placeholder="Ex: Calçado adequado..."
-                            disabled={carregando}
-                        />
+                        <label>Extensão (ex: 5.2 km):</label>
+                        <input name="extensao" placeholder="Ex: 5 km" required disabled={carregando} />
                     </div>
 
                     <div className="vertical gap5">
-                        <label>Atenção:</label>
+                        <label>Duração Estimada (ex: 2 horas):</label>
+                        <input name="duracao" placeholder="Ex: 2 horas" required disabled={carregando} />
+                    </div>
 
-                        <AutoResizeTextarea
-                            name="atencao"
-                            placeholder="Ex: Trechos íngremes..."
-                            disabled={carregando}
-                        />
+                    <div className="vertical gap5">
+                        <label>Descrição Curta:</label>
+                        <input name="descricao_curta" placeholder="Resumo breve da trilha" required disabled={carregando} maxLength={150} />
+                    </div>
+
+                    <div className="vertical gap5">
+                        <label>Descrição Detalhada:</label>
+                        <AutoResizeTextarea name="descricao" placeholder="Detalhes completos sobre a trilha..." required disabled={carregando} />
+                    </div>
+
+                    <div className="vertical gap5">
+                        <label>Equipamento Recomendado:</label>
+                        <AutoResizeTextarea name="equipamento_recomendado" placeholder="Ex: Água, protetor solar, bota de trilha..." disabled={carregando} />
+                    </div>
+
+                    <div className="vertical gap5">
+                        <label>Atenção / Avisos:</label>
+                        <AutoResizeTextarea name="atencao" placeholder="Ex: Trecho escorregadio após chuvas..." disabled={carregando} />
                     </div>
 
                     <div className="vertical gap15">
-
-                        <div
-                            className="vertical gap5"
-                            id="file"
-                        >
-                            <label>
-                                Imagens da Trilha:
-                            </label>
-
-                            <input
-                                type="file"
-                                accept="image/*"
-                                multiple
-                                onChange={handleFileChange}
-                                disabled={carregando}
-                            />
+                        <div className="vertical gap5" id="file">
+                            <label>Imagens da Trilha:</label>
+                            <input type="file" accept="image/*" multiple onChange={handleFileChange} disabled={carregando} />
                         </div>
 
                         {imagensSelecionadas.length > 0 && (
-
                             <div className="vertical gap5">
-
                                 <p>
-                                    <strong>
-                                        {
-                                            imagensSelecionadas.length
-                                        }{" "}
-                                        imagem(ns)
-                                        selecionada(s):
-                                    </strong>
+                                    <strong>{imagensSelecionadas.length} imagem(ns) selecionada(s):</strong>
                                 </p>
-
                                 <DraggableCarousel
-                                    items={imagensSelecionadas.map(
-                                        (file, idx) => (
-                                            <div
-                                                key={idx}
-                                                className="uploadPreview vertical gap5 carrosselCard"
-                                            >
-
-                                                <img
-                                                    src={
-                                                        imagensBase64[
-                                                        idx
-                                                        ]
-                                                    }
-                                                    alt={file.name}
-                                                />
-
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        handleRemoveImage(
-                                                            idx
-                                                        )
-                                                    }
-                                                    disabled={
-                                                        carregando
-                                                    }
-                                                >
-                                                    Remover
-                                                </button>
-
-                                                <p>
-                                                    {file.name}
-                                                </p>
-
-                                            </div>
-                                        )
-                                    )}
+                                    items={imagensSelecionadas.map((file, idx) => (
+                                        <div key={idx} className="uploadPreview vertical gap5 carrosselCard">
+                                            <img src={imagensBase64[idx]} alt={file.name} />
+                                            <button type="button" onClick={() => handleRemoveImage(idx)} disabled={carregando}>Remover</button>
+                                            <p>{file.name}</p>
+                                        </div>
+                                    ))}
                                 />
-
                             </div>
                         )}
-
                     </div>
 
                     <div className="btnFull">
-
-                        <button
-                            type="submit"
-                            disabled={carregando}
-                        >
-                            {carregando
-                                ? "Cadastrando..."
-                                : "Cadastrar trilha"}
+                        <button type="submit" disabled={carregando}>
+                            {carregando ? "Cadastrando..." : "Cadastrar trilha"}
                         </button>
-
                     </div>
-
                 </form>
-
             </section>
         </ProtectedRoute>
     );

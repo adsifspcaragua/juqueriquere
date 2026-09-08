@@ -41,3 +41,25 @@ export async function convertToWebP(
         img.src = URL.createObjectURL(file);
     });
 }
+
+// src/utils/imageConverter.ts
+// (Mantenha sua função convertToWebP existente e adicione esta abaixo)
+
+/**
+ * Converte um arquivo File de imagem para uma string Base64.
+ */
+export async function fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            resolve(reader.result as string);
+        };
+
+        reader.onerror = () => {
+            reject(new Error(`Erro ao carregar imagem: ${file.name}`));
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
