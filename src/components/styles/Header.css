@@ -26,19 +26,21 @@ header{
 
         .navBtn, .btn{
             height: 90%;
-            padding: 10px;
+            padding: 10px 15px;
             display: flex;
-            border-radius: 20px;
+            border-radius: 50%;
             transition: .3s ease-in-out;
             background-repeat: no-repeat;
             background-position: center;
             background-size: 60%;
             cursor: pointer;
+
+            font-weight: 500;
         }
-        .navBtn{aspect-ratio: 1/1;}
+        .navBtn{aspect-ratio: 1/1; width: 45px;}
         .btn img{
-            width: 26px;
-            height: 26px;
+            width: 22px;
+            height: 22px;
         }
         .btn:hover{
             background-color: rgba(255, 255, 255, 0.4);
@@ -49,8 +51,11 @@ header{
         #scanner:hover{background-image: url(../../assets/icons/QR-hover.webp);}
         #menu:hover{background-image: url(../../assets/icons/Menu-hover.webp);}
         .navBtn:hover{background-color: var(--verdeClaro);}
+    }
+    .linhaVertical{
+        min-height: 90%;
+        height: 90%;
         
-
     }
 }
 .menuMobile{

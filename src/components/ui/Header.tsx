@@ -43,39 +43,40 @@ export default function Header() {
                     <img src={logo} alt="logo do parque" />
                 </Link>
 
-                <nav className="horizontal">
-                    <SimpleButton
-                        path='/'
-                        tema='none'
-                        icon='Home'
-                        type='back'
-                    >Início</SimpleButton>
-
-                    <SimpleButton
-                        path='/Mapa'
-                        tema='none'
-                        icon='Explorar'
-                        type='back'
-                    >Mapa</SimpleButton>
-
-                    <SimpleButton
-                        path='/sobre'
-                        tema='none'
-                        icon='Sobre'
-                        type='back'
-                    >Sobre</SimpleButton>
-
-                    <div
-                        className="navBtn"
-                        id="scanner"
-                        onClick={() => setOpenScanner(true)}
-                    ></div>
-
-                    <div
-                        className={`navBtn ${openMenu ? 'active' : ''}`}
-                        id="menu"
-                        onClick={() => setOpenMenu(!openMenu)}
-                    ></div>
+                <nav className="horizontal gap15">
+                    <div className="horizontal center">
+                        <SimpleButton
+                            path='/'
+                            tema='none'
+                            icon='Home'
+                            type='back'
+                        >Início</SimpleButton>
+                        <SimpleButton
+                            path='/Mapa'
+                            tema='none'
+                            icon='Explorar'
+                            type='back'
+                        >Mapa</SimpleButton>
+                        <SimpleButton
+                            path='/sobre'
+                            tema='none'
+                            icon='Sobre'
+                            type='back'
+                        >Sobre</SimpleButton>
+                    </div>
+                    <div className="linhaVertical"></div>
+                    <div className="horizontal center gap5">
+                        <div
+                            className="navBtn"
+                            id="scanner"
+                            onClick={() => setOpenScanner(true)}
+                        ></div>
+                        <div
+                            className={`navBtn ${openMenu ? 'active' : ''}`}
+                            id="menu"
+                            onClick={() => setOpenMenu(!openMenu)}
+                        ></div>
+                    </div>
                 </nav>
             </header>
 
