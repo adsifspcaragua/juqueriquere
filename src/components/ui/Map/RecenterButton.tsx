@@ -14,7 +14,7 @@ export function RecenterButton({ center }: { center: [number, number] }) {
      
       const distance = currentCenter.distanceTo(originCenter);
       
-      // Se a distância for maior que 300 metros, mostra o botão
+      // Se a distância for maior que 50 metros, mostra o botão
       if (distance > 50) {
         setIsVisible(true);
       } else {
@@ -37,8 +37,7 @@ export function RecenterButton({ center }: { center: [number, number] }) {
       <SimpleButton
       onClick={(e) => {
           e.stopPropagation();
-          // Anima o mapa de volta para o centro mantendo o zoom atual
-          map.flyTo(center, map.getZoom(), { duration: 1.5 });
+          map.flyTo(center, map.getZoom(), { duration: 0.7 });
           setIsVisible(false);
         }}
         icon='Explorar'
