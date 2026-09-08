@@ -90,6 +90,9 @@ export default function CardPonto({ ponto, trilhaId }: Props) {
         };
     }, [ponto.id]);
 
+    const location = useLocation();
+    const pageName = location.pathname.split("/").filter(Boolean).pop() || "Mapa";
+
     if (!ponto.nome) return null;
 
     return (

@@ -22,9 +22,9 @@ export default function Ponto() {
     }>();
 
     const [searchParams] = useSearchParams();
-
-    let from = searchParams.get('from') || 'explorar';
-
+    let from = searchParams.get('from') || 'Mapa';
+    
+    // CORREÇÃO: Removido o (undefined) para que o TypeScript entenda como TrilhaDB | undefined
     const [trilha, setTrilha] = useState<TrilhaDB>();
     const [ponto, setPontoDados] = useState<PontoInteresseDB>();
     const [imagens, setImagens] = useState<string[]>([]);
