@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/Menu.css';
 
 import { logout } from '../../lib/auth';
+import { InstallPrompt } from '../../utils/InstallPrompt.tsx';
 
 interface menuProps {
     ativo: boolean;
@@ -96,6 +97,12 @@ export default function Menu({ ativo, onChoice }: menuProps) {
 
                     <h1>Menu</h1>
 
+                    {/* INSTALAR APP */}
+                    <div className="menuLinks">
+                        <SimpleButton raio='0' onClick={InstallPrompt}>INSTALE O JUQUERIQUERÊ</SimpleButton>
+                    </div>
+
+                    {/* BOTÕES BÁSICOS */}
                     <div className="menuLinks">
                         <SimpleButton path='/' raio='0' onClick={closeMenu}>Início</SimpleButton>
                         <SimpleButton path='/Mapa' raio='0' onClick={closeMenu}>Mapa</SimpleButton>

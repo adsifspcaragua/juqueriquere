@@ -9,9 +9,12 @@ export function InstallPrompt() {
 	useEffect(() => {
 		const handleBeforeInstallPrompt = (e: Event) => {
 			e.preventDefault();
-
 			setDeferredPrompt(e);
-			setShowBanner(true);
+
+			const hidePrompt = localStorage.getItem('hideInstallPrompt');
+            if (hidePrompt !== 'true') {
+                setShowBanner(true);
+            }
 		};
 
 		window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -42,6 +45,12 @@ export function InstallPrompt() {
 		setShowBanner(false);
 	};
 
+	const handleNeverShowAgainClick = () => {
+		localStorage.setItem('hideInstallPrompt', 'true');
+        setShowBanner(false);
+        setDeferredPrompt(null);
+	};
+
 	if (!showBanner) return null;
 
 	return (
@@ -55,6 +64,15 @@ export function InstallPrompt() {
 						</div>
 
 						<div className='horizontal justifyCenter gap15'>
+							<SimpleButton
+								tema='light'
+								raio='10'
+								icon='none'
+								onClick={handleNeverShowAgainClick}
+							>
+								Não mostrar novamente
+							</SimpleButton>
+
 							<SimpleButton
 								tema='light'
 								raio='10'
