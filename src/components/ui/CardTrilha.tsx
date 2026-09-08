@@ -1,6 +1,8 @@
     import type Trilha from '../../pages/Trilhas/TrilhaInfo';
     import trilhaGeneric from '../../assets/img/CardTrilha.webp';
 
+    import { useLocation } from 'react-router-dom';
+
     import { icons } from './icons';
     import '../styles/CardTrilha.css';
 
@@ -19,6 +21,11 @@
         const { Dificuldade, Distancia, Tempo } = icons.dark;
 
         const [imagem, setImagem] = useState<string>();
+
+        
+        const location = useLocation();
+        const pageName = location.pathname.split("/").filter(Boolean).pop() || "Mapa";
+
 
         useEffect(() => {
             let urlLocal: string | undefined;
@@ -60,7 +67,7 @@
 
         return (
             <Link
-                to={`/trilha/${id}`}
+                to={`/trilha/${id}?from=${pageName}`}
                 className="cardTrilha carrosselCard"
                 style={{ backgroundImage: imagem }}
             >

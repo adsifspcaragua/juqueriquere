@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { usePageTitle } from "../../../lib/hooks/usePageTitle";
 
@@ -22,6 +22,16 @@ export default function Trilha() {
 
     const { id: paramsId } = useParams();
     const id = Number(paramsId);
+    const [searchParams] = useSearchParams();
+    let from = searchParams.get('from') || 'Mapa';
+
+    const goBack = () => {
+            return (
+                <>
+                    <SimpleButton path={`/${from}`} type='back' icon='setaBack'>Voltar para {(from).charAt(0).toUpperCase() + (from).slice(1)}</SimpleButton>
+                </>
+            )
+        };
 
     const [trilha, setTrilha] = useState<TrilhaType | null>(null);
     const [loading, setLoading] = useState(true);
@@ -139,13 +149,7 @@ export default function Trilha() {
             <div className="paddingHeader"></div>
 
             <section className="conteudo vertical gap15">
-                <SimpleButton
-                    path="/Mapa/"
-                    type="back"
-                    icon="setaBack"
-                >
-                    Voltar para Mapa
-                </SimpleButton>
+                {goBack()}
 
                 <div className="desktopWrap">
                     <div className="vertical">

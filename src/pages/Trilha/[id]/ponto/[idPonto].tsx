@@ -15,7 +15,7 @@ import Map from '../../../../components/ui/Map/Map.tsx';
 export default function Ponto() {
     const { id, idPonto } = useParams<{ id: string; idPonto: string }>();
     const [searchParams] = useSearchParams();
-    let from = searchParams.get('from') || 'explorar';
+    let from = searchParams.get('from') || 'Mapa';
     
     // CORREÇÃO: Removido o (undefined) para que o TypeScript entenda como TrilhaDB | undefined
     const [trilha, setTrilha] = useState<TrilhaDB>();
