@@ -41,7 +41,7 @@
         color: var(--verdeEscuro);
     }
 }
-.carrosselCard{
+.cardTrilha .carrosselCard{
     padding: 0;
-    height: auto;
+    height: 100%;
 }

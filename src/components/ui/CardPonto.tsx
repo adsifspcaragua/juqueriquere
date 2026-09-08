@@ -1,8 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import '../styles/CardPonto.css';
-import trilhaGeneric from '../../assets/img/CardTrilha.webp';
+import '../styles/CardPonto.css'
+import '../styles/CardTrilha.css'
+import trilhaGeneric from '../../assets/img/CardTrilha.webp'
 
 import { db } from '../../lib/dexie';
 
@@ -100,7 +101,7 @@ export default function CardPonto({ ponto, trilhaId }: Props) {
         >
             <div className="info vertical">
                 <h2>{ponto.nome}</h2>
-
+                
                 {ponto.planta && (
                     <i>{ponto.planta}</i>
                 )}

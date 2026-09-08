@@ -94,7 +94,6 @@ export default function Header() {
                     />
 
                     <SimpleButton
-                        tema='light'
                         icon='QR'
                         onClick={() => setOpenScanner(true)}
                     />
