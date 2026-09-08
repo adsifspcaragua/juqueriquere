@@ -7,6 +7,7 @@ import type Trilha from "../../Trilhas/TrilhaInfo";
 import distancia from "../../../assets/icons/Distancia-light.webp";
 import { supabase } from "../../../lib/supabase";
 import ProtectedRoute from "../../../components/Protected";
+import QrCodeModal from "../../../components/ui/QrCodeModal";
 
 export default function AdminPontos() {
 
@@ -19,13 +20,12 @@ export default function AdminPontos() {
             const { error: erroDeletar } = await supabase
                 .from("pontos_interesse")
                 .delete()
-                .eq('id', pontoSelecionada.id)
-                ;
+                .eq('id', pontoSelecionada.id);
 
             if (erroDeletar) throw erroDeletar;
         } catch (error: any) {
-            alert("erro ao deletar \n tente novamente mais tarde.")
-            console.log(error)
+            alert("erro ao deletar \n tente novamente mais tarde.");
+            console.log(error);
         } finally {
             setPontos((prev) =>
                 prev.filter((t) => t.id !== pontoSelecionada.id)
@@ -51,6 +51,9 @@ export default function AdminPontos() {
 
     const [pontos, setPontos] = useState<PontoInteresseDB[]>([]);
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
+
+    const [qrModalOpen, setQrModalOpen] = useState(false);
+    const [itemParaQrCode, setItemParaQrCode] = useState<any>(null);
 
     useEffect(() => {
         async function loadData() {
@@ -165,6 +168,16 @@ export default function AdminPontos() {
                     ), document.body
                 )}
 
+                <QrCodeModal 
+                    isOpen={qrModalOpen} 
+                    onClose={() => {
+                        setQrModalOpen(false);
+                        setItemParaQrCode(null);
+                    }} 
+                    path={itemParaQrCode ? `/ponto/${itemParaQrCode.id}` : ''} 
+                    title={itemParaQrCode?.nome || ''} 
+                />
+
                 <div className="vertical gap5">
                     <h2>Pontos cadastrados</h2>
 
@@ -188,9 +201,22 @@ export default function AdminPontos() {
                                 </div>
 
                                 <div className="btnFull actions vertical gap5">
+                                    <SimpleButton 
+                                        icon="Scan" 
+                                        tema="dark" 
+                                        raio="10" 
+                                        onClick={() => {
+                                            setItemParaQrCode(ponto);
+                                            setQrModalOpen(true);
+                                        }}
+                                    >
+                                        QR Code
+                                    </SimpleButton>
+
                                     <SimpleButton icon="Edit" tema="dark" raio="10" path={`/admin/pontos/editar/${ponto.id}`}        >
                                         Editar
                                     </SimpleButton>
+
                                     <SimpleButton icon="Trash" tema="red" raio="10" onClick={() => abrirExcluir(ponto)}>
                                         Excluir
                                     </SimpleButton>
