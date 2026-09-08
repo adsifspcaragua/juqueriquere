@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { useMapData } from './useMapData';
 import TrailsLayer from './TrailsLayer';
 import PointsLayer from './PointsLayer';
+import { RecenterButton } from './RecenterButton';
 
 interface MapProps {
   id?: number | string | (number | string)[];
@@ -61,14 +62,12 @@ export default function Map({
 }: MapProps) {
   const { filteredData, isLineHighlighted, isPointHighlighted } = useMapData(id, highlight, pointId);
 
-  // Mapeia o evento de clique para cada linha no modo preview
   const handleEachFeature = (feature: any, layer: L.Layer) => {
     layer.on({
       click: (e) => {
         L.DomEvent.stopPropagation(e);
         if (!onDeleteLine || !previewGeoJson?.features) return;
 
-        // Encontra o índice da linha dentro das features do GeoJSON
         const featureIndex = previewGeoJson.features.indexOf(feature);
         const nomeLinha = feature.properties?.name || `Linha ${featureIndex + 1}`;
 
@@ -93,8 +92,11 @@ export default function Map({
         center={MAP_CENTER} 
         zoom={50} 
         scrollWheelZoom={false}
+        dragging={!L.Browser.mobile}
         style={{ height: '100%', width: '100%' }}
       >
+        <RecenterButton center={MAP_CENTER} />
+        
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
           attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
@@ -113,6 +115,7 @@ export default function Map({
           </>
         ) : (
           <>
+            
             <TrailsLayer 
               lines={filteredData.lines}
               isLineHighlighted={isLineHighlighted}

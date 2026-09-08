@@ -8,6 +8,8 @@ import AutoResizeTextarea from "../../../../utils/AutoResizeTextarea.tsx";
 import { convertToWebP } from "../../../../utils/imageConverter.ts";
 import ProtectedRoute from "../../../../components/Protected.tsx";
 
+import { uploadImagem } from "../../../../lib/services/images.ts"
+
 interface Trilha {
     id: number;
     nome: string;
@@ -25,6 +27,9 @@ export default function EditarPontoInteresse() {
     // Controle de imagens existentes no banco
     const [imagensAntigas, setImagensAntigas] = useState<ImagemDB[]>([]);
     const [imagensParaRemover, setImagensParaRemover] = useState<number[]>([]);
+
+    const [imagensAntigasUrls, setImagensAntigasUrls] =
+    useState<Record<number, string>>({});
 
     // Controle de novas imagens a serem adicionadas
     const [imagensNovas, setImagensNovas] = useState<File[]>([]);
@@ -69,13 +74,16 @@ export default function EditarPontoInteresse() {
                 const imagensOffline = await db.imagens.where({ ponto_interesse_id: Number(id) }).toArray();
                 if (imagensOffline.length > 0) {
                     setImagensAntigas(imagensOffline);
-                } else {
-                    const { data: imagensData } = await supabase
-                        .from("imagens")
-                        .select("*")
-                        .eq("ponto_interesse_id", id);
 
-                    if (imagensData) setImagensAntigas(imagensData);
+                    const urls: Record<number, string> = {};
+
+                    for (const imagem of imagensOffline) {
+                        if (imagem.arquivo instanceof Blob && imagem.id != null) {
+                            urls[imagem.id] = URL.createObjectURL(imagem.arquivo);
+                        }
+                    }
+
+                    setImagensAntigasUrls(urls);
                 }
 
             } catch (error) {
@@ -173,17 +181,28 @@ export default function EditarPontoInteresse() {
 
             // 3. Adiciona as novas imagens selecionadas
             if (imagensNovas.length > 0) {
+                const imagensConvertidas: Blob[] = [];
+
                 const promessasImagens = imagensNovas.map(async (file, index) => {
-                    const stringWebPBase64 = await convertToWebP(file, 0.8);
+                    const blobWebP = await convertToWebP(file, 0.8);
+
+                    imagensConvertidas.push(blobWebP);
+
+                    const nomeArquivo = `${crypto.randomUUID()}.webp`;
+                    const caminho = `pontos/${nomeArquivo}`;
+
+                    await uploadImagem(blobWebP, caminho);
+
                     return {
                         trilha_id: null,
                         ponto_interesse_id: Number(id),
-                        caminho_arquivo: stringWebPBase64,
+                        caminho_arquivo: caminho,
                         legenda: `Nova imagem ${index + 1} de ${pontoAtualizado.nome}`
                     };
                 });
 
                 const dadosNovasImagens = await Promise.all(promessasImagens);
+
 
                 const { data: imagensInseridas, error: erroInsertImagens } = await supabase
                     .from("imagens")
@@ -193,7 +212,12 @@ export default function EditarPontoInteresse() {
                 if (erroInsertImagens) throw erroInsertImagens;
 
                 if (imagensInseridas) {
-                    await db.imagens.bulkPut(imagensInseridas as ImagemDB[]);
+                    const imagensDexie = imagensInseridas.map((imagem, index) => ({
+                        ...imagem,
+                        arquivo: imagensConvertidas[index]
+                    }));
+
+                    await db.imagens.bulkPut(imagensDexie as ImagemDB[]);
                 }
             }
 
@@ -305,7 +329,14 @@ export default function EditarPontoInteresse() {
                             <DraggableCarousel
                                 items={imagensAntigas.map((imagem) => (
                                     <div key={imagem.id} className="uploadPreview vertical gap5 carrosselCard">
-                                        <img src={imagem.caminho_arquivo} alt="Imagem salva" />
+                                        <img
+                                            src={
+                                                imagem.id != null
+                                                    ? imagensAntigasUrls[imagem.id] ?? ""
+                                                    : ""
+                                            }
+                                            alt="Imagem salva"
+                                        />
                                         <button
                                             type="button"
                                             onClick={() => handleRemoveImagemAntiga(imagem)}

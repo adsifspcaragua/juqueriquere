@@ -1,3 +1,4 @@
+// src/components/ui/Map/PointsLayer.tsx
 import { CircleMarker, Tooltip } from 'react-leaflet';
 import { type Feature } from 'geojson';
 
@@ -23,13 +24,13 @@ export default function PointsLayer({ points, isPointHighlighted, onHover, onCli
           <CircleMarker
             key={`point-${idx}`}
             center={position}
-            // Pontos não destacados continuam visíveis, mas ficam menores (raio 3)
+            pane="markerPane" 
             radius={highlighted ? 6 : 3}
             fillColor="#fbc02d"
             color="#fae208"
             weight={highlighted ? 2 : 1}
-            fillOpacity={highlighted ? 1 : 0.3} // Ficam meio transparentes no fundo
-            interactive={true} // Permite clicar em pontos de outras trilhas
+            fillOpacity={highlighted ? 1 : 0.3}
+            interactive={true}
             eventHandlers={{
               mouseover: (e) => {
                 const domEvent = e.originalEvent as unknown as React.MouseEvent<SVGElement>;

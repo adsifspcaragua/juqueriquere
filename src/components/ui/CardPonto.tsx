@@ -7,9 +7,8 @@ import trilhaGeneric from '../../assets/img/CardTrilha.webp'
 
 import { db } from '../../lib/dexie';
 
-
 interface Ponto {
-    id : number;
+    id: number;
     nome: string;
     planta?: string;
     latitude?: number | null;
@@ -19,27 +18,76 @@ interface Ponto {
 interface Props {
     ponto: Ponto;
     trilhaId: number;
-    imagem?: string;
 }
 
 export default function CardPonto({ ponto, trilhaId }: Props) {
-    const [imagem, setImagem] = useState<string>();
+    const [imagem, setImagem] = useState<string>(trilhaGeneric);
 
     useEffect(() => {
         if (!ponto.id) return;
-        async function loadData() {
-            const imagemDb = await db.imagens.where('ponto_interesse_id').equals(Number(ponto.id)).first();
-            if (imagemDb) {
-                setImagem(`url(${imagemDb.caminho_arquivo})`);
-            } else {
-                setImagem(`url(${trilhaGeneric})`);
+
+        let objectUrl: string | null = null;
+        let cancelado = false;
+
+        async function carregarImagem() {
+            try {
+                const imagemDb = await db.imagens
+                    .where('ponto_interesse_id')
+                    .equals(Number(ponto.id))
+                    .first();
+
+                if (cancelado) return;
+
+                // Imagem encontrada no Dexie
+                if (imagemDb?.arquivo instanceof Blob) {
+                    objectUrl = URL.createObjectURL(imagemDb.arquivo);
+
+                    setImagem(objectUrl);
+                    return;
+                }
+
+                // Caso exista uma URL válida no caminho_arquivo
+                if (
+                    imagemDb?.caminho_arquivo &&
+                    (
+                        imagemDb.caminho_arquivo.startsWith('http://') ||
+                        imagemDb.caminho_arquivo.startsWith('https://') ||
+                        imagemDb.caminho_arquivo.startsWith('data:')
+                    )
+                ) {
+                    setImagem(imagemDb.caminho_arquivo);
+                    return;
+                }
+
+                // Caso não exista imagem
+                setImagem(trilhaGeneric);
+
+            } catch (error) {
+                console.error(
+                    `Erro ao carregar imagem do ponto ${ponto.id}:`,
+                    error
+                );
+
+                if (!cancelado) {
+                    setImagem(trilhaGeneric);
+                }
             }
         }
-        loadData();
+
+        carregarImagem();
+
+        // Libera a ObjectURL criada
+        return () => {
+            cancelado = true;
+
+            if (objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+            }
+        };
     }, [ponto.id]);
 
     const location = useLocation();
-    const pageName = location.pathname.split("/").filter(Boolean).pop() || "explorar";
+    const pageName = location.pathname.split("/").filter(Boolean).pop() || "Mapa";
 
     if (!ponto.nome) return null;
 
@@ -47,12 +95,18 @@ export default function CardPonto({ ponto, trilhaId }: Props) {
         <Link
             to={`/trilha/${trilhaId}/ponto/${ponto.id}?from=${pageName}`}
             className="cardPonto carrosselCard"
-            style={{ backgroundImage: imagem }}
+            style={{
+                backgroundImage: `url("${imagem}")`
+            }}
         >
             <div className="info vertical">
-                <h3>{ponto.nome}</h3>
-                {ponto.planta && <i>{ponto.planta}</i>}
+                <h2>{ponto.nome}</h2>
+                
+                {ponto.planta && (
+                    <i>{ponto.planta}</i>
+                )}
             </div>
         </Link>
     );
 }
+
