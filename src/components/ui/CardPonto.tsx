@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import '../styles/CardPonto.css'
+import '../styles/CardTrilha.css'
 import trilhaGeneric from '../../assets/img/CardTrilha.webp'
 
 import { db } from '../../lib/dexie';
@@ -49,7 +50,7 @@ export default function CardPonto({ ponto, trilhaId }: Props) {
             style={{ backgroundImage: imagem }}
         >
             <div className="info vertical">
-                <h2>{ponto.nome}</h2>
+                <h3>{ponto.nome}</h3>
                 {ponto.planta && <i>{ponto.planta}</i>}
             </div>
         </Link>

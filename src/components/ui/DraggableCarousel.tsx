@@ -117,7 +117,7 @@ const NativeCarousel = ({
             >
                 {items.length > 0 ? (
                     items.map((item, idx) => (
-                        <div key={idx} className="carrosselCard">
+                        <div key={idx} className="carrosselCard carrosselCardFrame">
                             {item}
                         </div>
                     ))

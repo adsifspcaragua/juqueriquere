@@ -111,11 +111,10 @@ export default function Explorar() {
                     <div className="vertical gap15">
                         <div className="vertical gap15">
                             <h3>Pontos de interesse nesta trilha:</h3>
-                                {/* {pontosList} */}
                                 <AnimatePresence mode="wait">
                                     <motion.div
                                         key={trilhaSelecionada}
-                                        className="vertical"
+                                        className="listaGrid"
                                         id="pontosList"
                                         initial="hidden"
                                         animate="visible"

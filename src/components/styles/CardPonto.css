@@ -1,7 +1,7 @@
 .carrosselCard:has(.cardPonto.carrosselCard){
     padding: 0;
 }
-.info i{
-    font-weight: 600;
-    color: var(--verdeEscuro);
+.info{
+    h3{color: var(--verdeEscuro);}
+    i{font-weight: 600; color: var(--verdeEscuro);}
 }
