@@ -6,7 +6,7 @@ import { supabase } from "../../../../lib/supabase.ts";
 import SimpleButton from "../../../../components/ui/buttons/SimpleButton.tsx";
 import DraggableCarousel from "../../../../components/ui/DraggableCarousel.tsx";
 import AutoResizeTextarea from "../../../../utils/AutoResizeTextarea.tsx";
-import Map from "../../../../components/ui/map/Map.tsx";
+import Map from "../../../../components/ui/Map/Map.tsx";
 
 import { convertToWebP, fileToBase64 } from "../../../../utils/imageConverter.ts";
 import { convertKmlToGeoJson } from "../../../../utils/kmlConverter.ts";

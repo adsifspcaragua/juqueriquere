@@ -7,7 +7,7 @@ import AutoResizeTextarea from "../../../../utils/AutoResizeTextarea.tsx";
 import { convertToWebP } from "../../../../utils/imageConverter.ts";
 
 // Importações necessárias para simular a página Ponto.tsx no preview
-import Map from "../../../../components/ui/map/Map.tsx";
+import Map from "../../../../components/ui/Map/Map.tsx";
 import "../../../_styles/ponto.css";
 import ProtectedRoute from "../../../../components/Protected.tsx";
 

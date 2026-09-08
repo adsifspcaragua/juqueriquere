@@ -10,7 +10,7 @@ import SimpleButton from '../../../../components/ui/buttons/SimpleButton.tsx';
 //import TrilhasMap from '../../../../components/ui/TrilhasMap.tsx';
 import '../../../_styles/ponto.css';
 import GaleriaImagens from '../../../../components/ui/GaleriaImagens.tsx';
-import Map from '../../../../components/ui/map/Map.tsx';
+import Map from '../../../../components/ui/Map/Map.tsx';
 
 export default function Ponto() {
     const { id, idPonto } = useParams<{ id: string; idPonto: string }>();
