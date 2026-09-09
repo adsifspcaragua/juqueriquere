@@ -8,7 +8,9 @@ import AutoResizeTextarea from "../../../../utils/AutoResizeTextarea.tsx";
 import { convertToWebP } from "../../../../utils/imageConverter.ts";
 import ProtectedRoute from "../../../../components/Protected.tsx";
 
-import { uploadImagem } from "../../../../lib/services/images.ts"
+import { uploadImagem } from "../../../../lib/services/images.ts";
+
+import '../../../_styles/admin.css'
 
 interface Trilha {
     id: number;
