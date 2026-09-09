@@ -57,11 +57,23 @@ a{width: fit-content;}
     align-items: center;
     text-align: center;
 }
+.left{
+    align-items: start;
+}
+.right{
+    align-items: end;
+}
 .justify{
     justify-content: space-between;
 }
 .justifyCenter{
     justify-content: center;
+}
+.justifyLeft{
+    justify-content: left;
+}
+.justifyRight{
+    justify-content: right;
 }
 .gap5{
     gap: 5px !important;
