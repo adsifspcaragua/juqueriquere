@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import SimpleButton from "../../../components/ui/buttons/SimpleButton";
 import "../../_styles/admin.css";
+import ProtectedRoute from "../../../components/Protected";
 
 interface Usuario {
     id: number;
@@ -39,6 +40,7 @@ export default function AdminUsuarios() {
 
     return (
         <>
+            <ProtectedRoute>
             <div className="paddingHeader"></div>
 
             <section className="conteudo vertical gap30">
@@ -76,10 +78,10 @@ export default function AdminUsuarios() {
                                     <div className="horizontal center justify">
                                         <h3>{usuario.name}</h3>
                                         <SimpleButton
-                                            path={`/admin/usuarios/${usuario.id}`}
+                                            path={`/admin/usuario/${usuario.id}`}
                                             raio="10"
                                         >
-                                            Editar
+                                            Detalhes
                                         </SimpleButton>
                                     </div>
                                     <p>
@@ -105,6 +107,7 @@ export default function AdminUsuarios() {
                 </div>
 
             </section>
+            </ProtectedRoute>
         </>
     );
 }

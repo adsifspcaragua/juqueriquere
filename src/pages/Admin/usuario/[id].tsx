@@ -1,0 +1,99 @@
+import { useEffect, useState } from "react";
+import { supabase } from "../../../lib/supabase";
+import SimpleButton from "../../../components/ui/buttons/SimpleButton";
+import "../../_styles/admin.css";
+import ProtectedRoute from "../../../components/Protected";
+import { useParams } from "react-router-dom";
+
+
+interface Usuario {
+    id: number;
+    name: string;
+    login: string;
+    tipo: "MASTER" | "ADMIN";
+    criado_em?: string;
+}
+
+export default function Usuario() {
+    const { id } = useParams<{ id: string }>();
+
+    const [usuario, setUsuario] = useState<Usuario>();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        buscarUsuario();
+    }, []);
+
+    async function buscarUsuario() {
+        if (!id) return;
+
+        setLoading(true);
+        try {
+            const { data, error } = await supabase
+                .from('usuarios')
+                .select('id, name, login, tipo, criado_em')
+                .eq('id', id)
+                .single();
+
+            if (error) {
+                console.error("Erro ao buscar usuário:", error);
+                return;
+            }
+
+            setUsuario(data);
+        } catch (err) {
+            console.error("Erro inesperado:", err);
+        } finally {
+            setLoading(false); 
+        }
+    }
+
+    return (
+        <>
+            <ProtectedRoute>
+            <div className="paddingHeader"></div>
+
+            <section className="conteudo vertical gap30">
+                <div className="vertical gap15">
+                    <SimpleButton type="back" icon="setaBack" path="/admin/usuario/list">Voltar para Usuários</SimpleButton>
+                    <div className="card vertical gap5 adminCard" id="adminTrilhasCard">
+                        {usuario ? 
+                            <>
+                                <h1>Usuário: {usuario.name}</h1> 
+                                <div>
+                                <p>
+                                    e-mail: {usuario.login}
+                                </p>
+                                <p>
+                                    Data da criação: {new Date(usuario.criado_em as string).toLocaleDateString("pt-BR")}.
+                                </p>
+                                </div>
+                            </>
+                            : 
+                            <></>
+                        }
+                        
+                    </div>
+                </div>
+
+                <div className="vertical card gap15">
+                    <div className="horizontal justify center">
+                        
+                    </div>
+
+                    {loading ? (
+                        <p>Carregando usuário...</p>
+                    ) : !usuario ? (
+                        <p>Usuário não encontrado.</p>
+                    ) : (
+                        <div className="vertical gap5">
+                           <h1>Contribuições do usuário</h1>
+                        </div>
+                    )}
+                </div>
+
+            </section>
+            </ProtectedRoute>
+        </>
+    );
+}
