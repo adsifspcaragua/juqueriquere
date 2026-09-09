@@ -24,15 +24,16 @@ export default function Footer(){
                             <Link to={"/pontos"}>Pontos de Interesse</Link>
                         </div>
                     </div>
-                    <div className="vertical gap5" id="termos">
-                        <Link to={"/"}>Termos de Uso</Link>
-                        <Link to={"/"}>Política de Privacidade</Link>
-                    </div>
                 </div>
 
                 <img src={meioAmbiente} alt="Meio ambiente" id="logoSEMAAP"/>
             </div>
             <div className="linhaHorizontal"></div>
+            <div className="horizontal gap5" id="termos">
+                <Link to={"/Legal/TermosDeUso"}>Termos de Uso</Link>
+                <p>•</p>
+                <Link to={"/Legal/PoliticaDePrivacidade"}>Política de Privacidade</Link>
+            </div>
             <p>© 2026 - Parque Natural Municipal Juqueriquerê</p>
         </footer>
     );
