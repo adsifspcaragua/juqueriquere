@@ -59,7 +59,10 @@ export default function Usuario() {
                     <div className="card vertical gap5 adminCard" id="adminTrilhasCard">
                         {usuario ? 
                             <>
-                                <h1>Usuário: {usuario.name}</h1> 
+                                <div className="horizontal justify center gap15">
+                                    <h1>Usuário: {usuario.name}</h1> 
+                                    <SimpleButton tema="dark" raio="10" path={`/admin/usuario/editar/${usuario.id}`}>Editar</SimpleButton>
+                                </div>
                                 <div>
                                 <p>
                                     e-mail: {usuario.login}
