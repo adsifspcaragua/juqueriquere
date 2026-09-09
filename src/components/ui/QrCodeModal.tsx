@@ -44,17 +44,16 @@ export default function QrCodeModal({ isOpen, onClose, path, title }: QrCodeModa
                     <img 
                         src={qrCodeDataUrl} 
                         alt={`QR Code de ${title}`} 
-                        style={{ width: '250px', height: '250px', borderRadius: '10px' }} 
+                        style={{ width: '250px', height: '250px',  borderRadius: '20px', border:'5px solid var(--verdeEscuro)' }} 
                     />
                 )}
 
-                <div className="horizontal btnFull gap15" style={{ marginTop: '10px' }}>
-                    <SimpleButton tema="dark" icon="X" raio="10" onClick={onClose}>
-                        Fechar
-                    </SimpleButton>
-
-                    <SimpleButton tema="green" icon="Download" raio="10" onClick={handleDownload}>
+                <div className="vertical btnFull gap5" style={{ marginTop: '10px' }}>
+                    <SimpleButton tema="dark" icon="Download" raio="10" onClick={handleDownload}>
                         Baixar
+                    </SimpleButton>
+                    <SimpleButton tema="light" icon="X" raio="10" onClick={onClose}>
+                        Fechar
                     </SimpleButton>
                 </div>
             </div>
