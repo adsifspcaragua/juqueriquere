@@ -192,8 +192,8 @@ export default function AdminPontos() {
                             >
                                 <div className="cardPontoCompacto vertical gap15">
                                     <div className="vertical gap5">
-                                        <h3>{ponto.nome}</h3>
-                                        <h5>{ponto.planta}</h5>
+                                        <h2>{ponto.nome}</h2>
+                                        <h4>{ponto.planta}</h4>
                                         <p>{ponto.latitude}, {ponto.longitude}</p>
 
                                     </div>
