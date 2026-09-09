@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import SimpleButton from "./buttons/SimpleButton"; // Ajuste o caminho do botão se necessário
+import SimpleButton from "./buttons/SimpleButton";
 import { generateQrCode, downloadQrCode } from "../../utils/qrcodeUtils.ts"; 
 
 interface QrCodeModalProps {

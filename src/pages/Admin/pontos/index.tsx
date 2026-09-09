@@ -177,7 +177,7 @@ export default function AdminPontos() {
                         setQrModalOpen(false);
                         setItemParaQrCode(null);
                     }} 
-                    path={itemParaQrCode ? `/trilha/2/ponto/${itemParaQrCode.id}` : ''} 
+                    path={itemParaQrCode ? `trilha/${itemParaQrCode.trilha_id}/ponto/${itemParaQrCode.id}` : ''} 
                     title={itemParaQrCode?.nome || ''} 
                 />
 
