@@ -37,6 +37,8 @@ export default function AdminPontos() {
         setPontoSelecionada(null);
     }
 
+
+    //adicionar filtro por trilha
     const order = {
         "Nome A-Z": (a: any, b: any) => a.nome.localeCompare(b.nome),
         "Nome Z-A": (a: any, b: any) => b.nome.localeCompare(a.nome),
