@@ -7,6 +7,8 @@ import type Trilha from "../../Trilhas/TrilhaInfo.tsx";
 import { createPortal } from "react-dom";
 import ProtectedRoute from "../../../components/Protected.tsx";
 
+import '../../_styles/admin.css';
+
 // <-- Importando o nosso novo componente
 import QrCodeModal from "../../../components/ui/QrCodeModal.tsx";
 

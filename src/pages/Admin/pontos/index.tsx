@@ -8,6 +8,7 @@ import distancia from "../../../assets/icons/Distancia-light.webp";
 import { supabase } from "../../../lib/supabase";
 import ProtectedRoute from "../../../components/Protected";
 import QrCodeModal from "../../../components/ui/QrCodeModal";
+import '../../_styles/admin.css';
 
 export default function AdminPontos() {
 
