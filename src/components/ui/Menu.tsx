@@ -7,7 +7,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/Menu.css';
 
 import { logout } from '../../lib/auth';
-import { InstallPrompt } from '../../utils/InstallPrompt.tsx';
 
 interface menuProps {
     ativo: boolean;
@@ -15,6 +14,37 @@ interface menuProps {
 }
 
 export default function Menu({ ativo, onChoice }: menuProps) {
+
+    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+    useEffect(() => {
+		const handleBeforeInstallPrompt = (e: Event) => {
+			e.preventDefault();
+			setDeferredPrompt(e);
+		};
+
+		window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+		return () => {
+			window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+		};
+	}, []);
+
+    const handleInstallClick = async () => {
+		if (!deferredPrompt) return;
+
+		deferredPrompt.prompt();
+
+		const { outcome } = await deferredPrompt.userChoice;
+
+		if (outcome === 'accepted') {
+			console.log('Usuário aceitou a instalação');
+		} else {
+			console.log('Usuário recusou a instalação');
+		}
+
+		setDeferredPrompt(null);
+	};
 
 
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
@@ -99,7 +129,7 @@ export default function Menu({ ativo, onChoice }: menuProps) {
 
                     {/* INSTALAR APP */}
                     <div className="menuLinks">
-                        <SimpleButton raio='0' onClick={InstallPrompt}>INSTALE O JUQUERIQUERÊ</SimpleButton>
+                        <SimpleButton raio='0' onClick={handleInstallClick}>INSTALE O JUQUERIQUERÊ</SimpleButton>
                     </div>
 
                     {/* BOTÕES BÁSICOS */}
