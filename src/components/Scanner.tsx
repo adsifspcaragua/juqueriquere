@@ -51,11 +51,11 @@ export default function Scanner({ onClose }: { onClose: () => void }) {
       async (decodedText) => {
         const path = decodedText.startsWith("/") ? decodedText : `/${decodedText}`;
 
-        if ((/^\/trilha\/\d+\/?$/.test(path)) || (/^\/ponto\/\d+\/?$/.test(path))) {
-          window.location.href = path;
-        } else {
-          alert("QR inválido");
-        }
+        // if (/^\/trilha\/\d+\/?$/.test(path)) {
+        // } else {
+        //   alert("QR inválido");
+        // }
+        window.location.href = path;
 
         await stopScanner();
         onCloseRef.current();
