@@ -14,7 +14,7 @@ interface menuProps {
 }
 
 export default function Menu({ ativo, onChoice }: menuProps) {
-
+    /* Começo da Função Instalar App */
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
     useEffect(() => {
@@ -46,6 +46,7 @@ export default function Menu({ ativo, onChoice }: menuProps) {
 		setDeferredPrompt(null);
 	};
 
+    /* Fim da Função Instalar App */
 
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
     const [pontos, setPontos] = useState<PontoInteresseDB[]>([]);

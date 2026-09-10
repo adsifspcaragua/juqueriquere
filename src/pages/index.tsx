@@ -1,6 +1,6 @@
 // PÁGINA INICIAL
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePageTitle } from "../lib/hooks/usePageTitle.ts";
 
 import SimpleButton from "../components/ui/buttons/SimpleButton.tsx";
@@ -8,17 +8,50 @@ import Scanner from "../components/Scanner.tsx";
 
 import Logo from '../assets/logo.webp';
 
-import { InstallPrompt } from "../utils/InstallPrompt.tsx";
 import { IosInstallPrompt } from "../utils/IosInstallPrompt.tsx";
 
 export default function index(){
+	
+	/* Começo da Função Instalar App */
+	const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+	useEffect(() => {
+		const handleBeforeInstallPrompt = (e: Event) => {
+			e.preventDefault();
+			setDeferredPrompt(e);
+		};
+
+		window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+		return () => {
+			window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+		};
+	}, []);
+
+	const handleInstallClick = async () => {
+		if (!deferredPrompt) return;
+
+		deferredPrompt.prompt();
+
+		const { outcome } = await deferredPrompt.userChoice;
+
+		if (outcome === 'accepted') {
+			console.log('Usuário aceitou a instalação');
+		} else {
+			console.log('Usuário recusou a instalação');
+		}
+
+		setDeferredPrompt(null);
+	};
+
+	/* Fim da Função Instalar App */
+
     usePageTitle("Início");
 	
 	const [openScanner, setOpenScanner] = useState(false);
 
 	return (
         <>
-			<InstallPrompt/>
 			<IosInstallPrompt/>
 			
 
@@ -57,6 +90,25 @@ export default function index(){
 							</SimpleButton>
 						</div>
 					</div>
+
+					<div className="vertical">
+						<div className="pwaCard card vertical">
+							<div className="vertical">
+								<h1>Instale o Juqueriquerê</h1>
+								<p>
+									Acesse as trilhas offline de forma mais rápida!
+								</p>
+							</div>
+							<SimpleButton
+								tema='dark'
+								raio='10'
+								onClick={handleInstallClick}
+							>
+									Instalar
+							</SimpleButton>
+						</div>
+					</div>
+
 					<div className="carrossel horizontal" id="CarrosselInicio">
 						<div className="carrosselCard vertical gap15" id="trilhas">
 							<div className="vertical">
