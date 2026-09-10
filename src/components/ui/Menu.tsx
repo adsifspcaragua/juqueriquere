@@ -30,6 +30,7 @@ export default function Menu({ ativo, onChoice }: menuProps) {
 	}, []);
 
     const handleInstallClick = async () => {
+        window.dispatchEvent(new CustomEvent('fecharBannerPWA'));
 		if (!deferredPrompt) return;
 
 		deferredPrompt.prompt();
@@ -40,12 +41,15 @@ export default function Menu({ ativo, onChoice }: menuProps) {
 			console.log('Usuário aceitou a instalação');
 		} else {
 			console.log('Usuário recusou a instalação');
+            window.dispatchEvent(new CustomEvent('fecharBannerPWA'));
 		}
 
 		setDeferredPrompt(null);
 	};
 
     /* Fim da Função Instalar App */
+
+    /* Restante do Menu */
 
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
     const [pontos, setPontos] = useState<PontoInteresseDB[]>([]);
