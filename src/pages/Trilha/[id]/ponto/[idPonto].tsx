@@ -24,7 +24,6 @@ export default function Ponto() {
     const [searchParams] = useSearchParams();
     let from = searchParams.get('from') || 'Mapa';
     
-    // CORREÇÃO: Removido o (undefined) para que o TypeScript entenda como TrilhaDB | undefined
     const [trilha, setTrilha] = useState<TrilhaDB>();
     const [ponto, setPontoDados] = useState<PontoInteresseDB>();
     const [imagens, setImagens] = useState<string[]>([]);
@@ -100,7 +99,7 @@ export default function Ponto() {
                     </SimpleButton>
                 );
 
-            case 'pontos':
+            default:
                 return (
                     <SimpleButton
                         path={`/${from}/`}
@@ -108,17 +107,6 @@ export default function Ponto() {
                         icon="setaBack"
                     >
                         Voltar para {from}
-                    </SimpleButton>
-                );
-
-            default:
-                return (
-                    <SimpleButton
-                        path="/Mapa/"
-                        type="back"
-                        icon="setaBack"
-                    >
-                        Voltar para Mapa
                     </SimpleButton>
                 );
         }

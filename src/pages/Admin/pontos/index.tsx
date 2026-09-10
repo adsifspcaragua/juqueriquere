@@ -9,6 +9,7 @@ import { supabase } from "../../../lib/supabase";
 import ProtectedRoute from "../../../components/Protected";
 import QrCodeModal from "../../../components/ui/QrCodeModal";
 import '../../_styles/admin.css';
+import { Link } from "react-router-dom";
 
 export default function AdminPontos() {
 
@@ -72,7 +73,7 @@ export default function AdminPontos() {
 
     const findTrilha = (ponto: PontoInteresseDB) => {
         const trilha = trilhas?.find(t => Number(t.id) === Number(ponto.trilha_id));
-        return trilha?.nome || "Trilha não encontrada";
+        return trilha;
     }
 
     const abrirExcluir = (ponto: any) => {
@@ -192,15 +193,18 @@ export default function AdminPontos() {
                             >
                                 <div className="cardPontoCompacto vertical gap15">
                                     <div className="vertical gap5">
-                                        <h2>{ponto.nome}</h2>
+                                        <SimpleButton tema="none" path={`/trilha/${findTrilha(ponto)?.id}/ponto/${ponto.id}?from=admin/pontos`}>
+                                            <h2>{ponto.nome}</h2>
+                                        </SimpleButton>
+                                        
                                         <h4>{ponto.planta}</h4>
                                         <p>{ponto.latitude}, {ponto.longitude}</p>
 
                                     </div>
-                                    <div className="seloTrilha horizontal center">
+                                    <Link to={`/trilha/${findTrilha(ponto)?.id}`} className="seloTrilha horizontal center">
                                         <img src={distancia} />
-                                        <p>{findTrilha(ponto)}</p>
-                                    </div>
+                                        <p>{findTrilha(ponto)?.nome || "Trilha não encontrada"}</p>
+                                    </Link>
                                 </div>
 
                                 <div className="btnFull actions vertical gap5">
