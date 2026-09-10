@@ -56,33 +56,36 @@ export default function Usuario() {
             <section className="conteudo vertical gap30">
                 <div className="vertical gap15">
                     <SimpleButton type="back" icon="setaBack" path="/admin/usuario/list">Voltar para Usuários</SimpleButton>
-                    <div className="card vertical gap5 adminCard" id="adminTrilhasCard">
+                    <div className="card vertical userCard">
                         {usuario ? 
                             <>
-                                <div className="horizontal justify center gap15">
-                                    <h1>Usuário: {usuario.name}</h1> 
-                                    <SimpleButton tema="dark" raio="10" path={`/admin/usuario/editar/${usuario.id}`}>Editar</SimpleButton>
+                                <div className="horizontal gap15 center">
+                                    <img src="#" alt="Foto do usuário" className="userImg" />
+                                    <div className="vertical left">
+                                        <h1>{usuario.name}</h1>
+                                        <p>{usuario.tipo}</p>
+                                    </div>
                                 </div>
                                 <div>
-                                <p>
-                                    e-mail: {usuario.login}
-                                </p>
-                                <p>
-                                    Data da criação: {new Date(usuario.criado_em as string).toLocaleDateString("pt-BR")}.
-                                </p>
+                                    <div className="horizontal gap5">
+                                        <h5>E-mail:</h5>
+                                        <p>{usuario.login}</p>
+                                    </div>
+                                    <div className="horizontal gap5">
+                                        <h5>Criado em: </h5>
+                                        <p>{new Date(usuario.criado_em as string).toLocaleDateString("pt-BR")}</p>
+                                    </div>
                                 </div>
+                                <div className="linhaPontilhadaDark" />
+                                <SimpleButton raio="10" path={`/admin/usuario/editar/${usuario.id}`}>Editar conta</SimpleButton>
                             </>
                             : 
                             <></>
                         }
-                        
                     </div>
                 </div>
 
                 <div className="vertical card gap15">
-                    <div className="horizontal justify center">
-                        
-                    </div>
 
                     {loading ? (
                         <p>Carregando usuário...</p>
@@ -91,6 +94,7 @@ export default function Usuario() {
                     ) : (
                         <div className="vertical gap5">
                            <h1>Contribuições do usuário</h1>
+                           <p>Em breve...</p>
                         </div>
                     )}
                 </div>

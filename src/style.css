@@ -31,7 +31,7 @@ h1 {font-size: 24px;}
 p, a, h3, h4, h5, li, i {
     font-family: Inter, Arial, Helvetica, sans-serif;
 }
-p, a {
+p, a, h5 {
     font-size: 14px;
     text-decoration: none;
 }
@@ -39,9 +39,6 @@ h3{
     font-family: Inter, Arial, Helvetica, sans-serif;
     font-size: 20px;
     font-weight: 700;
-}
-h5{
-    font-size: 16px;
 }
 a{width: fit-content;}
 
@@ -168,7 +165,7 @@ body{
     background-size: cover;
     background-position: center bottom;
     background-color: var(--verdeClaro);
-    h1, h2, h3, h4{color: var(--verdeEscuro);}
+    h1, h2, h3, h4, h5, h6{color: var(--verdeEscuro);}
     p{color: var(--texto);}
 }
 #cardEndereco{background-image: url(assets/img/enderecoBg.webp);}

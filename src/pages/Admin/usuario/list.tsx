@@ -59,6 +59,7 @@ export default function AdminUsuarios() {
                             path="/admin/usuario/cadastrar"
                             tema="dark"
                             raio="10"
+                            icon="PlusDark"
                         >
                             Cadastrar Usuário
                         </SimpleButton>
