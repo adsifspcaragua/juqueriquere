@@ -54,14 +54,14 @@ export default defineConfig({
         theme_color: '#008A66',
         icons: [
           {
-            src: '/icon-192.webp',
+            src: '/icon-192.png',
             sizes: '192x192',
-            type: 'image/webp'
+            type: 'image/png'
           },
           {
-            src: '/icon-512.webp',
+            src: '/icon-512.png',
             sizes: '512x512',
-            type: 'image/webp'
+            type: 'image/png'
           }
         ]
       },
