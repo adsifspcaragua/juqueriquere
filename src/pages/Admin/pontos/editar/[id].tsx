@@ -282,7 +282,6 @@ export default function EditarPontoInteresse() {
                         <input
                             name="planta"
                             defaultValue={pontoAtual?.planta}
-                            required
                             disabled={carregando}
                         />
                     </div>
