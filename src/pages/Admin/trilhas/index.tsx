@@ -9,7 +9,7 @@ import ProtectedRoute from "../../../components/Protected.tsx";
 
 import '../../_styles/admin.css';
 
-// <-- Importando o nosso novo componente
+
 import QrCodeModal from "../../../components/ui/QrCodeModal.tsx";
 
 export default function AdminTrilhas() {

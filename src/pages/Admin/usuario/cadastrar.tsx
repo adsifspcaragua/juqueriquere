@@ -56,7 +56,7 @@ export default function CadastrarUsuario() {
 
             alert("Usuário cadastrado com sucesso!");
 
-            navigate("/admin/usuarios");
+            navigate("/admin/usuario/list");
 
         } catch (error: any) {
             console.error(error);
@@ -72,7 +72,9 @@ export default function CadastrarUsuario() {
     }
 
     return (
+        
         <ProtectedRoute>
+            <div className="paddingHeader"></div>
             <section className="vertical gap15" id="loginPage">
                 <SimpleButton type="back" icon="setaBack" path="/admin/usuario/list">Voltar</SimpleButton>
                 <div className="vertical gap15 container card">
