@@ -34,3 +34,18 @@ export function obterUrlImagem(caminho: string) {
 
     return data.publicUrl;
 }
+
+export async function deletarImagem(caminho: string) {
+    console.log("Deletando imagem do Storage:", caminho);
+
+    const { data, error } = await supabase.storage
+        .from("imagens")
+        .remove([caminho]);
+
+    if (error) {
+        console.error("Erro ao deletar imagem do storage:", error);
+        throw error;
+    }
+
+    return data;
+}

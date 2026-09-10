@@ -5,12 +5,12 @@ import "../../_styles/admin.css";
 import ProtectedRoute from "../../../components/Protected";
 import { useParams } from "react-router-dom";
 
-
 interface Usuario {
     id: number;
     name: string;
     login: string;
     tipo: "MASTER" | "ADMIN";
+    foto_url?: string | null;
     criado_em?: string;
 }
 
@@ -22,7 +22,7 @@ export default function Usuario() {
 
     useEffect(() => {
         buscarUsuario();
-    }, []);
+    }, [id]);
 
     async function buscarUsuario() {
         if (!id) return;
@@ -31,7 +31,7 @@ export default function Usuario() {
         try {
             const { data, error } = await supabase
                 .from('usuarios')
-                .select('id, name, login, tipo, criado_em')
+                .select('id, name, login, tipo, foto_url, criado_em')
                 .eq('id', id)
                 .single();
 
@@ -49,18 +49,24 @@ export default function Usuario() {
     }
 
     return (
-        <>
-            <ProtectedRoute>
+        <ProtectedRoute>
             <div className="paddingHeader"></div>
 
             <section className="conteudo vertical gap30">
                 <div className="vertical gap15">
-                    <SimpleButton type="back" icon="setaBack" path="/admin/usuario/list">Voltar para Usuários</SimpleButton>
+                    <SimpleButton type="back" icon="setaBack" path="/admin/usuario/list">
+                        Voltar para Usuários
+                    </SimpleButton>
+                    
                     <div className="card vertical userCard">
-                        {usuario ? 
+                        {usuario ? (
                             <>
                                 <div className="horizontal gap15 center">
-                                    <img src="#" alt="Foto do usuário" className="userImg" />
+                                    <img 
+                                        src={usuario.foto_url || "/assets/images/default-avatar.png"} 
+                                        alt={`Foto de ${usuario.name}`} 
+                                        className="userImg" 
+                                    />
                                     <div className="vertical left">
                                         <h1>{usuario.name}</h1>
                                         <p>{usuario.tipo}</p>
@@ -73,34 +79,38 @@ export default function Usuario() {
                                     </div>
                                     <div className="horizontal gap5">
                                         <h5>Criado em: </h5>
-                                        <p>{new Date(usuario.criado_em as string).toLocaleDateString("pt-BR")}</p>
+                                        <p>
+                                            {usuario.criado_em 
+                                                ? new Date(usuario.criado_em).toLocaleDateString("pt-BR") 
+                                                : "N/A"
+                                            }
+                                        </p>
                                     </div>
                                 </div>
                                 <div className="linhaPontilhadaDark" />
-                                <SimpleButton raio="10" path={`/admin/usuario/editar/${usuario.id}`}>Editar conta</SimpleButton>
+                                <SimpleButton raio="10" path={`/admin/usuario/editar/${usuario.id}`}>
+                                    Editar conta
+                                </SimpleButton>
                             </>
-                            : 
-                            <></>
-                        }
+                        ) : (
+                            <p>{loading ? "Carregando..." : "Usuário não encontrado."}</p>
+                        )}
                     </div>
                 </div>
 
                 <div className="vertical card gap15">
-
                     {loading ? (
                         <p>Carregando usuário...</p>
                     ) : !usuario ? (
                         <p>Usuário não encontrado.</p>
                     ) : (
                         <div className="vertical gap5">
-                           <h1>Contribuições do usuário</h1>
-                           <p>Em breve...</p>
+                            <h1>Contribuições do usuário</h1>
+                            <p>Em breve...</p>
                         </div>
                     )}
                 </div>
-
             </section>
-            </ProtectedRoute>
-        </>
+        </ProtectedRoute>
     );
 }

@@ -1,0 +1,41 @@
+
+.cropper-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.cropper-modal-card {
+    background-color: #222;
+    color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    width: 340px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.cropper-btn-cancel {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    background-color: #444;
+    color: #fff;
+    cursor: pointer;
+}
+
+.cropper-btn-confirm {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    background-color: #2563eb;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+}

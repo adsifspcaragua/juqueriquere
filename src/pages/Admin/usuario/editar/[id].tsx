@@ -1,34 +1,44 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../../../../lib/supabase";
+import { useEffect, useState, useRef } from "react";
 import SimpleButton from "../../../../components/ui/buttons/SimpleButton";
+import ImageCropperModal from "../../../../components/ui/ImageCropperModal";
 import "../../../_styles/admin.css";
 import ProtectedRoute from "../../../../components/Protected";
 import { useParams } from "react-router-dom";
+import { getCurrentUserProfile } from "../../../../lib/auth";
+import { getById, updateById } from "../../../../lib/services/crud";
+import { processImageUpdate } from "../../../../lib/services/storage";
 
 interface Usuario {
     id: number;
     name: string;
     login: string;
     tipo: "MASTER" | "ADMIN";
+    foto_url?: string | null;
     criado_em?: string;
 }
 
 export default function EditarUsuario() {
     const { id } = useParams<{ id: string }>();
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [usuario, setUsuario] = useState<Usuario | null>(null);
     const [loading, setLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
-    
-    // Controle de permissão
+
     const [hasPermission, setHasPermission] = useState<boolean>(false);
     const [loggedUserTipo, setLoggedUserTipo] = useState<"MASTER" | "ADMIN" | null>(null);
 
-    // Estados do formulário
     const [name, setName] = useState("");
     const [login, setLogin] = useState("");
     const [tipo, setTipo] = useState<"MASTER" | "ADMIN">("ADMIN");
+
+    const [previewFotoUrl, setPreviewFotoUrl] = useState<string | null>(null);
+    const [pendingBlob, setPendingBlob] = useState<Blob | null>(null);
+    const [pendingAction, setPendingAction] = useState<"none" | "upload" | "remove">("none");
+
+    const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
+    const [isCropModalOpen, setIsCropModalOpen] = useState(false);
 
     useEffect(() => {
         carregarDadosEChecarPermissao();
@@ -46,51 +56,29 @@ export default function EditarUsuario() {
         setUsuario(null);
 
         try {
-            // 1. Valida a sessão de autenticação ativa no Supabase
-            const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
             
-            if (authError || !authUser) {
-                setHasPermission(false);
-                return;
-            }
+            const usuarioLogado = await getCurrentUserProfile();
 
-            // 2. Busca o perfil do usuário logado via 'auth_id' de forma segura
-            const { data: usuarioLogado, error: userError } = await supabase
-                .from("usuarios")
-                .select("id, tipo")
-                .eq("auth_id", authUser.id)
-                .single();
-
-            if (userError || !usuarioLogado) {
+            if (!usuarioLogado) {
                 setHasPermission(false);
                 return;
             }
 
             setLoggedUserTipo(usuarioLogado.tipo);
 
-            // 3. Validação de Autorização:
-            // - MASTER possui acesso total a qualquer ID.
-            // - ADMIN só pode editar se o ID do parâmetro for o seu próprio ID.
             const isMaster = usuarioLogado.tipo === "MASTER";
             const isOwnProfile = usuarioLogado.id.toString() === id;
 
             if (!isMaster && !isOwnProfile) {
                 setHasPermission(false);
-                return; // Bloqueia a execução antes de consultar dados do usuário alvo
+                return;
             }
 
-            // Autorização confirmada
             setHasPermission(true);
 
-            // 4. Busca os dados do usuário alvo apenas após autorização
-            const { data: targetUser, error: targetError } = await supabase
-                .from("usuarios")
-                .select("id, name, login, tipo, criado_em")
-                .eq("id", id)
-                .single();
+            const targetUser = await getById<Usuario>("usuarios", id);
 
-            if (targetError || !targetUser) {
-                console.error("Erro ao carregar dados do usuário:", targetError);
+            if (!targetUser) {
                 setUsuario(null);
                 return;
             }
@@ -99,12 +87,47 @@ export default function EditarUsuario() {
             setName(targetUser.name || "");
             setLogin(targetUser.login || "");
             setTipo(targetUser.tipo || "ADMIN");
-
+            setPreviewFotoUrl(targetUser.foto_url || null);
         } catch (err) {
-            console.error("Erro de validação:", err);
+            console.error("Erro ao carregar dados do usuário:", err);
             setHasPermission(false);
         } finally {
             setLoading(false);
+        }
+    }
+
+    function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            setCropImageSrc(reader.result as string);
+            setIsCropModalOpen(true);
+        };
+        reader.readAsDataURL(file);
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    }
+
+    function handleCropComplete(croppedBlob: Blob) {
+        setIsCropModalOpen(false);
+        setCropImageSrc(null);
+
+        setPendingBlob(croppedBlob);
+        setPreviewFotoUrl(URL.createObjectURL(croppedBlob));
+        setPendingAction("upload");
+    }
+
+    function handleRemoveImage() {
+        setPendingBlob(null);
+        setPreviewFotoUrl(null);
+        setPendingAction("remove");
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
         }
     }
 
@@ -115,30 +138,40 @@ export default function EditarUsuario() {
         setMessage(null);
 
         try {
-            // Prepara a carga de atualização limitando campos por nível de acesso
-            const payload: { name: string; login: string; tipo?: "MASTER" | "ADMIN" } = {
+            // Processa upload/remoção no Storage usando o serviço genérico
+            const finalFotoUrl = await processImageUpdate({
+                action: pendingAction,
+                currentUrl: usuario?.foto_url,
+                newBlob: pendingBlob,
+                folderPath: `usuarios/${id}`,
+            });
+
+            // Monta o payload de atualização
+            const payload: Partial<Usuario> = {
                 name,
                 login,
+                foto_url: finalFotoUrl,
             };
 
-            // Apenas permissão MASTER pode alterar a propriedade 'tipo'
             if (loggedUserTipo === "MASTER" && tipo) {
                 payload.tipo = tipo;
             }
 
-            const { error } = await supabase
-                .from("usuarios")
-                .update(payload)
-                .eq("id", id);
+            // Atualiza no banco de dados via serviço genérico de CRUD
+            const updatedUser = await updateById<Usuario>("usuarios", id, payload);
 
-            if (error) throw error;
+            if (!updatedUser) {
+                throw new Error("Erro ao atualizar o cadastro do usuário.");
+            }
+
+            setUsuario(updatedUser);
+            setPendingAction("none");
+            setPendingBlob(null);
 
             setMessage({ type: "success", text: "Usuário atualizado com sucesso!" });
-            
-            setUsuario(prev => prev ? { ...prev, name, login, tipo: payload.tipo || prev.tipo } : prev);
         } catch (err) {
-            console.error("Erro ao atualizar usuário:", err);
-            setMessage({ type: "error", text: "Erro ao atualizar os dados. Tente novamente." });
+            console.error("Erro ao salvar:", err);
+            setMessage({ type: "error", text: "Erro ao salvar as alterações. Tente novamente." });
         } finally {
             setIsSaving(false);
         }
@@ -148,121 +181,100 @@ export default function EditarUsuario() {
         <ProtectedRoute>
             <div className="paddingHeader"></div>
             <section className="conteudo vertical gap30">
-                
                 {loading ? (
-                    <>
-                        <SimpleButton type="back" icon="setaBack" path="/admin/usuario/list">
-                            Voltar para Usuários
-                        </SimpleButton>
-                        <p>Verificando permissões...</p>
-                    </>
+                    <p>Verificando permissões...</p>
                 ) : !hasPermission ? (
-                    <div className="vertical gap15">
-                        <SimpleButton type="back" icon="setaBack" path="/admin/usuario/list">
-                            Voltar para Usuários
-                        </SimpleButton>
-                        <div className="card vertical gap5">
-                            <h2 style={{ color: "red" }}>Acesso Negado</h2>
-                            <p>Você não possui privilégios para acessar ou editar este usuário.</p>
-                        </div>
-                    </div>
+                    <p>Acesso negado.</p>
                 ) : !usuario ? (
-                    <div className="vertical gap15">
-                        <SimpleButton type="back" icon="setaBack" path="/admin/usuario/list">
-                            Voltar para Usuários
-                        </SimpleButton>
-                        <p>Usuário não encontrado.</p>
-                    </div>
+                    <p>Usuário não encontrado.</p>
                 ) : (
                     <>
                         <div className="vertical gap15">
                             <SimpleButton type="back" icon="setaBack" path={`/admin/usuario/${usuario.id}`}>
                                 Voltar para {usuario.name}
                             </SimpleButton>
-                            <div className="vertical gap5">
-                                <h1>Editar usuário: {usuario.name}</h1>
-                                <p>Gerencie as informações da conta de forma simples e segura.</p>
-                            </div>
+                            <h1>Editar usuário: {usuario.name}</h1>
                         </div>
 
-                        <div className="linhaPontilhadaLight" />
-
-                        {/* Foto de Perfil */}
                         <div className="card vertical gap15">
                             <h3>Foto de perfil</h3>
                             <div className="horizontal gap15">
-                                <img src="#" alt="Foto do usuário" className="userImg" />
+                                <img
+                                    src={previewFotoUrl || "/assets/images/default-avatar.png"}
+                                    alt="Foto do usuário"
+                                    className="userImg"
+                                />
                                 <div className="vertical gap5">
-                                    <SimpleButton tema="dark" raio="10">Carregar imagem</SimpleButton>
-                                    <SimpleButton tema="red" raio="10">Remover imagem</SimpleButton>
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        accept="image/*"
+                                        onChange={handleFileSelect}
+                                        style={{ display: "none" }}
+                                    />
+                                    <div onClick={() => fileInputRef.current?.click()}>
+                                        <SimpleButton tema="dark" raio="10">
+                                            Carregar imagem
+                                        </SimpleButton>
+                                    </div>
+                                    {previewFotoUrl && (
+                                        <div onClick={handleRemoveImage}>
+                                            <SimpleButton tema="red" raio="10">
+                                                Remover imagem
+                                            </SimpleButton>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
 
-                        {/* Dados do Usuário */}
                         <div className="card vertical gap15">
-                            <h3>Dados de Acesso</h3>
-                            
                             <div className="vertical gap5">
                                 <label>Nome</label>
-                                <input 
-                                    type="text" 
-                                    value={name} 
-                                    onChange={(e) => setName(e.target.value)} 
-                                    placeholder="Digite o nome do usuário"
-                                />
+                                <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
                             </div>
 
                             <div className="vertical gap5">
-                                <label>E-mail (Login)</label>
-                                <input 
-                                    type="email" 
-                                    value={login} 
-                                    onChange={(e) => setLogin(e.target.value)} 
-                                    placeholder="usuario@email.com"
-                                />
+                                <label>E-mail</label>
+                                <input type="email" value={login} onChange={(e) => setLogin(e.target.value)} />
                             </div>
 
                             <div className="vertical gap5">
-                                <label>Nível de Permissão</label>
-                                <select 
-                                    value={tipo} 
+                                <label>Permissão</label>
+                                <select
+                                    value={tipo}
                                     onChange={(e) => setTipo(e.target.value as "MASTER" | "ADMIN")}
                                     disabled={loggedUserTipo !== "MASTER"}
                                 >
-                                    <option value="ADMIN">Administrador (ADMIN)</option>
-                                    <option value="MASTER">Master (MASTER)</option>
+                                    <option value="ADMIN">ADMIN</option>
+                                    <option value="MASTER">MASTER</option>
                                 </select>
-                                {loggedUserTipo !== "MASTER" && (
-                                    <small style={{ color: "gray" }}>
-                                        Apenas usuários com perfil Master podem alterar níveis de permissão.
-                                    </small>
-                                )}
                             </div>
 
-                            {message && (
-                                <p style={{ color: message.type === "error" ? "red" : "green" }}>
-                                    {message.text}
-                                </p>
-                            )}
+                            {message && <p style={{ color: message.type === "error" ? "red" : "green" }}>{message.text}</p>}
 
-                            <div className="horizontal gap15">
-                                <div 
-                                    onClick={handleSalvar} 
-                                    style={{ 
-                                        pointerEvents: isSaving ? "none" : "auto", 
-                                        opacity: isSaving ? 0.7 : 1 
-                                    }}
-                                >
-                                    <SimpleButton tema="dark" raio="10">
-                                        {isSaving ? "Salvando..." : "Salvar Alterações"}
-                                    </SimpleButton>
-                                </div>
+                            <div onClick={handleSalvar}>
+                                <SimpleButton tema="dark" raio="10">
+                                    {isSaving ? "Salvando..." : "Salvar Alterações"}
+                                </SimpleButton>
                             </div>
                         </div>
                     </>
                 )}
             </section>
+
+            {isCropModalOpen && cropImageSrc && (
+                <ImageCropperModal
+                    imageSrc={cropImageSrc}
+                    title="Ajustar Foto de Perfil"
+                    aspectRatio="circle"
+                    onCropComplete={handleCropComplete}
+                    onCancel={() => {
+                        setIsCropModalOpen(false);
+                        setCropImageSrc(null);
+                    }}
+                />
+            )}
         </ProtectedRoute>
     );
 }
