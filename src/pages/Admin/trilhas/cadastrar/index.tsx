@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { supabase } from "../../../../lib/supabase.ts";
+import { createRecord } from "../../../../lib/services/crud.ts";
 import { db, type TrilhaDB } from "../../../../lib/dexie.ts";
 
 import SimpleButton from "../../../../components/ui/buttons/SimpleButton.tsx";
@@ -7,7 +7,7 @@ import DraggableCarousel from "../../../../components/ui/DraggableCarousel.tsx";
 import AutoResizeTextarea from "../../../../utils/AutoResizeTextarea.tsx";
 import Map from "../../../../components/ui/Map/Map.tsx";
 
-import { convertToWebP, fileToBase64 } from "../../../../utils/imageConverter.ts";
+import { convertToWebP } from "../../../../utils/imageConverter.ts";
 import { convertKmlToGeoJson } from "../../../../utils/kmlConverter.ts";
 import { uploadImagem } from "../../../../lib/services/images.ts";
 import ProtectedRoute from "../../../../components/Protected.tsx";
@@ -16,34 +16,32 @@ export default function CadastrarTrilha() {
     const formRef = useRef<HTMLFormElement>(null);
 
     const [imagensSelecionadas, setImagensSelecionadas] = useState<File[]>([]);
-    const [imagensBase64, setImagensBase64] = useState<string[]>([]);
+    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
     const [carregando, setCarregando] = useState(false);
 
     const [geojsonTrilha, setGeojsonTrilha] = useState<any>(null);
     const [nomeArquivoKml, setNomeArquivoKml] = useState<string | null>(null);
     const [corIdentificacao, setCorIdentificacao] = useState("#000000");
 
-    async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         if (!e.target.files) return;
 
         const files = Array.from(e.target.files);
-        
-        try {
-            const novosBase64 = await Promise.all(files.map(fileToBase64));
-            
-            setImagensSelecionadas(files);
-            setImagensBase64(novosBase64);
-        } catch (error) {
-            console.error(error);
-            alert("Erro ao carregar a visualização das imagens.");
-        }
+        // Cria URLs temporárias super leves para pré-visualização
+        const newUrls = files.map(file => URL.createObjectURL(file));
+
+        setImagensSelecionadas((prev) => [...prev, ...files]);
+        setPreviewUrls((prev) => [...prev, ...newUrls]);
     }
 
     function handleRemoveImage(indexToRemove: number) {
+        // Libera a memória da URL criada
+        URL.revokeObjectURL(previewUrls[indexToRemove]);
+
         setImagensSelecionadas((prev) => prev.filter((_, idx) => idx !== indexToRemove));
-        setImagensBase64((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+        setPreviewUrls((prev) => prev.filter((_, idx) => idx !== indexToRemove));
     }
-    // Função para filtrar e remover a linha clicada
+
     function handleRemoveLine(indexToRemove: number) {
         if (!geojsonTrilha) return;
 
@@ -70,7 +68,6 @@ export default function CadastrarTrilha() {
         try {
             const geojsonConvertido = await convertKmlToGeoJson(file);
             setGeojsonTrilha(geojsonConvertido);
-            console.log("KML processado com sucesso:", geojsonConvertido);
         } catch (error: any) {
             console.error(error);
             alert(error.message);
@@ -96,70 +93,61 @@ export default function CadastrarTrilha() {
                 descricao: formData.get("descricao") as string,
                 equipamento_recomendado: formData.get("equipamento_recomendado") as string,
                 atencao: formData.get("atencao") as string,
-                geometria: geojsonTrilha, 
+                geometria: geojsonTrilha,
             };
 
-            const { data: novaTrilha, error: erroTrilha } = await supabase
-                .from("trilhas")
-                .insert(dadosTrilhaSupabase)
-                .select()
-                .single();
-
-            if (erroTrilha) throw erroTrilha;
+            // 1. Cria a trilha principal
+            const novaTrilha = await createRecord<TrilhaDB>("trilhas", dadosTrilhaSupabase);
             if (!novaTrilha) throw new Error("Não foi possível criar a trilha.");
 
+            // 2. Salva no Dexie local
             const trilhaParaDexie: TrilhaDB = {
                 ...novaTrilha,
                 pontos_interesse: [],
                 ramais: [],
                 pontos_no_mapa: []
             };
-
             await db.trilhas.put(trilhaParaDexie);
 
+            // 3. Processamento individual e seguro das imagens
             if (imagensSelecionadas.length > 0) {
-                const dadosImagens = [];
-                const imagensConvertidas: Blob[] = [];
-
                 for (let index = 0; index < imagensSelecionadas.length; index++) {
                     const file = imagensSelecionadas[index];
+                    
+                    // Converte para WebP
                     const blobWebP = await convertToWebP(file, 0.8);
                     
-                    imagensConvertidas.push(blobWebP);
-
                     const nomeArquivo = `${crypto.randomUUID()}.webp`;
                     const caminho = `trilhas/${nomeArquivo}`;
 
+                    // Upload no Storage
                     await uploadImagem(blobWebP, caminho);
 
-                    dadosImagens.push({
+                    // Cria registro no Banco de Dados
+                    const registroImagem = await createRecord<any>("imagens", {
                         trilha_id: novaTrilha.id,
                         ponto_interesse_id: null,
                         caminho_arquivo: caminho,
                         legenda: `Imagem ${index + 1} da trilha ${novaTrilha.nome}`,
                     });
-                }
 
-                const { data: novasImagens, error: erroImagens } = await supabase
-                    .from("imagens")
-                    .insert(dadosImagens)
-                    .select();
-
-                if (erroImagens) throw erroImagens;
-
-                if (novasImagens) {
-                    const imagensParaDexie = novasImagens.map((imagem, index) => ({
-                        ...imagem,
-                        arquivo: imagensConvertidas[index]
-                    }));
-                    await db.imagens.bulkPut(imagensParaDexie);
+                    // Se a imagem foi cadastrada com sucesso no banco, salva no Dexie local
+                    if (registroImagem) {
+                        await db.imagens.put({
+                            ...registroImagem,
+                            arquivo: blobWebP
+                        });
+                    }
                 }
             }
 
             alert("Trilha e imagens cadastradas com sucesso!");
+
+            // Limpa o formulário e libera memória das URLs de pré-visualização
+            previewUrls.forEach(url => URL.revokeObjectURL(url));
             formRef.current?.reset();
             setImagensSelecionadas([]);
-            setImagensBase64([]);
+            setPreviewUrls([]);
             setGeojsonTrilha(null);
             setNomeArquivoKml(null);
             setCorIdentificacao("#000000");
@@ -285,7 +273,7 @@ export default function CadastrarTrilha() {
                                 <DraggableCarousel
                                     items={imagensSelecionadas.map((file, idx) => (
                                         <div key={idx} className="uploadPreview vertical gap5 carrosselCard">
-                                            <img src={imagensBase64[idx]} alt={file.name} />
+                                            <img src={previewUrls[idx]} alt={file.name} />
                                             <button type="button" onClick={() => handleRemoveImage(idx)} disabled={carregando}>Remover</button>
                                             <p>{file.name}</p>
                                         </div>

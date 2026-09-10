@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../../../lib/supabase";
-import SimpleButton from "../../../components/ui/buttons/SimpleButton";
-import "../../_styles/admin.css";
-import ProtectedRoute from "../../../components/Protected";
 import { useParams } from "react-router-dom";
+import SimpleButton from "../../../components/ui/buttons/SimpleButton";
+import ProtectedRoute from "../../../components/Protected";
+import { getById } from "../../../lib/services/crud";
+import "../../_styles/admin.css";
 
 interface Usuario {
     id: number;
@@ -17,7 +17,7 @@ interface Usuario {
 export default function Usuario() {
     const { id } = useParams<{ id: string }>();
 
-    const [usuario, setUsuario] = useState<Usuario>();
+    const [usuario, setUsuario] = useState<Usuario | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -25,26 +25,19 @@ export default function Usuario() {
     }, [id]);
 
     async function buscarUsuario() {
-        if (!id) return;
+        if (!id) {
+            setLoading(false);
+            return;
+        }
 
         setLoading(true);
         try {
-            const { data, error } = await supabase
-                .from('usuarios')
-                .select('id, name, login, tipo, foto_url, criado_em')
-                .eq('id', id)
-                .single();
-
-            if (error) {
-                console.error("Erro ao buscar usuário:", error);
-                return;
-            }
-
+            const data = await getById<Usuario>("usuarios", id);
             setUsuario(data);
         } catch (err) {
-            console.error("Erro inesperado:", err);
+            console.error("Erro inesperado ao buscar usuário:", err);
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     }
 
@@ -57,21 +50,26 @@ export default function Usuario() {
                     <SimpleButton type="back" icon="setaBack" path="/admin/usuario/list">
                         Voltar para Usuários
                     </SimpleButton>
-                    
+
                     <div className="card vertical userCard">
-                        {usuario ? (
+                        {loading ? (
+                            <p>Carregando dados do usuário...</p>
+                        ) : !usuario ? (
+                            <p>Usuário não encontrado.</p>
+                        ) : (
                             <>
                                 <div className="horizontal gap15 center">
-                                    <img 
-                                        src={usuario.foto_url || "/assets/images/default-avatar.png"} 
-                                        alt={`Foto de ${usuario.name}`} 
-                                        className="userImg" 
+                                    <img
+                                        src={usuario.foto_url || "/assets/images/default-avatar.png"}
+                                        alt={`Foto de ${usuario.name}`}
+                                        className="userImg"
                                     />
                                     <div className="vertical left">
                                         <h1>{usuario.name}</h1>
                                         <p>{usuario.tipo}</p>
                                     </div>
                                 </div>
+
                                 <div>
                                     <div className="horizontal gap5">
                                         <h5>E-mail:</h5>
@@ -80,36 +78,31 @@ export default function Usuario() {
                                     <div className="horizontal gap5">
                                         <h5>Criado em: </h5>
                                         <p>
-                                            {usuario.criado_em 
-                                                ? new Date(usuario.criado_em).toLocaleDateString("pt-BR") 
-                                                : "N/A"
-                                            }
+                                            {usuario.criado_em
+                                                ? new Date(usuario.criado_em).toLocaleDateString("pt-BR")
+                                                : "N/A"}
                                         </p>
                                     </div>
                                 </div>
+
                                 <div className="linhaPontilhadaDark" />
+
                                 <SimpleButton raio="10" path={`/admin/usuario/editar/${usuario.id}`}>
                                     Editar conta
                                 </SimpleButton>
                             </>
-                        ) : (
-                            <p>{loading ? "Carregando..." : "Usuário não encontrado."}</p>
                         )}
                     </div>
                 </div>
 
-                <div className="vertical card gap15">
-                    {loading ? (
-                        <p>Carregando usuário...</p>
-                    ) : !usuario ? (
-                        <p>Usuário não encontrado.</p>
-                    ) : (
+                {!loading && usuario && (
+                    <div className="vertical card gap15">
                         <div className="vertical gap5">
                             <h1>Contribuições do usuário</h1>
                             <p>Em breve...</p>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </section>
         </ProtectedRoute>
     );

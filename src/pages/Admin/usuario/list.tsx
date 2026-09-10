@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../../../lib/supabase";
 import SimpleButton from "../../../components/ui/buttons/SimpleButton";
-import "../../_styles/admin.css";
 import ProtectedRoute from "../../../components/Protected";
+import { getAll } from "../../../lib/services/crud";
+import "../../_styles/admin.css";
 
 interface Usuario {
     id: number;
@@ -23,29 +23,30 @@ export default function AdminUsuarios() {
     async function buscarUsuarios() {
         setLoading(true);
 
-        const { data, error } = await supabase
-            .from("usuarios")
-            .select("id, name, login, tipo, criado_em")
-            .order("id", { ascending: true });
-
-        if (error) {
+        try {
+            const data = await getAll<Usuario>(
+                "usuarios",
+                "id, name, login, tipo, criado_em",
+                "id",
+                true
+            );
+            setUsuarios(data);
+        } catch (error) {
             console.error("Erro ao buscar usuários:", error);
+        } finally {
             setLoading(false);
-            return;
         }
-
-        setUsuarios(data || []);
-        setLoading(false);
     }
 
     return (
-        <>
-            <ProtectedRoute>
+        <ProtectedRoute>
             <div className="paddingHeader"></div>
 
             <section className="conteudo vertical gap30">
                 <div className="vertical gap15">
-                    <SimpleButton type="back" icon="setaBack" path="/admin/">Voltar</SimpleButton>
+                    <SimpleButton type="back" icon="setaBack" path="/admin/">
+                        Voltar
+                    </SimpleButton>
                     <div className="card vertical gap5 adminCard" id="adminTrilhasCard">
                         <h1>Usuários</h1>
                         <p>Gerencie os usuários administradores do sistema.</p>
@@ -86,12 +87,10 @@ export default function AdminUsuarios() {
                                         </SimpleButton>
                                     </div>
                                     <p>
-                                        <strong>Login:</strong>{" "}
-                                        {usuario.login}
+                                        <strong>Login:</strong> {usuario.login}
                                     </p>
                                     <p>
-                                        <strong>Tipo:</strong>{" "}
-                                        {usuario.tipo}
+                                        <strong>Tipo:</strong> {usuario.tipo}
                                     </p>
                                     {usuario.criado_em && (
                                         <p>
@@ -106,9 +105,7 @@ export default function AdminUsuarios() {
                         </div>
                     )}
                 </div>
-
             </section>
-            </ProtectedRoute>
-        </>
+        </ProtectedRoute>
     );
 }

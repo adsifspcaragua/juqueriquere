@@ -49,3 +49,20 @@ export async function deletarImagem(caminho: string) {
 
     return data;
 }
+
+export async function deletarImagens(caminhos: string[]) {
+    if (!caminhos || caminhos.length === 0) return;
+
+    console.log("Deletando imagens do Storage:", caminhos);
+
+    const { data, error } = await supabase.storage
+        .from("imagens")
+        .remove(caminhos);
+
+    if (error) {
+        console.error("Erro ao deletar imagens do storage:", error);
+        throw error;
+    }
+
+    return data;
+}

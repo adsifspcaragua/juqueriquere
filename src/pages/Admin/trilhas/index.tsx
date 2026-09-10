@@ -1,81 +1,38 @@
 import { useEffect, useState } from "react";
-import { db } from "../../../lib/dexie.ts";
-import { supabase } from "../../../lib/supabase.ts";
-import SimpleButton from "../../../components/ui/buttons/SimpleButton.tsx";
-import Select from "../../../components/ui/form/Select.tsx";
-import type Trilha from "../../Trilhas/TrilhaInfo.tsx";
 import { createPortal } from "react-dom";
-import ProtectedRoute from "../../../components/Protected.tsx";
+import { db } from "../../../lib/dexie";
+import { deleteById } from "../../../lib/services/crud";
+import { supabase } from "../../../lib/supabase";
+import { deletarImagens } from "../../../lib/services/images";
+import SimpleButton from "../../../components/ui/buttons/SimpleButton";
+import Select from "../../../components/ui/form/Select";
+import QrCodeModal from "../../../components/ui/QrCodeModal";
+import ProtectedRoute from "../../../components/Protected";
+import type Trilha from "../../Trilhas/TrilhaInfo";
 
-import '../../_styles/admin.css';
-
-
-import QrCodeModal from "../../../components/ui/QrCodeModal.tsx";
+import "../../_styles/admin.css";
 
 export default function AdminTrilhas() {
-
-    async function excluirTrilha() {
-        if (!trilhaSelecionada) return;
-
-        try {
-            const { error } = await supabase
-                .from("trilhas")
-                .delete()
-                .eq("id", trilhaSelecionada.id);
-
-            if (error) throw error;
-
-            await db.trilhas.delete(trilhaSelecionada.id);
-
-            try{
-                const { error: erroDeletar } = await supabase
-                .from("trilhas")
-                .delete()
-                .eq('id', trilhaSelecionada.id);
-
-            if (erroDeletar) throw erroDeletar;
-            } catch (error : any){
-                alert("erro ao deletar \n tente novamente mais tarde.")
-                console.log(error)
-            }
-            
-            setTrilhas((prev) =>
-                prev.filter((t) => t.id !== trilhaSelecionada.id)
-            );
-
-            setModalDelete(false);
-            setTrilhaSelecionada(null);
-
-        } catch (err) {
-            console.error(err);
-            alert("Erro ao excluir trilha");
-        }
-    }
-
     const order = {
         "Nome A-Z": (a: Trilha, b: Trilha) =>
             a.nome.localeCompare(b.nome, "pt-BR"),
         "Nome Z-A": (a: Trilha, b: Trilha) =>
             b.nome.localeCompare(a.nome, "pt-BR"),
-        "ID Crescente": (a: Trilha, b: Trilha) =>
-            a.id - b.id,
-        "ID Decrescente": (a: Trilha, b: Trilha) =>
-            b.id - a.id,
+        "ID Crescente": (a: Trilha, b: Trilha) => a.id - b.id,
+        "ID Decrescente": (a: Trilha, b: Trilha) => b.id - a.id,
     } as const;
 
     type OrderKey = keyof typeof order;
 
+    const [trilhas, setTrilhas] = useState<Trilha[]>([]);
     const [orderKey, setOrderKey] = useState<OrderKey>("ID Crescente");
     const [search, setSearch] = useState("");
 
     const [modalDelete, setModalDelete] = useState(false);
-    const [trilhaSelecionada, setTrilhaSelecionada] = useState<any>(null);
+    const [trilhaSelecionada, setTrilhaSelecionada] = useState<Trilha | null>(null);
 
-    const [trilhas, setTrilhas] = useState<Trilha[]>([]);
-
-    // --- ESTADOS DO QR CODE (Bem mais simples agora) ---
     const [qrModalOpen, setQrModalOpen] = useState(false);
-    const [itemParaQrCode, setItemParaQrCode] = useState<any>(null);
+    const [itemParaQrCode, setItemParaQrCode] = useState<Trilha | null>(null);
 
     useEffect(() => {
         async function loadData() {
@@ -85,7 +42,61 @@ export default function AdminTrilhas() {
         loadData();
     }, []);
 
-    const abrirExcluir = (trilha: any) => {
+
+async function excluirTrilha() {
+    if (!trilhaSelecionada) return;
+
+    try {
+        // Busca no Supabase todas as imagens associadas a esta trilha
+        const { data: imagensSupabase, error: errFetch } = await supabase
+            .from("imagens")
+            .select("id, caminho_arquivo")
+            .eq("trilha_id", trilhaSelecionada.id);
+
+        if (errFetch) throw errFetch;
+
+        const imagensParaDeletar = imagensSupabase || [];
+        const caminhosStorage = imagensParaDeletar
+            .map((img) => img.caminho_arquivo)
+            .filter((caminho): caminho is string => Boolean(caminho));
+
+        // Apaga os arquivos do Storage do Supabase em lote
+        if (caminhosStorage.length > 0) {
+            await deletarImagens(caminhosStorage);
+        }
+
+        // Remove as linhas da tabela 'imagens' no Supabase e no Dexie
+        if (imagensParaDeletar.length > 0) {
+            const idsImagens = imagensParaDeletar.map((img) => img.id);
+
+            for (const id of idsImagens) {
+                await deleteById("imagens", id);
+            }
+
+            await db.imagens.bulkDelete(idsImagens);
+        }
+
+        // Remove a trilha do Supabase via deleteById
+        const ok = await deleteById("trilhas", trilhaSelecionada.id);
+        if (!ok) {
+            throw new Error("Falha ao deletar a trilha no banco de dados.");
+        }
+
+        // Remove a trilha do cache local (Dexie)
+        await db.trilhas.delete(trilhaSelecionada.id);
+
+        // Atualiza a interface
+        setTrilhas((prev) => prev.filter((t) => t.id !== trilhaSelecionada.id));
+        setModalDelete(false);
+        setTrilhaSelecionada(null);
+
+    } catch (err) {
+        console.error("Erro ao excluir trilha e suas imagens:", err);
+        alert("Erro ao excluir trilha. Verifique se as permissões de DELETE estão ativas no Storage do Supabase.");
+    }
+}
+
+    const abrirExcluir = (trilha: Trilha) => {
         setTrilhaSelecionada(trilha);
         setModalDelete(true);
     };
@@ -96,17 +107,16 @@ export default function AdminTrilhas() {
     };
 
     const trilhasFiltradas = trilhas
-    .filter((trilha) =>
-        trilha.nome.toLowerCase().includes(search.toLowerCase())
-    )
-    .sort(order[orderKey]);
+        .filter((trilha) =>
+            trilha.nome.toLowerCase().includes(search.toLowerCase())
+        )
+        .sort(order[orderKey]);
 
     return (
         <ProtectedRoute>
             <div className="paddingHeader2"></div>
 
             <section className="conteudo vertical gap15">
-
                 <SimpleButton path="/admin/" type="back" icon="setaBack">
                     Voltar
                 </SimpleButton>
@@ -139,17 +149,17 @@ export default function AdminTrilhas() {
                     </div>,
                     document.body
                 )}
-                
+
                 {/* MODAL DE EXCLUSÃO */}
-                {modalDelete && (
+                {modalDelete &&
                     createPortal(
                         <div className="modal vertical center">
                             <div className="modal-content card vertical gap15">
                                 <h2>
-                                    Deseja excluir <br/>
+                                    Deseja excluir <br />
                                     {trilhaSelecionada?.nome}?
                                 </h2>
-                                <p>Esta ação não pode ser revertida.</p>
+                                <p>Esta ação não pode ser revertida e apagará todas as imagens associadas.</p>
                                 <div className="horizontal btnFull gap15">
                                     <SimpleButton tema="dark" icon="X" raio="10" onClick={cancelar}>
                                         Manter
@@ -159,19 +169,18 @@ export default function AdminTrilhas() {
                                     </SimpleButton>
                                 </div>
                             </div>
-                        </div>, 
+                        </div>,
                         document.body
-                    )
-                )}
+                    )}
 
-                <QrCodeModal 
-                    isOpen={qrModalOpen} 
+                <QrCodeModal
+                    isOpen={qrModalOpen}
                     onClose={() => {
                         setQrModalOpen(false);
                         setItemParaQrCode(null);
-                    }} 
-                    path={itemParaQrCode ? `/trilha/${itemParaQrCode.id}` : ''} 
-                    title={itemParaQrCode?.nome || ''} 
+                    }}
+                    path={itemParaQrCode ? `/trilha/${itemParaQrCode.id}` : ""}
+                    title={itemParaQrCode?.nome || ""}
                 />
 
                 <div className="vertical gap15">
@@ -190,11 +199,10 @@ export default function AdminTrilhas() {
                                 </div>
 
                                 <div className="btnFull actions vertical gap5">
-                                    {/* Botão que abre o modal informando o item selecionado */}
-                                    <SimpleButton 
-                                        icon="Scan" 
-                                        tema="dark" 
-                                        raio="10" 
+                                    <SimpleButton
+                                        icon="Scan"
+                                        tema="dark"
+                                        raio="10"
                                         onClick={() => {
                                             setItemParaQrCode(trilha);
                                             setQrModalOpen(true);
@@ -203,11 +211,21 @@ export default function AdminTrilhas() {
                                         QR Code
                                     </SimpleButton>
 
-                                    <SimpleButton icon="Edit" tema="dark" raio="10" path={`/admin/trilhas/editar/${trilha.id}`}>
+                                    <SimpleButton
+                                        icon="Edit"
+                                        tema="dark"
+                                        raio="10"
+                                        path={`/admin/trilhas/editar/${trilha.id}`}
+                                    >
                                         Editar
                                     </SimpleButton>
-                                    
-                                    <SimpleButton icon="Trash" tema="red" raio="10" onClick={() => abrirExcluir(trilha)}>
+
+                                    <SimpleButton
+                                        icon="Trash"
+                                        tema="red"
+                                        raio="10"
+                                        onClick={() => abrirExcluir(trilha)}
+                                    >
                                         Excluir
                                     </SimpleButton>
                                 </div>
@@ -215,10 +233,9 @@ export default function AdminTrilhas() {
                         ))}
                     </div>
                 </div>
-
             </section>
 
-            {createPortal(<div className="paddingFooter"></div>,document.body)}
+            {createPortal(<div className="paddingFooter"></div>, document.body)}
         </ProtectedRoute>
     );
 }

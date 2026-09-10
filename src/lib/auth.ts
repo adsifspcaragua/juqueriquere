@@ -9,6 +9,10 @@ export interface LoggedUserProfile {
   foto_url?: string | null;
 }
 
+export async function signUp(email: string, password: string) {
+  return await supabase.auth.signUp({ email, password });
+}
+
 export async function login(email: string, password: string) {
   return await supabase.auth.signInWithPassword({
     email,
