@@ -52,14 +52,27 @@ export default function Usuario() {
         <>
             <ProtectedRoute>
             <div className="paddingHeader"></div>
-
             <section className="conteudo vertical gap30">
                 <div className="vertical gap15">
-                    <SimpleButton type="back" icon="setaBack" path="/admin/usuario/list">Voltar para Usuários</SimpleButton>
-                    <div className="vertical gap5">
-                        <h1>Editar usuário</h1>
-                        <p>Gerencie as informações da conta de forma simples e segura. Atualize o nome, foto de perfil, dados de acesso, senha e chaves de acesso, mantendo as informações sempre atualizadas e protegidas.</p>
-                    </div>
+                    {
+                        loading ? (
+                            <>
+                                <SimpleButton type="back" icon="setaBack" path={`/admin/usuario/list}`}>Voltar para Usuarios</SimpleButton>
+                                <p>Carregando usuário...</p>
+                            </>
+                        ) : !usuario ? (
+                            <p>Usuário não encontrado.</p>
+                        )
+                        :
+                        <>
+                            <SimpleButton type="back" icon="setaBack" path={`/admin/usuario/${usuario.id}`}>Voltar para {usuario.name}</SimpleButton>
+                            <div className="vertical gap5">
+                                <h1>Editar usuário: {usuario.name}</h1>
+                                <p>Gerencie as informações da conta de forma simples e segura. Atualize o nome, foto de perfil, dados de acesso, senha e chaves de acesso, mantendo as informações sempre atualizadas e protegidas.</p>
+                            </div>
+                        </>
+                    }
+                    
                 </div>
 
                 <div className="linhaPontilhadaLight"/>
