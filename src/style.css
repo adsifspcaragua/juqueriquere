@@ -120,7 +120,7 @@ body{
     height: 100dvh;
     padding: 30px;
     justify-content: center;
-    background-color: var(--verdeEscuroTransparente);
+    background-color: var(--headerBackground);
     backdrop-filter: blur(5px);
 }
 

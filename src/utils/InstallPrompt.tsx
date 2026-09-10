@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import SimpleButton from '../components/ui/buttons/SimpleButton';
 import { createPortal } from "react-dom";
+import icon from '../assets/icon.png';
 
 export function InstallPrompt() {
 	const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -67,19 +68,21 @@ export function InstallPrompt() {
 			{createPortal(
 				<div className="modal vertical center">
 					<div className='pwaCard card vertical'>
-						<div className='vertical gap5'>
-							<h2>Instale o Juqueriquerê</h2>
-							<p>Acesse as trilhas offline de forma mais rápida!</p>
+						<div className='vertical center gap15'>
+							<img src={icon} style={{width:70}}/>
+							<div className="vertical gap5">
+								<h2>Instale o App</h2>
+								<p>Acesse as trilhas offline de forma mais rápida!</p>
+							</div>
 						</div>
 
-						<div className='horizontal justifyCenter gap15'>
+						<div className='vertical btnFull justifyCenter gap5'>
 							<SimpleButton
-								tema='light'
+								tema='dark'
 								raio='10'
-								icon='none'
-								onClick={handleNeverShowAgainClick}
+								onClick={handleInstallClick}
 							>
-								Não mostrar novamente
+								Instalar
 							</SimpleButton>
 
 							<SimpleButton
@@ -92,11 +95,11 @@ export function InstallPrompt() {
 							</SimpleButton>
 
 							<SimpleButton
-								tema='dark'
 								raio='10'
-								onClick={handleInstallClick}
+								icon='none'
+								onClick={handleNeverShowAgainClick}
 							>
-								Instalar
+								Não mostrar novamente
 							</SimpleButton>
 						</div>
 					</div>

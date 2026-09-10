@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import SimpleButton from '../components/ui/buttons/SimpleButton';
 import share from '../assets/icons/share.webp';
 import add from '../assets/icons/add.webp';
+import icon from '../assets/icon.png'
 
 export function IosInstallPrompt() {
 	const [showPrompt, setShowPrompt] = useState(false);
@@ -30,10 +31,18 @@ export function IosInstallPrompt() {
 		<>
 			{createPortal(
 				<div className="modal vertical center">
-					<div className='pwaCard card vertical'>
-						<div className='vertical gap5'>
-							<h2>Instale o Juqueriquere no seu iPhone</h2>
-							<p>Acesse as trilhas offline de forma mais rápida!</p>
+					<div className='pwaCard card vertical center'>
+						<div className="vertical gap15 center">
+							<img src={icon} style={{width:70}}/>
+							<div className='vertical'>
+								<h2>adicionar</h2>
+								<h2>à tela inicial</h2>
+							</div>
+						</div>
+
+						<p>Acesse as trilhas offline de forma mais rápida!</p>
+
+						<div className="vertical gap5">
 							<p>Toque no botão <strong>Compartilhar</strong> <img src={share} id='shareIcon'/> e depois em <strong>"Adicionar à Tela de Início"</strong><img src={add} id='addIcon' />.</p>
 						</div>
 
