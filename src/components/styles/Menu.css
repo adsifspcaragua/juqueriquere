@@ -52,6 +52,10 @@
     padding: 0 20px;
     background-color: var(--verdeClaroTransparente);
     border-radius: 10px;
+
+    a{
+        width: 100%;
+    }
 }
 .menuLinks :last-child > .btn{
     border: 0;
