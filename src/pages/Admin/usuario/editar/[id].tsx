@@ -53,7 +53,7 @@ export default function Usuario() {
             <ProtectedRoute>
             <div className="paddingHeader"></div>
             <section className="conteudo vertical gap30">
-                <div className="vertical gap15">
+                
                     {
                         loading ? (
                             <>
@@ -61,31 +61,44 @@ export default function Usuario() {
                                 <p>Carregando usuário...</p>
                             </>
                         ) : !usuario ? (
+                            
                             <p>Usuário não encontrado.</p>
                         )
                         :
                         <>
-                            <SimpleButton type="back" icon="setaBack" path={`/admin/usuario/${usuario.id}`}>Voltar para {usuario.name}</SimpleButton>
-                            <div className="vertical gap5">
-                                <h1>Editar usuário: {usuario.name}</h1>
-                                <p>Gerencie as informações da conta de forma simples e segura. Atualize o nome, foto de perfil, dados de acesso, senha e chaves de acesso, mantendo as informações sempre atualizadas e protegidas.</p>
+                            <div className="vertical gap15">
+                                <SimpleButton type="back" icon="setaBack" path={`/admin/usuario/${usuario.id}`}>Voltar para {usuario.name}</SimpleButton>
+                                <div className="vertical gap5">
+                                    <h1>Editar usuário: {usuario.name}</h1>
+                                    <p>Gerencie as informações da conta de forma simples e segura. Atualize o nome, foto de perfil, dados de acesso, senha e chaves de acesso, mantendo as informações sempre atualizadas e protegidas.</p>
+                                </div>
                             </div>
                         </>
                     }
                     
-                </div>
+                
 
                 <div className="linhaPontilhadaLight"/>
 
                 <div className="card vertical gap15">
-                    <h3>Foto de perfil</h3>
-                    <div className="horizontal gap15">
-                        <img src="#" alt="Foto do usuário" className="userImg" />
-                        <div className="vertical gap5">
-                            <SimpleButton tema="dark" raio="10"> Carregar imagem</SimpleButton>
-                            <SimpleButton tema="red" raio="10"> Remover imagem</SimpleButton>
-                        </div>
-                    </div>
+                    {loading ? (
+                        <>
+                    
+                        </>
+                    ):(
+                        <>
+                            <h3>Foto de perfil</h3>
+                            <div className="horizontal gap15">
+                                <img src="#" alt="Foto do usuário" className="userImg" />
+                                <div className="vertical gap5">
+                                    <SimpleButton tema="dark" raio="10"> Carregar imagem</SimpleButton>
+                                    <SimpleButton tema="red" raio="10"> Remover imagem</SimpleButton>
+                                </div>
+                            </div>
+                        
+                        </>
+                    )}
+                    
                 </div>
 
                 {/*
