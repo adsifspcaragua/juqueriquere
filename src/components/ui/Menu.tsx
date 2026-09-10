@@ -19,7 +19,6 @@ export default function Menu({ ativo, onChoice }: menuProps) {
 
     useEffect(() => {
 		const handleBeforeInstallPrompt = (e: Event) => {
-			e.preventDefault();
 			setDeferredPrompt(e);
 		};
 

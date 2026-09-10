@@ -17,7 +17,6 @@ export default function index(){
 
 	useEffect(() => {
 		const handleBeforeInstallPrompt = (e: Event) => {
-			e.preventDefault();
 			setDeferredPrompt(e);
 		};
 
