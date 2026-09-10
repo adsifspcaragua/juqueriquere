@@ -645,6 +645,17 @@ ul{
     #capivara{
         background-image: url(./assets/img/CapivaraDesktop.webp);
     }
+    #capivaraDesktop{
+        background-image: url(./assets/img/CapivaraDesktop.webp);
+        background-size: cover;
+        background-position: left;
+        .vertical{
+            width: 30%;
+        }
+    }
+    .conteudo#capivaraDesktop{
+        height: 80dvh;
+    }
     #scannercard{
         height: 100%;
     }

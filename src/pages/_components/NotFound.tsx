@@ -3,7 +3,7 @@ import SimpleButton from "../../components/ui/buttons/SimpleButton";
 export default function NotFound(){
     return(
         <>
-            <section className='conteudo vertical'>
+            <section className='conteudo vertical justifyCenter' id="capivaraDesktop">
                 <div className="paddingHeader"></div>
                 <div className="img-fade" id="capivara"></div>
                 <div className="vertical gap5">
