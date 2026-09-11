@@ -1033,57 +1033,49 @@ export default function EditarSobre() {
 
             <div className="paddingHeader"></div>
 
-            <section className="conteudo vertical gap15">
+            <section className="conteudo vertical gap15 desktopWrap1-2">
 
-                <SimpleButton
-                    path="/admin"
-                    type="back"
-                    icon="setaBack"
-                >
-                    Voltar
-                </SimpleButton>
-
-                <h1>Editar informações do parque</h1>
+                <div className="vertical gap15">
+                    <SimpleButton
+                        path="/admin"
+                        type="back"
+                        icon="setaBack"
+                    >
+                        Voltar
+                    </SimpleButton>
+                    <div className="card vertical gap5 adminCard" id="adminSobreCard">
+                        <h1>Sobre o Parque</h1>
+                        <p>Atualize as informações do parque, garantindo que os visitantes tenham acesso a conteúdos claros e relevantes sobre a plataforma.</p>
+                    </div>
+                </div>
 
                 <form
-                    className="card vertical gap15"
+                    className="card vertical gap30"
                     onSubmit={handleSubmit}
                 >
 
-                    {/* ============================= */}
-                    {/* INFORMAÇÕES GERAIS */}
-                    {/* ============================= */}
+                    <div className="desktopWrap">
+                        <div className="vertical gap15">
 
-                    <h2>Informações gerais</h2>
+                            <h2>Informações gerais</h2>
 
-                    <div className="vertical gap5">
-
-                        <label>
-                            Descrição do parque:
-                        </label>
-
-                        <AutoResizeTextarea
-                            value={sobre.descricao}
-                            onChange={(e) =>
-                                atualizarCampo(
-                                    "descricao",
-                                    e.target.value
-                                )
-                            }
-                            disabled={salvando}
-                            required
-                        />
-
-                    </div>
+                            <div className="vertical gap5">
+                                <label>Descrição do parque:</label>
+                                <AutoResizeTextarea
+                                    value={sobre.descricao}
+                                    onChange={(e) =>
+                                        atualizarCampo(
+                                            "descricao",
+                                            e.target.value
+                                        )
+                                    }
+                                    disabled={salvando}
+                                    required
+                                />
+                            </div>
 
 
-
-                    <div className="linhaPontilhadaLight"></div>
-
-
-                    {/* ============================= */}
-                    {/* ESPAÇOS */}
-                    {/* ============================= */}
+                        <div className="vertical gap15">
 
                     <h2>Espaços do Parque</h2>
 
@@ -1535,273 +1527,202 @@ export default function EditarSobre() {
                     )}
 
 
-                    {/* ============================= */}
-                    {/* ACESSIBILIDADE */}
-                    {/* ============================= */}
-
-                    <h2>Acessibilidade</h2>
-
-                    <div className="vertical gap5">
-
-                        <label>
-                            Título:
-                        </label>
-
-                        <input
-                            type="text"
-                            value={
-                                sobre.acessibilidade_titulo
-                            }
-                            onChange={(e) =>
-                                atualizarCampo(
-                                    "acessibilidade_titulo",
-                                    e.target.value
-                                )
-                            }
-                            disabled={salvando}
-                            required
-                        />
-
-                    </div>
-
-                    <div className="vertical gap5">
-
-                        <label>
-                            Informações sobre acessibilidade:
-                        </label>
-
-                        <AutoResizeTextarea
-                            value={
-                                sobre.acessibilidade_descricao
-                            }
-                            onChange={(e) =>
-                                atualizarCampo(
-                                    "acessibilidade_descricao",
-                                    e.target.value
-                                )
-                            }
-                            disabled={salvando}
-                            required
-                        />
-
-                    </div>
-
-
-                    <div className="linhaPontilhadaLight"></div>
-
-
-                    {/* ============================= */}
-                    {/* VISITAS EM GRUPO */}
-                    {/* ============================= */}
-
-                    <h2>Visitas em grupo</h2>
-
-                    <div className="vertical gap5">
-
-                        <label>
-                            Título:
-                        </label>
-
-                        <input
-                            type="text"
-                            value={
-                                sobre.visitas_grupo_titulo
-                            }
-                            onChange={(e) =>
-                                atualizarCampo(
-                                    "visitas_grupo_titulo",
-                                    e.target.value
-                                )
-                            }
-                            disabled={salvando}
-                            required
-                        />
-
-                    </div>
-
-                    <div className="vertical gap5">
-
-                        <label>
-                            Informações sobre visitas em grupo:
-                        </label>
-
-                        <AutoResizeTextarea
-                            value={
-                                sobre.visitas_grupo_descricao
-                            }
-                            onChange={(e) =>
-                                atualizarCampo(
-                                    "visitas_grupo_descricao",
-                                    e.target.value
-                                )
-                            }
-                            disabled={salvando}
-                            required
-                        />
-
+                    <div className="desktopWrap">
+                        <div className="vertical gap15">
+                            <h2>Acessibilidade</h2>
+                            <div className="vertical gap5">
+                                <label>Título:</label>
+                                <input
+                                    type="text"
+                                    value={
+                                        sobre.acessibilidade_titulo
+                                    }
+                                    onChange={(e) =>
+                                        atualizarCampo(
+                                            "acessibilidade_titulo",
+                                            e.target.value
+                                        )
+                                    }
+                                    disabled={salvando}
+                                    required
+                                />
+                            </div>
+                            <div className="vertical gap5">
+                                <label>Informações sobre acessibilidade:</label>
+                                <AutoResizeTextarea
+                                    value={
+                                        sobre.acessibilidade_descricao
+                                    }
+                                    onChange={(e) =>
+                                        atualizarCampo(
+                                            "acessibilidade_descricao",
+                                            e.target.value
+                                        )
+                                    }
+                                    disabled={salvando}
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className="vertical gap15">
+                            <h2>Visitas em grupo</h2>
+                            <div className="vertical gap5">
+                                <label>Título:</label>
+                                <input
+                                    type="text"
+                                    value={
+                                        sobre.visitas_grupo_titulo
+                                    }
+                                    onChange={(e) =>
+                                        atualizarCampo(
+                                            "visitas_grupo_titulo",
+                                            e.target.value
+                                        )
+                                    }
+                                    disabled={salvando}
+                                    required
+                                />
+                            </div>
+                            <div className="vertical gap5">
+                                <label>Informações sobre visitas em grupo:</label>
+                                <AutoResizeTextarea
+                                    value={
+                                        sobre.visitas_grupo_descricao
+                                    }
+                                    onChange={(e) =>
+                                        atualizarCampo(
+                                            "visitas_grupo_descricao",
+                                            e.target.value
+                                        )
+                                    }
+                                    disabled={salvando}
+                                    required
+                                />
+                            </div>
+                            <div className="vertical gap5">
+                                <label>E-mail para agendamento:</label>
+                                <input
+                                    type="email"
+                                    value={
+                                        sobre.email_agendamento
+                                    }
+                                    onChange={(e) =>
+                                        atualizarCampo(
+                                            "email_agendamento",
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="exemplo@caraguatatuba.sp.gov.br"
+                                    disabled={salvando}
+                                    required
+                                />
+                            </div>
+                        </div>
                     </div>
 
 
-                    <div className="vertical gap5">
+                    <div className="linhaPontilhadaDark"/>
 
-                        <label>
-                            E-mail para agendamento:
-                        </label>
-
-                        <input
-                            type="email"
-                            value={
-                                sobre.email_agendamento
-                            }
-                            onChange={(e) =>
-                                atualizarCampo(
-                                    "email_agendamento",
-                                    e.target.value
-                                )
-                            }
-                            placeholder="exemplo@caraguatatuba.sp.gov.br"
-                            disabled={salvando}
-                            required
-                        />
-
+                    <div className="desktopWrap">
+                        <div className="vertical gap15">
+                            <h2>Horário de funcionamento</h2>
+                            <div className="vertical gap5">
+                                <label>
+                                    Título:
+                                </label>
+                                <input
+                                    type="text"
+                                    value={
+                                        sobre.horario_titulo
+                                    }
+                                    onChange={(e) =>
+                                        atualizarCampo(
+                                            "horario_titulo",
+                                            e.target.value
+                                        )
+                                    }
+                                    disabled={salvando}
+                                    required
+                                />
+                            </div>
+                            <div className="vertical gap5">
+                                <label>
+                                    Horário:
+                                </label>
+                                <AutoResizeTextarea
+                                    value={
+                                        sobre.horario_descricao
+                                    }
+                                    onChange={(e) =>
+                                        atualizarCampo(
+                                            "horario_descricao",
+                                            e.target.value
+                                        )
+                                    }
+                                    disabled={salvando}
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className="vertical gap15">
+                            <h2>Endereço</h2>
+                            <div className="vertical gap5">
+                                <label>
+                                    Título:
+                                </label>
+                                <input
+                                    type="text"
+                                    value={
+                                        sobre.endereco_titulo
+                                    }
+                                    onChange={(e) =>
+                                        atualizarCampo(
+                                            "endereco_titulo",
+                                            e.target.value
+                                        )
+                                    }
+                                    disabled={salvando}
+                                    required
+                                />
+                            </div>
+                            <div className="vertical gap5">
+                                <label>
+                                    Endereço:
+                                </label>
+                                <AutoResizeTextarea
+                                    value={
+                                        sobre.endereco_descricao
+                                    }
+                                    onChange={(e) =>
+                                        atualizarCampo(
+                                            "endereco_descricao",
+                                            e.target.value
+                                        )
+                                    }
+                                    disabled={salvando}
+                                    required
+                                />
+                            </div>
+                            <div className="vertical gap5">
+                                <label>
+                                    Link do Google Maps:
+                                </label>
+                                <input
+                                    type="url"
+                                    value={sobre.link_mapa}
+                                    onChange={(e) =>
+                                        atualizarCampo(
+                                            "link_mapa",
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="https://maps.google.com/..."
+                                    disabled={salvando}
+                                    required
+                                />
+                            </div>
+                        </div>
                     </div>
-
-
-                    <div className="linhaPontilhadaLight"></div>
-
-
-                    {/* ============================= */}
-                    {/* HORÁRIO */}
-                    {/* ============================= */}
-
-                    <h2>Horário de funcionamento</h2>
-
-                    <div className="vertical gap5">
-
-                        <label>
-                            Título:
-                        </label>
-
-                        <input
-                            type="text"
-                            value={
-                                sobre.horario_titulo
-                            }
-                            onChange={(e) =>
-                                atualizarCampo(
-                                    "horario_titulo",
-                                    e.target.value
-                                )
-                            }
-                            disabled={salvando}
-                            required
-                        />
-
-                    </div>
-
-                    <div className="vertical gap5">
-
-                        <label>
-                            Horário:
-                        </label>
-
-                        <AutoResizeTextarea
-                            value={
-                                sobre.horario_descricao
-                            }
-                            onChange={(e) =>
-                                atualizarCampo(
-                                    "horario_descricao",
-                                    e.target.value
-                                )
-                            }
-                            disabled={salvando}
-                            required
-                        />
-
-                    </div>
-
-
-                    <div className="linhaPontilhadaLight"></div>
-
-
-                    {/* ============================= */}
-                    {/* ENDEREÇO */}
-                    {/* ============================= */}
-
-                    <h2>Endereço</h2>
-
-                    <div className="vertical gap5">
-
-                        <label>
-                            Título:
-                        </label>
-
-                        <input
-                            type="text"
-                            value={
-                                sobre.endereco_titulo
-                            }
-                            onChange={(e) =>
-                                atualizarCampo(
-                                    "endereco_titulo",
-                                    e.target.value
-                                )
-                            }
-                            disabled={salvando}
-                            required
-                        />
-
-                    </div>
-
-                    <div className="vertical gap5">
-
-                        <label>
-                            Endereço:
-                        </label>
-
-                        <AutoResizeTextarea
-                            value={
-                                sobre.endereco_descricao
-                            }
-                            onChange={(e) =>
-                                atualizarCampo(
-                                    "endereco_descricao",
-                                    e.target.value
-                                )
-                            }
-                            disabled={salvando}
-                            required
-                        />
-
-                    </div>
-
-                    <div className="vertical gap5">
-
-                        <label>
-                            Link do Google Maps:
-                        </label>
-
-                        <input
-                            type="url"
-                            value={sobre.link_mapa}
-                            onChange={(e) =>
-                                atualizarCampo(
-                                    "link_mapa",
-                                    e.target.value
-                                )
-                            }
-                            placeholder="https://maps.google.com/..."
-                            disabled={salvando}
-                            required
-                        />
-
-                    </div>
-
-
-                    {/* ============================= */}
-                    {/* BOTÃO */}
-                    {/* ============================= */}
 
                     <div className="btnFull">
 

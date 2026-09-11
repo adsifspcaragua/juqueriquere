@@ -19,6 +19,7 @@ export default function Explorar() {
 
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
     const [pontosDados, setPontosDados] = useState<PontoInteresseDB[]>();
+    const [pontosSize, setPontosSize] = useState<number[]>([0, 0]);
 
     const [trilhaSelecionada, setTrilhaSelecionada] = useState<number | undefined>(undefined);
 
@@ -36,12 +37,17 @@ export default function Explorar() {
         loadData();
     }, []);
 
-    //carrega os pontos quando a trilhaSelecionada muda de valor
     useEffect(() => {
         async function carregarPontos() {
             if(!trilhaSelecionada) return;
-            const pontos = await db.pontos_interesse.where('trilha_id').equals(Number(trilhaSelecionada)).toArray();
+            const lengthPontos = await db.pontos_interesse.where('trilha_id').equals(Number(trilhaSelecionada)).count();
+            const pontos = await db.pontos_interesse.where('trilha_id').equals(Number(trilhaSelecionada)).limit(4).toArray();
             if(pontos)setPontosDados(pontos)
+            if(lengthPontos)setPontosSize([pontos.length, lengthPontos]);
+            else{
+                setPontosSize([0, 0]);
+            }
+            
         }
         carregarPontos();
     }, [trilhaSelecionada]);
@@ -71,6 +77,38 @@ export default function Explorar() {
             trilha={trilha}
         />
     ));
+
+    const pontos = 
+        pontosDados?.map((ponto) => (
+                                            <motion.div
+                                                key={ponto.id}
+                                                variants={{
+                                                    hidden: {
+                                                        opacity: 0,
+                                                        y: 15,
+                                                    },
+                                                    visible: {
+                                                        opacity: 1,
+                                                        y: 0,
+                                                        transition: {
+                                                            duration: 0.25,
+                                                        },
+                                                    },
+                                                    exit: {
+                                                        opacity: 0,
+                                                        y: -10,
+                                                        transition: {
+                                                            duration: 0.15,
+                                                        },
+                                                    },
+                                                }}
+                                            >
+                                                <CardPonto
+                                                    ponto={ponto}
+                                                    trilhaId={trilhaAtual.id}
+                                                />
+                                            </motion.div>
+                                        ));
 
     // const pontosList = (pontosDados ?? []).map((ponto, index) => (
     //     <CardPonto
@@ -112,62 +150,43 @@ export default function Explorar() {
                         <div className="vertical gap15">
                             <h3>Pontos de interesse nesta trilha:</h3>
                                 <AnimatePresence mode="wait">
-                                    <motion.div
-                                        key={trilhaSelecionada}
-                                        className="listaGrid"
-                                        id="pontosList"
-                                        initial="hidden"
-                                        animate="visible"
-                                        exit="exit"
-                                        variants={{
-                                            hidden: {},
-                                            visible: {
-                                                transition: {
-                                                    staggerChildren: 0.06,
-                                                },
-                                            },
-                                            exit: {
-                                                transition: {
-                                                    staggerChildren: 0.03,
-                                                    staggerDirection: -1,
-                                                },
-                                            },
-                                        }}
-                                    >
-                                        {(pontosDados ?? []).map((ponto) => (
+                                    
+                                        {pontosSize[0] > 0 ? 
+                                            <>
                                             <motion.div
-                                                key={ponto.id}
-                                                variants={{
-                                                    hidden: {
-                                                        opacity: 0,
-                                                        y: 15,
+                                            key={trilhaSelecionada}
+                                            className="listaGrid"
+                                            id="pontosList"
+                                            initial="hidden"
+                                            animate="visible"
+                                            exit="exit"
+                                            variants={{
+                                                hidden: {},
+                                                visible: {
+                                                    transition: {
+                                                        staggerChildren: 0.06,
                                                     },
-                                                    visible: {
-                                                        opacity: 1,
-                                                        y: 0,
-                                                        transition: {
-                                                            duration: 0.25,
-                                                        },
+                                                },
+                                                exit: {
+                                                    transition: {
+                                                        staggerChildren: 0.03,
+                                                        staggerDirection: -1,
                                                     },
-                                                    exit: {
-                                                        opacity: 0,
-                                                        y: -10,
-                                                        transition: {
-                                                            duration: 0.15,
-                                                        },
-                                                    },
-                                                }}
-                                            >
-                                                <CardPonto
-                                                    ponto={ponto}
-                                                    trilhaId={trilhaAtual.id}
-                                                />
-                                            </motion.div>
-                                        ))}
-                                    </motion.div>
+                                                },
+                                            }}
+                                        >
+                                            {pontos}
+                                        </motion.div>
+                                        <p>(exibindo {pontosSize[0]} de {pontosSize[1]})</p>
+                                        </>
+                                        : 
+                                        <>
+                                            <h3>Por enquanto, não temos nenhum ponto de interesse nessa trilha :(</h3>
+                                        </>
+                                        }
                                 </AnimatePresence>
                         </div>
-                        <SimpleButton path='/pontos'>Todos os Pontos de Interesse</SimpleButton>
+                        <SimpleButton path={`/pontos?trilha=${trilhaSelecionada}`}>Todos os Pontos de Interesse</SimpleButton>
                     </div>
                 </div>
             </section>

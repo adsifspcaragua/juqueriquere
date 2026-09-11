@@ -22,6 +22,8 @@ import img_vagas_especiais_bicicletario from '../assets/img/sobre/Vagas especiai
 import Logo from '../assets/logo.webp';
 import SimpleButton from '../components/ui/buttons/SimpleButton';
 
+import imgNotFound from "../assets/img/imgNotFound.webp";
+
 const BUCKET_IMAGENS = "imagens";
 
 interface Sobre {
@@ -57,13 +59,13 @@ interface EspacoParque {
 interface EspacoParqueComImagem extends EspacoParque {
     imagemUrl?: string;
 }
-
+/*
 interface ImagemDB {
     id: number;
     caminho_arquivo: string;
     legenda?: string;
 }
-
+*/
 export default function Sobre() {
     usePageTitle("Sobre");
 
@@ -273,74 +275,49 @@ export default function Sobre() {
     return (
         <>
             <div className="paddingHeader"></div>
+            <section className="vertical conteudo" id="sobre">
 
-            <section
-                className="vertical conteudo"
-                id="sobre"
-            >
-
-                <div className="logo">
-                    <img
-                        src={Logo}
-                        alt="Logo Parque"
-                    />
+                <div className="horizontal logo" style={{width:"100%"}}>
+                    <img src={Logo} alt="Logo Parque" style={{height:45}} />
                 </div>
-
-                {/* ==========================================
-                    GALERIA
-                ========================================== */}
-
-                <div className="carrossel horizontal galeria">
-
-                    {imagensGaleria.map((imagem, index) => (
-                        <img
-                            key={index}
-                            src={imagem.src}
-                            className="carrosselCard"
-                            alt={imagem.alt}
-                        />
-                    ))}
-
-                </div>
-
-                {/* ==========================================
-                    INFORMAÇÕES DO PARQUE
-                ========================================== */}
 
                 {carregando && !sobre ? (
-
-                    <p>
-                        Carregando informações do parque...
-                    </p>
-
+                    <p>Carregando informações do parque...</p>
                 ) : (
 
                     <>
-
-                        <p>
-                            {sobre?.descricao}
-                            <br />
-                            <br />
-                            {sobre?.area}
-                        </p>
+                        <div className="desktopWrap gap15">
+                            <div className="carrossel horizontal galeria">
+                                {imagensGaleria.map((imagem, index) => (
+                                    <img
+                                        key={index}
+                                        src={imagem.src}
+                                        className="carrosselCard"
+                                        alt={imagem.alt}
+                                    />
+                                ))}
+                            </div>
+                            
+                            <p>
+                                {sobre?.descricao}
+                                <br />
+                                <br />
+                                {sobre?.area}
+                            </p>
+                        </div>
 
                         <div className="linhaPontilhadaLight"></div>
 
-                        {/* ==========================================
-                            ESPAÇOS DO PARQUE
-                        ========================================== */}
+                        <h1>Espaços do Parque</h1>
 
-                        <h1>
-                            Espaços do Parque
-                        </h1>
-
-                        <div className="carrossel horizontal">
+                        <div className="carrossel horizontal" id="carrosselEspacos">
 
                             {espacos.map((espaco) => (
 
                                 <div
                                     key={espaco.id}
                                     className="carrosselCard espacoCard vertical"
+                                    style={{ backgroundImage: `url(${espaco.imagemUrl || imgNotFound})` }}
                                 >
 
                                     {espaco.imagemUrl && (
@@ -351,15 +328,8 @@ export default function Sobre() {
                                     )}
 
                                     <div className="fade vertical gap5">
-
-                                        <h1>
-                                            {espaco.titulo}
-                                        </h1>
-
-                                        <p>
-                                            {espaco.descricao}
-                                        </p>
-
+                                        <h1>{espaco.titulo}</h1>
+                                        <p>{espaco.descricao}</p>
                                     </div>
 
                                 </div>
@@ -393,26 +363,15 @@ export default function Sobre() {
                             VISITE O PARQUE
                         ========================================== */}
 
+                        <h1>Visite o Parque</h1>
+
                         <div className="vertical gap15 desktopWrap3">
-
-                            <h1>
-                                Visite o Parque
-                            </h1>
-
+                            
                             {/* VISITAS EM GRUPO */}
 
-                            <div
-                                className="vertical card"
-                                id="cardGrupo"
-                            >
-
-                                <h1>
-                                    {sobre?.visitas_grupo_titulo}
-                                </h1>
-
-                                <p>
-                                    {sobre?.visitas_grupo_descricao}
-                                </p>
+                            <div className="vertical card" id="cardGrupo">
+                                <h1>{sobre?.visitas_grupo_titulo}</h1>
+                                <p>{sobre?.visitas_grupo_descricao}</p>
 
                                 {sobre?.email_agendamento && (
                                     <SimpleButton
@@ -423,40 +382,20 @@ export default function Sobre() {
                                         Enviar e-mail
                                     </SimpleButton>
                                 )}
-
                             </div>
 
                             {/* HORÁRIO */}
 
-                            <div
-                                className="vertical card"
-                                id="cardHorario"
-                            >
-
-                                <h1>
-                                    {sobre?.horario_titulo}
-                                </h1>
-
-                                <p>
-                                    {sobre?.horario_descricao}
-                                </p>
-
+                            <div className="vertical card" id="cardHorario">
+                                <h1>{sobre?.horario_titulo}</h1>
+                                <p>{sobre?.horario_descricao}</p>
                             </div>
 
                             {/* ENDEREÇO */}
 
-                            <div
-                                className="vertical card"
-                                id="cardEndereco"
-                            >
-
-                                <h1>
-                                    {sobre?.endereco_titulo}
-                                </h1>
-
-                                <p>
-                                    {sobre?.endereco_descricao}
-                                </p>
+                            <div className="vertical card" id="cardEndereco" >
+                                <h1>{sobre?.endereco_titulo}</h1>
+                                <p>{sobre?.endereco_descricao}</p>
 
                                 {sobre?.link_mapa && (
                                     <SimpleButton
@@ -467,11 +406,8 @@ export default function Sobre() {
                                         Ver rotas
                                     </SimpleButton>
                                 )}
-
                             </div>
-
                         </div>
-
                     </>
 
                 )}

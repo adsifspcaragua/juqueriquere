@@ -85,6 +85,8 @@ a{width: fit-content;}
 .r10{border-radius: 10px;}
 .r20{border-radius: 20px;}
 
+.w100{width: 100%;}
+
 .wrap{
     flex-wrap: wrap;
     gap: 10px;
@@ -504,6 +506,7 @@ ul{
 }
 .linhaVertical{min-height: 100%;width: 1px !important;border-right: 1px solid var(--verdeClaro);}
 .linhaHorizontal{height: 1px;min-width: 100% !important;border-top: 1px solid var(--verdeClaro);}
+.linhaHorizontalDark{height: 1px;min-width: 100% !important;border-top: 1px solid var(--verdeEscuro);}
 
 /*--  --*/
 .listaGrid{
@@ -530,6 +533,11 @@ ul{
     >.vertical{
         min-width: 100%;
     }
+}
+.desktopWrap1-2{
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr;
 }
 
 /**/
@@ -571,16 +579,13 @@ ul{
     background-position: center;
 }
 
-#sobre .logo img{
-    height: 70px;
-}
-
 .espacoCard{
     background-size: cover;
     background-position: center;
     aspect-ratio: 9/10;
     justify-content: end;
     overflow: hidden;
+    padding: 0;
     p, h1{
         text-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
     }
@@ -604,6 +609,15 @@ ul{
     vertical-align: -4px;
 }
 /**/
+
+.userImg{
+    background-color: var(--verdeEscuro);
+    height: 100px;
+    aspect-ratio: 1/1;
+    border-radius: 100%;
+    border: 3px solid var(--verdeEscuro);
+    object-fit: cover;
+}
 
 @media (width > 850px) {
     body{
@@ -708,5 +722,27 @@ ul{
     .desktopWrap3{
         grid-template-columns: repeat(3, 1fr);
         gap: 30px;
+    }
+    .desktopWrap1-2{
+        grid-template-columns: 1fr 2fr;
+        gap: 30px !important;
+    }
+
+    .HtoV{
+        flex-direction: column;
+    }
+
+    #sobre{
+        .logo{
+            display: none;
+        }
+    }
+
+    #carrosselEspacos{
+        width: 100%;
+        .carrosselCard{
+            min-width: 0 !important;
+            width: 30% !important;
+        }
     }
 }

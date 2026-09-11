@@ -90,24 +90,23 @@ export default function AdminPontos() {
         <ProtectedRoute>
             <div className="paddingHeader2"></div>
 
-            <section className="conteudo vertical gap15">
+            <section className="conteudo vertical gap15 desktopWrap1-2">
 
-                <SimpleButton
-                    path="/admin/"
-                    type="back"
-                    icon="setaBack"
-                >
-                    Voltar
-                </SimpleButton>
-
-                <div className="card vertical gap5 adminCard" id="adminPontosCard">
-                    <h1>
-                        Gerenciar Pontos
-                    </h1>
-                    <p>
-                        Cadastre, edite e organize as pontos
-                        do parque.
-                    </p>
+                <div className="vertical gap15">
+                    <SimpleButton
+                        path="/admin/"
+                        type="back"
+                        icon="setaBack"
+                    >
+                        Voltar
+                    </SimpleButton>
+                    <div className="card vertical gap5 adminCard" id="adminPontosCard">
+                        <h1>Gerenciar Pontos</h1>
+                        <p>
+                            Cadastre, edite e organize as pontos
+                            do parque.
+                        </p>
+                    </div>
                 </div>
 
                 {createPortal(
@@ -185,7 +184,7 @@ export default function AdminPontos() {
                 <div className="vertical gap5">
                     <h2>Pontos cadastrados</h2>
 
-                    <div className="vertical gap5">
+                    <div className="vertical gap15 desktopWrap">
                         {pontos.map((ponto) => (
                             <div
                                 className="card horizontal gap5 justify"
@@ -193,7 +192,7 @@ export default function AdminPontos() {
                             >
                                 <div className="cardPontoCompacto vertical gap15">
                                     <div className="vertical gap5">
-                                        <SimpleButton tema="none" path={`/trilha/${findTrilha(ponto)?.id}/ponto/${ponto.id}?from=admin/pontos`}>
+                                        <SimpleButton tema="none" icon="none" path={`/trilha/${findTrilha(ponto)?.id}/ponto/${ponto.id}?from=admin/pontos`}>
                                             <h2>{ponto.nome}</h2>
                                         </SimpleButton>
                                         

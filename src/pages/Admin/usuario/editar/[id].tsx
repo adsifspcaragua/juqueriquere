@@ -7,6 +7,9 @@ import { useParams } from "react-router-dom";
 import { getCurrentUserProfile } from "../../../../lib/auth";
 import { getById, updateById } from "../../../../lib/services/crud";
 import { processImageUpdate } from "../../../../lib/services/storage";
+import defaultPfp from '../../../../assets/avatar.jpg';
+
+
 
 interface Usuario {
     id: number;
@@ -193,70 +196,71 @@ export default function EditarUsuario() {
                             <SimpleButton type="back" icon="setaBack" path={`/admin/usuario/${usuario.id}`}>
                                 Voltar para {usuario.name}
                             </SimpleButton>
-                            <h1>Editar usuário: {usuario.name}</h1>
+                            <div className="vertical">
+                                <h3>Editar usuário: </h3>
+                                <h1>{usuario.name}</h1>
+                            </div>
+                            <p>Visualize as informações de perfil e credenciais de acesso ao painel de administração.</p>
                         </div>
 
-                        <div className="card vertical gap15">
-                            <h3>Foto de perfil</h3>
-                            <div className="horizontal gap15">
-                                <img
-                                    src={previewFotoUrl || "/assets/images/default-avatar.png"}
-                                    alt="Foto do usuário"
-                                    className="userImg"
-                                />
-                                <div className="vertical gap5">
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        accept="image/*"
-                                        onChange={handleFileSelect}
-                                        style={{ display: "none" }}
+                        <div className="desktopWrap">
+                            <div className="card vertical gap15">
+                                <h3>Foto de perfil</h3>
+                                <div className="horizontal center  gap15">
+                                    <img
+                                        src={previewFotoUrl || defaultPfp}
+                                        alt="Foto do usuário"
+                                        className="userImg"
                                     />
-                                    <div onClick={() => fileInputRef.current?.click()}>
-                                        <SimpleButton tema="dark" raio="10">
-                                            Carregar imagem
-                                        </SimpleButton>
-                                    </div>
-                                    {previewFotoUrl && (
-                                        <div onClick={handleRemoveImage}>
-                                            <SimpleButton tema="red" raio="10">
-                                                Remover imagem
+                                    <div className="vertical btnFull gap5">
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            accept="image/*"
+                                            onChange={handleFileSelect}
+                                            style={{ display: "none" }}
+                                        />
+                                        <div onClick={() => fileInputRef.current?.click()}>
+                                            <SimpleButton tema="dark" raio="10">
+                                                Carregar imagem
                                             </SimpleButton>
                                         </div>
-                                    )}
+                                        {previewFotoUrl && (
+                                            <div onClick={handleRemoveImage}>
+                                                <SimpleButton tema="red" raio="10">
+                                                    Remover imagem
+                                                </SimpleButton>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div className="card vertical gap15">
-                            <div className="vertical gap5">
-                                <label>Nome</label>
-                                <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-                            </div>
-
-                            <div className="vertical gap5">
-                                <label>E-mail</label>
-                                <input type="email" value={login} onChange={(e) => setLogin(e.target.value)} />
-                            </div>
-
-                            <div className="vertical gap5">
-                                <label>Permissão</label>
-                                <select
-                                    value={tipo}
-                                    onChange={(e) => setTipo(e.target.value as "MASTER" | "ADMIN")}
-                                    disabled={loggedUserTipo !== "MASTER"}
-                                >
-                                    <option value="ADMIN">ADMIN</option>
-                                    <option value="MASTER">MASTER</option>
-                                </select>
-                            </div>
-
-                            {message && <p style={{ color: message.type === "error" ? "red" : "green" }}>{message.text}</p>}
-
-                            <div onClick={handleSalvar}>
-                                <SimpleButton tema="dark" raio="10">
-                                    {isSaving ? "Salvando..." : "Salvar Alterações"}
-                                </SimpleButton>
+                            <div className="card vertical gap15">
+                                <div className="vertical gap5">
+                                    <label>Nome</label>
+                                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                                </div>
+                                <div className="vertical gap5">
+                                    <label>E-mail</label>
+                                    <input type="email" value={login} onChange={(e) => setLogin(e.target.value)} />
+                                </div>
+                                <div className="vertical gap5">
+                                    <label>Permissão</label>
+                                    <select
+                                        value={tipo}
+                                        onChange={(e) => setTipo(e.target.value as "MASTER" | "ADMIN")}
+                                        disabled={loggedUserTipo !== "MASTER"}
+                                    >
+                                        <option value="ADMIN">ADMIN</option>
+                                        <option value="MASTER">MASTER</option>
+                                    </select>
+                                </div>
+                                {message && <p style={{ color: message.type === "error" ? "red" : "green" }}>{message.text}</p>}
+                                <div onClick={handleSalvar}>
+                                    <SimpleButton tema="dark" raio="10">
+                                        {isSaving ? "Salvando..." : "Salvar Alterações"}
+                                    </SimpleButton>
+                                </div>
                             </div>
                         </div>
                     </>

@@ -116,14 +116,15 @@ async function excluirTrilha() {
         <ProtectedRoute>
             <div className="paddingHeader2"></div>
 
-            <section className="conteudo vertical gap15">
-                <SimpleButton path="/admin/" type="back" icon="setaBack">
-                    Voltar
-                </SimpleButton>
-
-                <div className="card vertical gap5 adminCard" id="adminTrilhasCard">
-                    <h1>Gerenciar Trilhas</h1>
-                    <p>Cadastre, edite e organize as trilhas do parque.</p>
+            <section className="conteudo vertical gap15 desktopWrap1-2">
+                <div className="vertical gap15">
+                    <SimpleButton path="/admin/" type="back" icon="setaBack">
+                        Voltar
+                    </SimpleButton>
+                    <div className="card vertical gap5 adminCard" id="adminTrilhasCard">
+                        <h1>Gerenciar Trilhas</h1>
+                        <p>Cadastre, edite e organize as trilhas do parque.</p>
+                    </div>
                 </div>
 
                 {createPortal(
@@ -189,7 +190,7 @@ async function excluirTrilha() {
                         <p>{trilhasFiltradas.length} trilha(s) encontrada(s).</p>
                     </div>
 
-                    <div className="listaGrid">
+                    <div className="listaGrid desktopWrap gap15">
                         {trilhasFiltradas.map((trilha) => (
                             <div className="card horizontal gap5 justify" key={trilha.id}>
                                 <div className="cardTrilhaCompacto vertical gap5">

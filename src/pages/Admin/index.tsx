@@ -5,14 +5,15 @@ import { supabase } from "../../lib/supabase";
 import ProtectedRoute from "../../components/Protected";
 import { logout } from '../../lib/auth';
 import { useNavigate } from 'react-router-dom';
-
-
+import defaultPfp from '../../assets/avatar.jpg';
 
 
 
 export default function Admin() {
     const [tipoUsuario, setTipoUsuario] = useState<string | null>(null);
     const [nomeUsuario, setNomeUsuario] = useState<string | null>(null);
+    const [fotoUsuario, setFotoUsuario] = useState<string | null>(null);
+    const [emailUsuario, setEmailUsuario] = useState<string | null>(null);
     const [user, setUser] = useState<any>(null);
     const navigate = useNavigate();
 
@@ -44,7 +45,7 @@ export default function Admin() {
 
         const { data, error } = await supabase
             .from("usuarios")
-            .select("tipo, name")
+            .select("tipo, name, foto_url, login")
             .eq("auth_id", user.id)
             .single();
 
@@ -55,6 +56,8 @@ export default function Admin() {
 
         setTipoUsuario(data.tipo);
         setNomeUsuario(data.name);
+        setFotoUsuario(data.foto_url);
+        setEmailUsuario(data.login);
     }
 
     async function handleLogout() {
@@ -69,35 +72,32 @@ export default function Admin() {
     return (
         <ProtectedRoute>
             <div className="paddingHeader"></div>
-            <section className="conteudo vertical gap30" id="adminHome">
+            <section className="conteudo vertical gap30 desktopWrap1-2" id="adminHome">
 
-                <h1>Olá, {nomeUsuario}!</h1>
-
-                <div className="vertical card userCard">
-                    <div className="horizontal center gap15">
-                        <img src="#" alt="Foto do usuário" className="userImg" />
-                        <div className="vertical">
-                            <h2>{nomeUsuario || "Carregando..."}</h2>
-                            <p>{tipoUsuario || "Carregando..."}</p>
+                <div className="vertical gap30">
+                    <div className="vertical gap5">
+                        <h1>Administração do Site</h1>
+                        <p>Gerencie conteúdos, trilhas, pontos de interesse, alertas e demais informações do Catálogo Digital PNMJ. Mantenha os dados atualizados para oferecer aos visitantes uma experiência informativa, acessível e segura.</p>
+                    </div>
+                    <div className="vertical gap15">
+                        <h3>Olá, {nomeUsuario}!</h3>
+                        <div className="horizontal center card userCard">
+                                <img src={fotoUsuario || defaultPfp} alt="Foto do usuário" className="userImg" />
+                                <div className="vertical w100 left gap15">
+                                    <div className="vertical left gap5 w100">
+                                        <div className="vertical">
+                                            <h2>{nomeUsuario || "Carregando..."}</h2>
+                                            <p>{tipoUsuario || "Carregando..."}</p>
+                                        </div>
+                                        <div className="linhaHorizontalDark"/>
+                                        <p>{emailUsuario || "Carregando..."}</p>
+                                    </div>
+                                </div>
                         </div>
                     </div>
-
-                    <div className="linhaPontilhadaDark" />
-
-                    <SimpleButton
-                        path="/admin/minha-conta"
-                        raio="10"
-                    >
-                        Minha Conta
-                    </SimpleButton>
                 </div>
 
-                <div className="vertical gap5">
-                    <h1>Administração do Site</h1>
-                    <p>Gerencie conteúdos, trilhas, pontos de interesse, alertas e demais informações do Catálogo Digital PNMJ. Mantenha os dados atualizados para oferecer aos visitantes uma experiência informativa, acessível e segura.</p>
-                </div>
-
-                <div className="conteudo gap15 desktopWrap3">
+                <div className="gap15 desktopWrap">
                     <div className="card vertical gap5">
                         <h2>Trilhas</h2>
                         <p>Cadastre, edite e organize as trilhas do parque, mantendo informações como descrição, dificuldade, distância e duração sempre atualizadas.</p>
@@ -123,14 +123,24 @@ export default function Admin() {
                         </div>
                     )}
                 </div>
-                <div className="card vertical gap15">
-                    {user ? (
-                        <SimpleButton tema="red" raio="10" onClick={handleLogout}>
-                            Sair
+                <div className="card vertical gap15 btnFull outrasOpcoes">
+                    <h4>Outras opções:</h4>
+                    <div className="vertical gap5">
+                        <SimpleButton
+                            path="/admin/minha-conta"
+                            raio="10"
+                            tema="light"
+                        >
+                            Gerenciar conta
                         </SimpleButton>
-                    ) : (
-                        null
-                    )}
+                        {user ? (
+                            <SimpleButton tema="red" icon="logout" raio="10" onClick={handleLogout}>
+                                Sair
+                            </SimpleButton>
+                        ) : (
+                            null
+                        )}
+                    </div>
                 </div>
             </section>
         </ProtectedRoute>

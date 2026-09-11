@@ -1,3 +1,4 @@
+import { createClient } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 
 export interface LoggedUserProfile {
@@ -7,6 +8,22 @@ export interface LoggedUserProfile {
   login: string;
   tipo: "MASTER" | "ADMIN";
   foto_url?: string | null;
+}
+
+export async function signUpWithoutLogin(email: string, password: string) {
+  const tempSupabase = createClient(
+    import.meta.env.VITE_SUPABASE_URL,
+    import.meta.env.VITE_SUPABASE_ANON_KEY,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+    }
+  );
+
+  return await tempSupabase.auth.signUp({ email, password });
 }
 
 export async function signUp(email: string, password: string) {
@@ -32,9 +49,6 @@ export async function getUser() {
   return user;
 }
 
-/**
- * Retorna os dados completos do usuário logado diretamente da tabela 'usuarios'.
- */
 export async function getCurrentUserProfile(): Promise<LoggedUserProfile | null> {
   const authUser = await getUser();
 
