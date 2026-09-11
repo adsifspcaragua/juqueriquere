@@ -75,7 +75,7 @@ export default function Usuario() {
                         {loading ? (
                             <p>Carregando dados do usuário...</p>
                         ) : !usuario ? (
-                            <p>Usuário não encontrado.</p>
+                            <p>Usuário não encontrado.</p> 
                         ) : (
                             <>
                                 <div className="horizontal gap15 center">
