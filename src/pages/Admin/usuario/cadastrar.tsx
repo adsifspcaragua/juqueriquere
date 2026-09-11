@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ProtectedRoute from "../../../components/Protected";
 import SimpleButton from "../../../components/ui/buttons/SimpleButton";
-import { signUp } from "../../../lib/auth";
+import { signUpWithoutLogin } from "../../../lib/auth";
 import { createRecord } from "../../../lib/services/crud";
 import "../../_styles/admin.css";
 
 interface UsuarioInput {
     auth_id: string;
+    name: string;
     login: string;
     tipo: "MASTER" | "ADMIN";
 }
@@ -15,6 +16,7 @@ interface UsuarioInput {
 export default function CadastrarUsuario() {
     const navigate = useNavigate();
 
+    const [nome, setNome] = useState("");
     const [login, setLogin] = useState("");
     const [senha, setSenha] = useState("");
     const [tipo, setTipo] = useState<"MASTER" | "ADMIN">("ADMIN");
@@ -29,8 +31,7 @@ export default function CadastrarUsuario() {
         setCarregando(true);
 
         try {
-            // 1. Cria a conta no Supabase Auth
-            const { data, error: authError } = await signUp(login, senha);
+            const { data, error: authError } = await signUpWithoutLogin(login, senha);
 
             if (authError) throw authError;
 
@@ -38,9 +39,9 @@ export default function CadastrarUsuario() {
                 throw new Error("Não foi possível criar a conta de autenticação.");
             }
 
-            // 2. Insere os dados na tabela 'usuarios' usando o serviço de CRUD
             await createRecord<UsuarioInput>("usuarios", {
                 auth_id: data.user.id,
+                name: nome,
                 login,
                 tipo,
             });
@@ -70,6 +71,16 @@ export default function CadastrarUsuario() {
                     <h1>Cadastrar Usuário</h1>
 
                     <form onSubmit={cadastrarUsuario} className="vertical gap15">
+                        <div className="vertical gap5">
+                            <label>Nome Completo</label>
+                            <input
+                                type="text"
+                                value={nome}
+                                onChange={(e) => setNome(e.target.value)}
+                                required
+                            />
+                        </div>
+
                         <div className="vertical gap5">
                             <label>Login / E-mail</label>
                             <input

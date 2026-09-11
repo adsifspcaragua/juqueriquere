@@ -54,7 +54,7 @@ export async function updateById<T>(
 ): Promise<T | null> {
     const { data, error } = await supabase
         .from(table)
-        .update(payload as any) // 'as any' remove o conflito com RejectExcessProperties
+        .update(payload as any)
         .eq("id", id)
         .select()
         .single();
@@ -76,7 +76,7 @@ export async function createRecord<T>(
 ): Promise<T | null> {
     const { data, error } = await supabase
         .from(table)
-        .insert(payload as any) // 'as any' remove o conflito com RejectExcessProperties
+        .insert(payload as any)
         .select()
         .single();
 
@@ -99,8 +99,14 @@ export async function deleteById(table: string, id: string | number): Promise<bo
 
     if (error) {
         console.error(`[crud.deleteById] Erro ao deletar em '${table}':`, error);
-        return false;
+        throw error;
     }
 
     return true;
 }
+
+/*
+alias
+*/
+export const deleteRecord = deleteById; 
+

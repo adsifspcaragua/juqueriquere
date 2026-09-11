@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SimpleButton from "../../../components/ui/buttons/SimpleButton";
 import ProtectedRoute from "../../../components/Protected";
-import { getById } from "../../../lib/services/crud";
+import { getCurrentUserProfile, type LoggedUserProfile } from "../../../lib/auth";
+import { deleteRecord, getById } from "../../../lib/services/crud";
 import "../../_styles/admin.css";
 import defaultPfp from '../../../assets/avatar.jpg';
-
-
 
 interface Usuario {
     id: number;
@@ -19,28 +18,46 @@ interface Usuario {
 
 export default function Usuario() {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
 
     const [usuario, setUsuario] = useState<Usuario | null>(null);
+    const [currentUser, setCurrentUser] = useState<LoggedUserProfile | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        buscarUsuario();
-    }, [id]);
+        async function carregarDados() {
+            setLoading(true);
+            try {
+                const perfilLogado = await getCurrentUserProfile();
+                setCurrentUser(perfilLogado);
 
-    async function buscarUsuario() {
-        if (!id) {
-            setLoading(false);
-            return;
+                if (id) {
+                    const data = await getById<Usuario>("usuarios", id);
+                    setUsuario(data);
+                }
+            } catch (err) {
+                console.error("Erro inesperado ao buscar usuário:", err);
+            } finally {
+                setLoading(false);
+            }
         }
 
-        setLoading(true);
+        carregarDados();
+    }, [id]);
+
+    async function handleExcluir() {
+        if (!id || !usuario) return;
+
+        const confirmacao = window.confirm(`Tem certeza que deseja excluir o usuário "${usuario.name}"?`);
+        if (!confirmacao) return;
+
         try {
-            const data = await getById<Usuario>("usuarios", id);
-            setUsuario(data);
-        } catch (err) {
-            console.error("Erro inesperado ao buscar usuário:", err);
-        } finally {
-            setLoading(false);
+            await deleteRecord("usuarios", id);
+            alert("Usuário excluído com sucesso!");
+            navigate("/admin/usuario/list");
+        } catch (error) {
+            console.error("Erro ao excluir usuário:", error);
+            alert("Erro ao excluir usuário.");
         }
     }
 
@@ -80,15 +97,23 @@ export default function Usuario() {
                                             </div>
                                             <div className="horizontal gap5">
                                                 <h5>Criado em: </h5>
-                                                <p>{usuario.criado_em? new Date(usuario.criado_em).toLocaleDateString("pt-BR"): "N/A"}</p>
+                                                <p>{usuario.criado_em ? new Date(usuario.criado_em).toLocaleDateString("pt-BR") : "N/A"}</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <SimpleButton tema="dark" raio="10" path={`/admin/usuario/editar/${usuario.id}`}>
-                                    Editar conta
-                                </SimpleButton>
+                                <div className="horizontal gap5">
+                                    <SimpleButton tema="dark" raio="10" path={`/admin/usuario/editar/${usuario.id}`}>
+                                        Editar conta
+                                    </SimpleButton>
+                                
+                                    {currentUser?.tipo === "MASTER" && (
+                                        <SimpleButton tema="red" raio="10" onClick={handleExcluir}>
+                                            Excluir usuário
+                                        </SimpleButton>
+                                    )}
+                                </div>
                             </>
                         )}
                     </div>
