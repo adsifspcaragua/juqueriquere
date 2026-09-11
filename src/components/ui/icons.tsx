@@ -25,6 +25,7 @@ import Edit from '../../assets/icons/Edit.webp';
 import SaveDark from '../../assets/icons/SaveDark.webp';
 import Left from '../../assets/icons/chevronLeft.webp';
 import Right from '../../assets/icons/chevronRight.webp';
+import logout from '../../assets/icons/Logout.png'
 
 export const icons = {
         "default": {
@@ -79,7 +80,9 @@ export const icons = {
             "Edit"          : Edit
         },
          "red": {
-            "Trash"          : Trash
+            "Trash"          : Trash,
+            "setaBack"       : setaBackLight,
+            "logout"         : logout
         },
         "light": {
             "seta"          : seta,

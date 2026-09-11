@@ -4,6 +4,9 @@ import SimpleButton from "../../../components/ui/buttons/SimpleButton";
 import ProtectedRoute from "../../../components/Protected";
 import { getById } from "../../../lib/services/crud";
 import "../../_styles/admin.css";
+import defaultPfp from '../../../assets/avatar.jpg';
+
+
 
 interface Usuario {
     id: number;
@@ -60,34 +63,30 @@ export default function Usuario() {
                             <>
                                 <div className="horizontal gap15 center">
                                     <img
-                                        src={usuario.foto_url || "/assets/images/default-avatar.png"}
+                                        src={usuario.foto_url || defaultPfp}
                                         alt={`Foto de ${usuario.name}`}
                                         className="userImg"
                                     />
-                                    <div className="vertical left">
-                                        <h1>{usuario.name}</h1>
-                                        <p>{usuario.tipo}</p>
+                                    <div className="vertical left gap5 w100">
+                                        <div className="vertical left">
+                                            <h1>{usuario.name}</h1>
+                                            <p>{usuario.tipo}</p>
+                                        </div>
+                                        <div className="linhaHorizontalDark"></div>
+                                        <div className="vertical">
+                                            <div className="horizontal gap5">
+                                                <h5>E-mail:</h5>
+                                                <p>{usuario.login}</p>
+                                            </div>
+                                            <div className="horizontal gap5">
+                                                <h5>Criado em: </h5>
+                                                <p>{usuario.criado_em? new Date(usuario.criado_em).toLocaleDateString("pt-BR"): "N/A"}</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div>
-                                    <div className="horizontal gap5">
-                                        <h5>E-mail:</h5>
-                                        <p>{usuario.login}</p>
-                                    </div>
-                                    <div className="horizontal gap5">
-                                        <h5>Criado em: </h5>
-                                        <p>
-                                            {usuario.criado_em
-                                                ? new Date(usuario.criado_em).toLocaleDateString("pt-BR")
-                                                : "N/A"}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="linhaPontilhadaDark" />
-
-                                <SimpleButton raio="10" path={`/admin/usuario/editar/${usuario.id}`}>
+                                <SimpleButton tema="dark" raio="10" path={`/admin/usuario/editar/${usuario.id}`}>
                                     Editar conta
                                 </SimpleButton>
                             </>
@@ -97,8 +96,8 @@ export default function Usuario() {
 
                 {!loading && usuario && (
                     <div className="vertical card gap15">
+                        <h4>Contribuições do usuário:</h4>
                         <div className="vertical gap5">
-                            <h1>Contribuições do usuário</h1>
                             <p>Em breve...</p>
                         </div>
                     </div>

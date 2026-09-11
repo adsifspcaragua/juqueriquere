@@ -5,12 +5,14 @@ import '../_styles/admin.css';
 import ProtectedRoute from "../../components/Protected";
 import { logout } from '../../lib/auth';
 import { useNavigate } from 'react-router-dom';
+import defaultPfp from '../../assets/avatar.jpg';
 
 interface Usuario {
     id: number;
     name: string;
     login: string;
     tipo: string;
+    foto_url?: string | null;
 }
 
 export default function MinhaConta() {
@@ -34,7 +36,7 @@ export default function MinhaConta() {
 
             const { data, error } = await supabase
                 .from("usuarios")
-                .select("id, name, login, tipo")
+                .select("id, name, login, tipo, foto_url")
                 .eq("auth_id", authUser.id)
                 .single();
 
@@ -86,7 +88,7 @@ export default function MinhaConta() {
 
                         <div className="vertical card userCard gap15">
                             <div className="horizontal center gap15">
-                                <img src="#" alt="Foto do usuário" className="userImg" />
+                                <img src={usuario.foto_url || defaultPfp} className="userImg" alt="Foto de perfil do usuário" />
                                 <div className="vertical">
                                     <h2>{usuario.name}</h2>
                                     <p>{usuario.tipo}</p>
@@ -94,34 +96,31 @@ export default function MinhaConta() {
                             </div>
                         </div>
 
-                        <div className="card vertical gap15">
-                            <div className="horizontal justify center">
-                                <h3>Informações Pessoais</h3>
-                                <SimpleButton path={`/admin/usuario/editar/${usuario.id}`} tema="dark" raio="10">
-                                    Editar Minha Conta
-                                </SimpleButton>
-                            </div>
-                            
-
+                        <div className="card vertical gap15 btnFull">
+                            <h4>Informações Pessoais:</h4>
                             <div className="vertical gap5">
-                                <h3>Nome</h3>
+                                <h5>Nome:</h5>
                                 <p>{usuario.name}</p>
                             </div>
 
                             <div className="vertical gap5">
-                                <h3>E-mail (Login)</h3>
+                                <h5>E-mail (Login):</h5>
                                 <p>{usuario.login}</p>
                             </div>
 
                             <div className="vertical gap5">
-                                <h3>Nível de Permissão</h3>
+                                <h5>Nível de Permissão:</h5>
                                 <p>{usuario.tipo}</p>
                             </div>
+
+                            <SimpleButton path={`/admin/usuario/editar/${usuario.id}`} tema="dark" raio="10">
+                                    Editar Minha Conta
+                            </SimpleButton>
                         </div>
 
                         {/* Encerramento de Sessão */}
-                        <div className="card vertical gap15">
-                            <h3>Sessão</h3>
+                        <div className="card vertical gap15 btnFull">
+                            <h4>Sessão:</h4>
                             <p>Deseja encerrar sua sessão atual neste dispositivo?</p>
                             <div>
                                 <SimpleButton tema="red" raio="10" onClick={handleLogout}>

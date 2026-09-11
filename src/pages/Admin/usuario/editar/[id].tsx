@@ -7,6 +7,9 @@ import { useParams } from "react-router-dom";
 import { getCurrentUserProfile } from "../../../../lib/auth";
 import { getById, updateById } from "../../../../lib/services/crud";
 import { processImageUpdate } from "../../../../lib/services/storage";
+import defaultPfp from '../../../../assets/avatar.jpg';
+
+
 
 interface Usuario {
     id: number;
@@ -193,18 +196,22 @@ export default function EditarUsuario() {
                             <SimpleButton type="back" icon="setaBack" path={`/admin/usuario/${usuario.id}`}>
                                 Voltar para {usuario.name}
                             </SimpleButton>
-                            <h1>Editar usuário: {usuario.name}</h1>
+                            <div className="vertical">
+                                <h3>Editar usuário: </h3>
+                                <h1>{usuario.name}</h1>
+                            </div>
+                            <p>Visualize as informações de perfil e credenciais de acesso ao painel de administração.</p>
                         </div>
 
                         <div className="card vertical gap15">
                             <h3>Foto de perfil</h3>
-                            <div className="horizontal gap15">
+                            <div className="horizontal center  gap15">
                                 <img
-                                    src={previewFotoUrl || "/assets/images/default-avatar.png"}
+                                    src={previewFotoUrl || defaultPfp}
                                     alt="Foto do usuário"
                                     className="userImg"
                                 />
-                                <div className="vertical gap5">
+                                <div className="vertical btnFull gap5">
                                     <input
                                         type="file"
                                         ref={fileInputRef}
