@@ -124,6 +124,40 @@ form{
 
 .btnCancel{background-color: #008a6543;color: var(--verdeEscuro);}
 
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.65);
+
+    overflow-y: auto;
+}
+
+.modal {
+    width: 100%;
+    max-width: 600px;
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    background: white;
+
+    border-radius: 15px;
+
+    padding: 25px;
+
+    box-sizing: border-box;
+}
+
 @media (width > 850px){
     .modal .card{
         max-width: 500px;
