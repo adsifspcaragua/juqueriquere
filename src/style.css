@@ -579,16 +579,13 @@ ul{
     background-position: center;
 }
 
-#sobre .logo img{
-    height: 70px;
-}
-
 .espacoCard{
     background-size: cover;
     background-position: center;
     aspect-ratio: 9/10;
     justify-content: end;
     overflow: hidden;
+    padding: 0;
     p, h1{
         text-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
     }
@@ -733,5 +730,19 @@ ul{
 
     .HtoV{
         flex-direction: column;
+    }
+
+    #sobre{
+        .logo{
+            display: none;
+        }
+    }
+
+    #carrosselEspacos{
+        width: 100%;
+        .carrosselCard{
+            min-width: 0 !important;
+            width: 30% !important;
+        }
     }
 }
