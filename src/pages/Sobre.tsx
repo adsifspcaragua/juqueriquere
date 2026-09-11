@@ -57,13 +57,13 @@ interface EspacoParque {
 interface EspacoParqueComImagem extends EspacoParque {
     imagemUrl?: string;
 }
-
+/*
 interface ImagemDB {
     id: number;
     caminho_arquivo: string;
     legenda?: string;
 }
-
+*/
 export default function Sobre() {
     usePageTitle("Sobre");
 
