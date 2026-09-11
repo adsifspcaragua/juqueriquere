@@ -42,12 +42,12 @@ export default function AdminUsuarios() {
         <ProtectedRoute>
             <div className="paddingHeader"></div>
 
-            <section className="conteudo vertical gap30">
+            <section className="conteudo vertical gap30 desktopWrap1-2">
                 <div className="vertical gap15">
                     <SimpleButton type="back" icon="setaBack" path="/admin/">
                         Voltar
                     </SimpleButton>
-                    <div className="card vertical gap5 adminCard" id="adminTrilhasCard">
+                    <div className="card vertical gap5 adminCard" id="adminUserCard">
                         <h1>Usuários</h1>
                         <p>Gerencie os usuários administradores do sistema.</p>
                     </div>
@@ -71,7 +71,7 @@ export default function AdminUsuarios() {
                     ) : usuarios.length === 0 ? (
                         <p>Nenhum usuário encontrado.</p>
                     ) : (
-                        <div className="listaUsuarios vertical gap5">
+                        <div className="listaUsuarios vertical gap15 desktopWrap">
                             {usuarios.map((usuario) => (
                                 <div
                                     className="card vertical gap5 userListCard"

@@ -100,7 +100,7 @@ button{
 #adminTrilhasCard{background-image: url(../../assets/img/adminTrilhaBg.webp);}
 #adminPontosCard{background-image: url(../../assets/img/adminPontoBg.webp);}
 #adminSobreCard{background-image: url(../../assets/img/adminSobreBg.webp);}
-#adminTrilhasCard{background-image: url(../../assets/img/adminUsersBg.webp);}
+#adminUserCard{background-image: url(../../assets/img/adminUsersBg.webp);}
 
 .seloTrilha{
     background-color: var(--verdeEscuro);
@@ -117,6 +117,15 @@ button{
 
 .btnCancel{background-color: #008a6543;color: var(--verdeEscuro);}
 
+form{
+    .carrossel{
+        margin: 0 -20px;
+    }
+    .carrosselCard {
+            padding: 0;
+        }
+}
+
 @media (width > 850px){
     .modal .card{
         max-width: 500px;
@@ -125,12 +134,6 @@ button{
         background-size: contain;
         background-repeat: no-repeat;
         background-position: left;
-    }
-     #adminHome {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 50px !important;
-        align-items: start;
     }
 
     #adminHome > .vertical:first-child {

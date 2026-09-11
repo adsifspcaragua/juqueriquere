@@ -13,6 +13,8 @@ import { convertKmlToGeoJson } from "../../../../utils/kmlConverter.ts";
 import { uploadImagem } from "../../../../lib/services/images.ts";
 import ProtectedRoute from "../../../../components/Protected.tsx";
 
+import '../../../_styles/admin.css';
+
 export default function EditarTrilha() {
     const { id } = useParams();
     const [trilha, setTrilha] = useState<any>(null);
@@ -306,129 +308,125 @@ export default function EditarTrilha() {
                 <h1>Editar {trilha.nome}</h1>
 
                 <form className="card vertical gap15" onSubmit={handleSubmit}>
-                    <div className="vertical gap5">
-                        <label>Nome:</label>
-                        <input name="nome" defaultValue={trilha.nome} required disabled={carregando} />
-                    </div>
-
-                    <div className="vertical gap5" style={{ background: "#f0f8ff", padding: "10px", borderRadius: "8px", border: "1px dashed #ccc" }}>
-                        <label>Atualizar Arquivo de Rota (KML):</label>
-                        <input type="file" accept=".kml" onChange={handleKmlChange} disabled={carregando} />
-                        {nomeArquivoKml ? (
-                            <p style={{ fontSize: "0.9rem", color: "green", margin: 0 }}>
-                                Novo arquivo: {nomeArquivoKml} carregado ({geojsonTrilha?.features?.length || 0} linha(s) encontrada(s)).
-                            </p>
-                        ) : geojsonTrilha ? (
-                            <p style={{ fontSize: "0.9rem", color: "#555", margin: 0 }}>
-                                Rota atual carregada ({geojsonTrilha?.features?.length || 0} linha(s)).
-                            </p>
-                        ) : null}
-                    </div>
-
-                    {geojsonTrilha && (
-                        <div className="vertical gap5">
-                            <label>
-                                <strong>Pré-visualização da Rota:</strong>
-                                <span style={{ fontSize: "0.85rem", color: "#666", marginLeft: "8px" }}>
-                                    (Clique em uma linha para removê-la)
-                                </span>
-                            </label>
-                            <div style={{ height: "380px", width: "100%" }}>
-                                <Map 
-                                    previewGeoJson={geojsonTrilha} 
-                                    previewColor={corIdentificacao} 
-                                    onDeleteLine={handleRemoveLine}
-                                />
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="vertical gap5">
-                        <label>Cor de Identificação (Hexadecimal):</label>
-                        <input 
-                            type="color" 
-                            name="cor_identificacao" 
-                            value={corIdentificacao} 
-                            onChange={(e) => setCorIdentificacao(e.target.value)}
-                            required 
-                            disabled={carregando} 
-                            style={{ height: "40px", width: "100%", cursor: "pointer" }} 
-                        />
-                    </div>
-
-                    <div className="vertical gap5">
-                        <label>Dificuldade:</label>
-                        <select name="dificuldade" defaultValue={trilha.dificuldade} required disabled={carregando}>
-                            <option value="">Selecione...</option>
-                            <option value="Fácil">Fácil</option>
-                            <option value="Moderada">Moderada</option>
-                            <option value="Difícil">Difícil</option>
-                        </select>
-                    </div>
-
-                    <div className="vertical gap5">
-                        <label>Extensão (ex: 5.2 km):</label>
-                        <input name="extensao" defaultValue={trilha.extensao} required disabled={carregando} />
-                    </div>
-
-                    <div className="vertical gap5">
-                        <label>Duração Estimada (ex: 2 horas):</label>
-                        <input name="duracao" defaultValue={trilha.duracao} required disabled={carregando} />
-                    </div>
-
-                    <div className="vertical gap5">
-                        <label>Descrição Curta:</label>
-                        <input name="descricao_curta" defaultValue={trilha.descricao_curta} required disabled={carregando} maxLength={150} />
-                    </div>
-
-                    <div className="vertical gap5">
-                        <label>Descrição Detalhada:</label>
-                        <AutoResizeTextarea name="descricao" defaultValue={trilha.descricao} required disabled={carregando} />
-                    </div>
-
-                    <div className="vertical gap5">
-                        <label>Equipamento Recomendado:</label>
-                        <AutoResizeTextarea name="equipamento_recomendado" defaultValue={trilha.equipamento_recomendado} disabled={carregando} />
-                    </div>
-
-                    <div className="vertical gap5">
-                        <label>Atenção / Avisos:</label>
-                        <AutoResizeTextarea name="atencao" defaultValue={trilha.atencao} disabled={carregando} />
-                    </div>
-
-                    <div className="vertical gap15">
-                        <div className="vertical gap5" id="file">
-                            <label>Adicionar novas imagens:</label>
-                            <input type="file" accept="image/*" multiple onChange={handleFileChange} disabled={carregando} />
-                        </div>
-
-                        {totalImagens > 0 && (
+                    <div className="desktopWrap">
+                        <div className="vertical gap15">
                             <div className="vertical gap5">
-                                <p><strong>{totalImagens} imagem(ns) nesta trilha:</strong></p>
-                                <DraggableCarousel
-                                    items={[
-                                        ...imagensSalvas.map((img, idx) => (
-                                            <div key={`salva-${img.id || idx}`} className="uploadPreview vertical gap5 carrosselCard">
-                                                <img src={imagensSalvasUrls[img.id!] ?? ""} alt={img.legenda} />
-                                                <button type="button" className="btn-red" onClick={() => handleRemoveSavedImage(img, idx)} disabled={carregando}>
-                                                    Excluir
-                                                </button>
-                                                <p>{img.legenda}</p>
-                                            </div>
-                                        )),
-                                        ...novasImagens.map((file, idx) => (
-                                            <div key={`nova-${idx}`} className="uploadPreview vertical gap5 carrosselCard">
-                                                <img src={novasImagensBase64[idx]} alt={file.name} />
-                                                <button type="button" onClick={() => handleRemoveNewImage(idx)} disabled={carregando}>
-                                                    Remover
-                                                </button>
-                                                <p>{file.name} (Nova)</p>
-                                            </div>
-                                        ))
-                                    ]}
+                                <label>Nome:</label>
+                                <input name="nome" defaultValue={trilha.nome} required disabled={carregando} />
+                            </div>
+                            <div className="vertical gap5">
+                                <label>Cor de Identificação (Hexadecimal):</label>
+                                <input
+                                    type="color"
+                                    name="cor_identificacao"
+                                    value={corIdentificacao}
+                                    onChange={(e) => setCorIdentificacao(e.target.value)}
+                                    required
+                                    disabled={carregando}
+                                    style={{ height: "40px", width: "100%", cursor: "pointer" }}
                                 />
                             </div>
-                        )}
+                            <div className="desktopWrap3 gap15">
+                                <div className="vertical gap5">
+                                    <label>Dificuldade:</label>
+                                    <select name="dificuldade" defaultValue={trilha.dificuldade} required disabled={carregando}>
+                                        <option value="">Selecione...</option>
+                                        <option value="Fácil">Fácil</option>
+                                        <option value="Moderada">Moderada</option>
+                                        <option value="Difícil">Difícil</option>
+                                    </select>
+                                </div>
+                                <div className="vertical gap5">
+                                    <label>Extensão:</label>
+                                    <input name="extensao" defaultValue={trilha.extensao} required disabled={carregando} />
+                                </div>
+                                <div className="vertical gap5">
+                                    <label>Duração Estimada:</label>
+                                    <input name="duracao" defaultValue={trilha.duracao} required disabled={carregando} />
+                                </div>
+                            </div>
+                            <div className="vertical gap5">
+                                <label>Descrição Curta:</label>
+                                <input name="descricao_curta" defaultValue={trilha.descricao_curta} required disabled={carregando} maxLength={150} />
+                            </div>
+                            <div className="vertical gap5">
+                                <label>Descrição Detalhada:</label>
+                                <AutoResizeTextarea name="descricao" defaultValue={trilha.descricao} required disabled={carregando} />
+                            </div>
+                            <div className="vertical gap5">
+                                <label>Equipamento Recomendado:</label>
+                                <AutoResizeTextarea name="equipamento_recomendado" defaultValue={trilha.equipamento_recomendado} disabled={carregando} />
+                            </div>
+                            <div className="vertical gap5">
+                                <label>Atenção / Avisos:</label>
+                                <AutoResizeTextarea name="atencao" defaultValue={trilha.atencao} disabled={carregando} />
+                            </div>
+                        </div>
+                        <div className="vertical gap15">
+                            <div className="vertical gap5" style={{ background: "#f0f8ff", padding: "10px", borderRadius: "8px", border: "1px dashed #ccc" }}>
+                                <label>Atualizar Arquivo de Rota (KML):</label>
+                                <input type="file" accept=".kml" onChange={handleKmlChange} disabled={carregando} />
+                                {nomeArquivoKml ? (
+                                    <p style={{ fontSize: "0.9rem", color: "green", margin: 0 }}>
+                                        Novo arquivo: {nomeArquivoKml} carregado ({geojsonTrilha?.features?.length || 0} linha(s) encontrada(s)).
+                                    </p>
+                                ) : geojsonTrilha ? (
+                                    <p style={{ fontSize: "0.9rem", color: "#555", margin: 0 }}>
+                                        Rota atual carregada ({geojsonTrilha?.features?.length || 0} linha(s)).
+                                    </p>
+                                ) : null}
+                            </div>
+                            {geojsonTrilha && (
+                                <div className="vertical gap5">
+                                    <label>
+                                        <strong>Pré-visualização da Rota:</strong>
+                                        <span style={{ fontSize: "0.85rem", color: "#666", marginLeft: "8px" }}>
+                                            (Clique em uma linha para removê-la)
+                                        </span>
+                                    </label>
+                                    <div style={{ height: "380px", width: "100%" }}>
+                                        <Map
+                                            previewGeoJson={geojsonTrilha}
+                                            previewColor={corIdentificacao}
+                                            onDeleteLine={handleRemoveLine}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                            <div className="vertical gap15">
+                                <div className="vertical gap5" id="file">
+                                    <label>Adicionar novas imagens:</label>
+                                    <input type="file" accept="image/*" multiple onChange={handleFileChange} disabled={carregando} />
+                                </div>
+                                {totalImagens > 0 && (
+                                    <div className="vertical gap5">
+                                        <p><strong>{totalImagens} imagem(ns) nesta trilha:</strong></p>
+                                        <DraggableCarousel
+                                            items={[
+                                                ...imagensSalvas.map((img, idx) => (
+                                                    <div key={`salva-${img.id || idx}`} className="uploadPreview vertical gap5 carrosselCard">
+                                                        <img src={imagensSalvasUrls[img.id!] ?? ""} alt={img.legenda} />
+                                                        <button type="button" className="btn-red" onClick={() => handleRemoveSavedImage(img, idx)} disabled={carregando}>
+                                                            Excluir
+                                                        </button>
+                                                        <p>{img.legenda}</p>
+                                                    </div>
+                                                )),
+                                                ...novasImagens.map((file, idx) => (
+                                                    <div key={`nova-${idx}`} className="uploadPreview vertical gap5 carrosselCard">
+                                                        <img src={novasImagensBase64[idx]} alt={file.name} />
+                                                        <button type="button" onClick={() => handleRemoveNewImage(idx)} disabled={carregando}>
+                                                            Remover
+                                                        </button>
+                                                        <p>{file.name} (Nova)</p>
+                                                    </div>
+                                                ))
+                                            ]}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
                     <div className="btnFull">

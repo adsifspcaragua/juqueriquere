@@ -71,7 +71,7 @@ export default function Usuario() {
                         Voltar para Usuários
                     </SimpleButton>
 
-                    <div className="card vertical userCard">
+                    <div className="card vertical userCard desktopWrap center">
                         {loading ? (
                             <p>Carregando dados do usuário...</p>
                         ) : !usuario ? (
@@ -103,7 +103,7 @@ export default function Usuario() {
                                     </div>
                                 </div>
 
-                                <div className="horizontal gap5">
+                                <div className="horizontal gap5 HtoV">
                                     <SimpleButton tema="dark" raio="10" path={`/admin/usuario/editar/${usuario.id}`}>
                                         Editar conta
                                     </SimpleButton>

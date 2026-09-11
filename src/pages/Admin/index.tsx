@@ -72,7 +72,7 @@ export default function Admin() {
     return (
         <ProtectedRoute>
             <div className="paddingHeader"></div>
-            <section className="conteudo vertical gap30 desktopWrap3" id="adminHome">
+            <section className="conteudo vertical gap30 desktopWrap1-2" id="adminHome">
 
                 <div className="vertical gap30">
                     <div className="vertical gap5">

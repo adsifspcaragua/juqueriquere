@@ -102,11 +102,13 @@ const NativeCarousel = ({
     return (
         <div className="carrosselContainer">
             {currentIndex > 0 && (
-                <div className="circleButton left">
-                    <SimpleButton
-                        icon="Left"
-                        onClick={() => handleArrow(-1)}
-                    />
+                <div className="carrosselFade vertical center justifyCenter" id="left">
+                    <div className="circleButton left">
+                        <SimpleButton
+                            icon="Left"
+                            onClick={() => handleArrow(-1)}
+                        />
+                    </div>
                 </div>
             )}
 
@@ -132,11 +134,13 @@ const NativeCarousel = ({
             </div>
 
             {currentIndex < items.length - 1 && items.length > 0 && (
-                <div className="circleButton right">
-                    <SimpleButton
-                        icon="Right"
-                        onClick={() => handleArrow(1)}
-                    />
+                <div className="carrosselFade vertical center justifyCenter" id='right'>
+                    <div className="circleButton right">
+                        <SimpleButton
+                            icon="Right"
+                            onClick={() => handleArrow(1)}
+                        />
+                    </div>
                 </div>
             )}
         </div>

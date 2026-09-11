@@ -11,18 +11,33 @@
     align-items: stretch;
 }
 
-.circleButton.left, .circleButton.right {
+.carrosselFade{
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 0;
+    bottom: 0;
+    width: 30px;
+}
+.carrosselFade#left{
+    left: -20px;
+}
+.carrosselFade#right{
+    right: -20px;
+}
+
+.card{
+    .carrosselFade#left {background-image: linear-gradient(to right, var(--verdeClaro) 10%, transparent);}
+    .carrosselFade#right {background-image: linear-gradient(to left, var(--verdeClaro) 10%, transparent);}
+}
+
+.circleButton.left, .circleButton.right {
     z-index: 10;
 }
 
 .circleButton.left {
-    left: -5px;
+    margin-left: 30px;
 }
 .circleButton.right {
-    right: -5px;
+    margin-right: 30px;
 }
 .circleButton .btn{
     background-color: var(--verdeClaroTransparente);
