@@ -78,6 +78,38 @@ export default function Explorar() {
         />
     ));
 
+    const pontos = 
+        pontosDados?.map((ponto) => (
+                                            <motion.div
+                                                key={ponto.id}
+                                                variants={{
+                                                    hidden: {
+                                                        opacity: 0,
+                                                        y: 15,
+                                                    },
+                                                    visible: {
+                                                        opacity: 1,
+                                                        y: 0,
+                                                        transition: {
+                                                            duration: 0.25,
+                                                        },
+                                                    },
+                                                    exit: {
+                                                        opacity: 0,
+                                                        y: -10,
+                                                        transition: {
+                                                            duration: 0.15,
+                                                        },
+                                                    },
+                                                }}
+                                            >
+                                                <CardPonto
+                                                    ponto={ponto}
+                                                    trilhaId={trilhaAtual.id}
+                                                />
+                                            </motion.div>
+                                        ));
+
     // const pontosList = (pontosDados ?? []).map((ponto, index) => (
     //     <CardPonto
     //         key={index}
@@ -118,68 +150,42 @@ export default function Explorar() {
                         <div className="vertical gap15">
                             <h3>Pontos de interesse nesta trilha:</h3>
                                 <AnimatePresence mode="wait">
-                                    <motion.div
-                                        key={trilhaSelecionada}
-                                        className="listaGrid"
-                                        id="pontosList"
-                                        initial="hidden"
-                                        animate="visible"
-                                        exit="exit"
-                                        variants={{
-                                            hidden: {},
-                                            visible: {
-                                                transition: {
-                                                    staggerChildren: 0.06,
-                                                },
-                                            },
-                                            exit: {
-                                                transition: {
-                                                    staggerChildren: 0.03,
-                                                    staggerDirection: -1,
-                                                },
-                                            },
-                                        }}
-                                    >
-                                        {pontosSize[0] > 0 ? (pontosDados ?? []).map((ponto) => (
+                                    
+                                        {pontosSize[0] > 0 ? 
+                                            <>
                                             <motion.div
-                                                key={ponto.id}
-                                                variants={{
-                                                    hidden: {
-                                                        opacity: 0,
-                                                        y: 15,
+                                            key={trilhaSelecionada}
+                                            className="listaGrid"
+                                            id="pontosList"
+                                            initial="hidden"
+                                            animate="visible"
+                                            exit="exit"
+                                            variants={{
+                                                hidden: {},
+                                                visible: {
+                                                    transition: {
+                                                        staggerChildren: 0.06,
                                                     },
-                                                    visible: {
-                                                        opacity: 1,
-                                                        y: 0,
-                                                        transition: {
-                                                            duration: 0.25,
-                                                        },
+                                                },
+                                                exit: {
+                                                    transition: {
+                                                        staggerChildren: 0.03,
+                                                        staggerDirection: -1,
                                                     },
-                                                    exit: {
-                                                        opacity: 0,
-                                                        y: -10,
-                                                        transition: {
-                                                            duration: 0.15,
-                                                        },
-                                                    },
-                                                }}
-                                            >
-                                                <CardPonto
-                                                    ponto={ponto}
-                                                    trilhaId={trilhaAtual.id}
-                                                />
-                                            </motion.div>
-                                        )): 
-                                        
-                                        <>
-                                            <h2>Por enquanto, não temos nenhum ponto de interesse nessa trilha :(</h2>
+                                                },
+                                            }}
+                                        >
+                                            {pontos}
+                                        </motion.div>
+                                        <p>(exibindo {pontosSize[0]} de {pontosSize[1]})</p>
                                         </>
-                                        
+                                        : 
+                                        <>
+                                            <h3>Por enquanto, não temos nenhum ponto de interesse nessa trilha :(</h3>
+                                        </>
                                         }
-                                    </motion.div>
                                 </AnimatePresence>
                         </div>
-                        <p>(exibindo {pontosSize[0]} de {pontosSize[1]})</p>
                         <SimpleButton path={`/pontos?trilha=${trilhaSelecionada}`}>Todos os Pontos de Interesse</SimpleButton>
                     </div>
                 </div>
