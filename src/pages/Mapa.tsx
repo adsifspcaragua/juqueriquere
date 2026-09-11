@@ -140,7 +140,7 @@ export default function Explorar() {
                                             },
                                         }}
                                     >
-                                        {(pontosDados ?? []).map((ponto) => (
+                                        {pontosSize[0] > 0 ? (pontosDados ?? []).map((ponto) => (
                                             <motion.div
                                                 key={ponto.id}
                                                 variants={{
@@ -169,7 +169,13 @@ export default function Explorar() {
                                                     trilhaId={trilhaAtual.id}
                                                 />
                                             </motion.div>
-                                        ))}
+                                        )): 
+                                        
+                                        <>
+                                            <h2>Por enquanto, não temos nenhum ponto de interesse nessa trilha :(</h2>
+                                        </>
+                                        
+                                        }
                                     </motion.div>
                                 </AnimatePresence>
                         </div>
