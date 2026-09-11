@@ -19,6 +19,7 @@ export default function Explorar() {
 
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
     const [pontosDados, setPontosDados] = useState<PontoInteresseDB[]>();
+    const [pontosSize, setPontosSize] = useState<number[]>([2]);
 
     const [trilhaSelecionada, setTrilhaSelecionada] = useState<number | undefined>(undefined);
 
@@ -40,8 +41,14 @@ export default function Explorar() {
     useEffect(() => {
         async function carregarPontos() {
             if(!trilhaSelecionada) return;
-            const pontos = await db.pontos_interesse.where('trilha_id').equals(Number(trilhaSelecionada)).toArray();
+            const pontos = await db.pontos_interesse.where('trilha_id').equals(Number(trilhaSelecionada)).limit(4).toArray();
             if(pontos)setPontosDados(pontos)
+            const lengthPontos = await db.pontos_interesse.where('trilha_id').equals(Number(trilhaSelecionada)).count();
+            if(lengthPontos)setPontosSize([pontos.length, lengthPontos]);
+            else{
+                setPontosSize([0, 0]);
+            }
+            
         }
         carregarPontos();
     }, [trilhaSelecionada]);
@@ -167,6 +174,7 @@ export default function Explorar() {
                                     </motion.div>
                                 </AnimatePresence>
                         </div>
+                        <p>(exibindo {pontosSize[0]} de {pontosSize[1]})</p>
                         <SimpleButton path='/pontos'>Todos os Pontos de Interesse</SimpleButton>
                     </div>
                 </div>
