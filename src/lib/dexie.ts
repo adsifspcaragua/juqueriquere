@@ -55,6 +55,41 @@ export interface MetadataDB {
   valor: string;
 }
 
+export interface SobreDB {
+  id: number;
+
+  descricao: string;
+  area: string;
+
+  acessibilidade_titulo: string;
+  acessibilidade_descricao: string;
+
+  visitas_grupo_titulo: string;
+  visitas_grupo_descricao: string;
+
+  horario_titulo: string;
+  horario_descricao: string;
+
+  endereco_titulo: string;
+  endereco_descricao: string;
+
+  email_agendamento: string;
+  link_mapa: string;
+
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface EspacoParqueDB {
+  id: number;
+  titulo: string;
+  descricao: string;
+  imagem_id?: number | null;
+  ordem: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export class JuqueriquereDB extends Dexie {
   trilhas!: Table<TrilhaDB>;
   pontos_interesse!: Table<PontoInteresseDB>;
@@ -62,6 +97,8 @@ export class JuqueriquereDB extends Dexie {
   informacoes_parque!: Table<InformacaoParqueDB>;
   imagens!: Table<ImagemDB>;
   metadata!: Table<MetadataDB>;
+  sobre!: Table<SobreDB, number>;
+  espacos_parque!: Table<EspacoParqueDB, number>;
 
   constructor() {
     super("JuqueriquereDB");
@@ -82,6 +119,17 @@ export class JuqueriquereDB extends Dexie {
       informacoes_parque: "id",
       imagens: "id,trilha_id,ponto_interesse_id",
       metadata: "chave"
+    });
+
+    this.version(3).stores({
+      trilhas: "id",
+      pontos_interesse: "id,trilha_id",
+      ramais: "id",
+      informacoes_parque: "id",
+      imagens: "id,trilha_id,ponto_interesse_id",
+      metadata: "chave",
+      sobre: "id",
+      espacos_parque: "id,ordem"
     });
   }
 }
