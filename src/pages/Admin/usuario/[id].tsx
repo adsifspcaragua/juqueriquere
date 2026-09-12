@@ -78,7 +78,7 @@ export default function Usuario() {
                             <p>Usuário não encontrado.</p> 
                         ) : (
                             <>
-                                <div className="horizontal gap15 center">
+                                <div className="horizontal gap15 center"> 
                                     <img
                                         src={usuario.foto_url || defaultPfp}
                                         alt={`Foto de ${usuario.name}`}
