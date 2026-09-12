@@ -30,11 +30,12 @@ export default function Pontos() {
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	const trilhaParam = searchParams.get("trilha");
-
+	/*
 	const selectedTrilhaId =
 		trilhaParam && trilhaParam !== "sem-trilha"
 			? Number(trilhaParam)
 			: null;
+	*/
 
 	const [orderKey, setOrderKey] = useState<OrderKey>("Nome A-Z");
 	const [search, setSearch] = useState("");
