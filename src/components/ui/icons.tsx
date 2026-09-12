@@ -25,7 +25,10 @@ import Edit from '../../assets/icons/Edit.webp';
 import SaveDark from '../../assets/icons/SaveDark.webp';
 import Left from '../../assets/icons/chevronLeft.webp';
 import Right from '../../assets/icons/chevronRight.webp';
-import logout from '../../assets/icons/Logout.png'
+import logout from '../../assets/icons/Logout.png';
+import Select from '../../assets/icons/Select.png';
+import download from '../../assets/icons/Download.png';
+import downloadLight from '../../assets/icons/DownloadLight.png';
 
 export const icons = {
         "default": {
@@ -44,7 +47,8 @@ export const icons = {
             "Filter"        : Filter,
             "Edit"          : Edit,
             "Left"          : Left,
-            "Right"         : Right
+            "Right"         : Right,
+            "download"      : download,
         },
         "dark": {
             "seta"          : setaDark,
@@ -61,7 +65,11 @@ export const icons = {
             "PlusDark"      : PlusDark,
             "FilterDark"    : FilterDark,
             "Edit"          : Edit,
-            "Save"          : SaveDark
+            "Save"          : SaveDark,
+            "Trash"          : Trash,
+            "download"      : downloadLight,
+
+
         },
          "none": {
             "seta"          : setaDark,
@@ -77,7 +85,9 @@ export const icons = {
             "Tempo"         : Tempo,
             "PlusDark"      : PlusDark,
             "FilterDark"    : FilterDark,
-            "Edit"          : Edit
+            "Edit"          : Edit,
+            "download"      : downloadLight,
+
         },
          "red": {
             "Trash"          : Trash,
@@ -100,6 +110,27 @@ export const icons = {
             "Filter"        : Filter,
             "Edit"          : Edit,
             "Left"          : Left,
-            "Right"         : Right
+            "Right"         : Right,
+            "download"      : download,
+
+        },
+        "select": {
+            "seta"          : seta,
+            "setaBack"      : setaBackDark,
+            "QR"            : QR,
+            "Home"          : home,
+            "Menu"          : menu,
+            "X"             : X,
+            "Explorar"      : Explorar,
+            "Sobre"         : Sobre,
+            "Dificuldade"   : Dificuldade,
+            "Distancia"     : Distancia,
+            "Tempo"         : Tempo,
+            "Plus"          : Plus,
+            "Filter"        : Filter,
+            "Edit"          : Edit,
+            "Left"          : Left,
+            "Right"         : Right,
+            "select"        : Select,
         },
 } as any;

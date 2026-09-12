@@ -58,16 +58,21 @@ button{
     border-radius: 10px;
 }
 
+.card{max-width: calc(100vw - 40px);}
 
 .cardTrilhaCompacto{
     justify-content: center;
     h3{
         color: var(--verdeEscuro);
     }
+    width: 100%;
 }
 
 .actions{
     width: max-content;
+    .btn{
+        padding: 12px;
+    }
 }
 
 #file input::file-selector-button {

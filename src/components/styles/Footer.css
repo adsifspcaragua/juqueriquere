@@ -6,31 +6,23 @@ footer{
     justify-content: center;
     gap: 30px;
 
-    .linhaVertical{display: none;}
-
-    img{
-        width: 100%;
-        object-fit: scale-down;
-        object-position: left;
-    }
     p{
         text-align: center;
     }
 
     a{
         color: rgba(255, 255, 255, 0.8);
-        text-decoration: underline;
     }
 
     #logoPNMJ{
-        height: 35px;
+        height: 30px;
     }
     #logoSEMAAP{
-        height: 60px;
+        height: 50px;
     }
 
-    #linksFooter{
-        width: 100%;
+    .linhaVertical{
+        height: 50px;
     }
 }
 
@@ -57,5 +49,9 @@ footer{
     }
     .conteudoFooter{
         flex-direction: row;
+    }
+    #linksFooter{
+        width: 100%;
+        justify-content: right;
     }
 }

@@ -6,9 +6,13 @@ import '../styles/Footer.css';
 export default function Footer(){
     return (
         <footer className="vertical">
-            <div className="conteudoFooter horizontal justifyCenter center">
-                                   
-                <img src={logo} alt="Parque Natural Municipal Juqueriquerê" id="logoPNMJ"/>
+            <div className="desktopWrap justify center w100 gap30">      
+                <div className="horizontal gap15 center" id="footerLogos">
+                    <img src={logo} alt="Parque Natural Municipal Juqueriquerê" id="logoPNMJ"/>
+                    <div className="linhaVertical"/>
+                    <img src={meioAmbiente} alt="Meio ambiente" id="logoSEMAAP"/>
+                </div>
+
 
                 <div className="horizontal gap30" id="linksFooter">
                     <div className="vertical gap5 left">
@@ -24,7 +28,6 @@ export default function Footer(){
                     </div>
                 </div>
 
-                <img src={meioAmbiente} alt="Meio ambiente" id="logoSEMAAP"/>
             </div>
             <div className="linhaHorizontal"></div>
             <div className="vertical gap15 center">

@@ -1,25 +1,30 @@
 import { useState, useRef, useEffect } from "react";
 import '../../styles/Select.css';
 import SimpleButton from "../buttons/SimpleButton";
+
 interface SelectProps {
     children?: React.ReactNode;
     options: string[];
     onChange: (value: string) => void;
     value: string;
     style?: string;
+    compacto?: boolean;
+    icon?: string;
 }
 
 export default function Select({
     children,
     options,
     onChange,
-    value
+    value,
+    compacto = false,
+    icon = "Filter"
 }: SelectProps) {
 
     const [open, setOpen] = useState(false);
     const selectRef = useRef<HTMLDivElement>(null);
 
-    // fechar ao clicar fora
+    // Fechar ao clicar fora
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (
@@ -44,8 +49,11 @@ export default function Select({
             <div className="circleButton">
                 <SimpleButton
                     onClick={() => setOpen(!open)}
-                    icon="Filter"
-                ></SimpleButton>
+                    icon={icon}
+                    tema="select"
+                >
+                    {!compacto && value}
+                </SimpleButton>
             </div>
 
             {open && (
