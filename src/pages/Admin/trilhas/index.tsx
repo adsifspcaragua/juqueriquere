@@ -201,7 +201,7 @@ async function excluirTrilha() {
 
                                 <div className="btnFull actions vertical gap5">
                                     <SimpleButton
-                                        icon="Scan"
+                                        icon="QR"
                                         tema="dark"
                                         raio="10"
                                         onClick={() => {
@@ -209,7 +209,6 @@ async function excluirTrilha() {
                                             setQrModalOpen(true);
                                         }}
                                     >
-                                        QR Code
                                     </SimpleButton>
 
                                     <SimpleButton
@@ -218,7 +217,6 @@ async function excluirTrilha() {
                                         raio="10"
                                         path={`/admin/trilhas/editar/${trilha.id}`}
                                     >
-                                        Editar
                                     </SimpleButton>
 
                                     <SimpleButton
@@ -227,7 +225,6 @@ async function excluirTrilha() {
                                         raio="10"
                                         onClick={() => abrirExcluir(trilha)}
                                     >
-                                        Excluir
                                     </SimpleButton>
                                 </div>
                             </div>

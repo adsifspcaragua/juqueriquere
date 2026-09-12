@@ -256,7 +256,7 @@ option:checked {
 }
 
 
-#filtros{
+.filtrosMobile{
     position: fixed !important;
     bottom: 0;
     padding: 5vw;
@@ -703,16 +703,15 @@ ul{
 
     .listaGrid{
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         grid-auto-rows: 1fr;
     }
 
-    #filtros{
-        top: 0;
-        bottom: unset;
-        padding-top: 100px;
-        padding-bottom: 30px;
-        background: linear-gradient(to top, #008a6500, var(--verdeEscuro));
+    body:has(.filtrosMobile){
+        .paddingHeader2{height: 120px;}
+    }
+    .filtrosMobile{
+        display: none;
     }
 
     .desktopWrap{

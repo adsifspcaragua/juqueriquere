@@ -83,11 +83,7 @@ export default function index(){
 						</div>
 					</div>
 				</section>
-
-				<section className="vertical gap5 conteudo">
-					<h1>Mais vistos</h1>
-					<p>Em breve</p>
-				</section>
+				<br />
 			</div>
 
 			{openScanner && (

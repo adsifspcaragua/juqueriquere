@@ -133,7 +133,7 @@ export default function Menu({ ativo, onChoice }: menuProps) {
 
                     {/* INSTALAR APP */}
                     <div className="menuLinks">
-                        <SimpleButton raio='0' onClick={handleInstallClick}>INSTALE O JUQUERIQUERÊ</SimpleButton>
+                        <SimpleButton raio='0' icon='download' onClick={handleInstallClick}>Instalar o app</SimpleButton>
                     </div>
 
                     {/* BOTÕES BÁSICOS */}

@@ -208,7 +208,7 @@ export default function AdminPontos() {
 
                                 <div className="btnFull actions vertical gap5">
                                     <SimpleButton 
-                                        icon="Scan" 
+                                        icon="QR" 
                                         tema="dark" 
                                         raio="10" 
                                         onClick={() => {
@@ -216,15 +216,12 @@ export default function AdminPontos() {
                                             setQrModalOpen(true);
                                         }}
                                     >
-                                        QR Code
                                     </SimpleButton>
 
                                     <SimpleButton icon="Edit" tema="dark" raio="10" path={`/admin/pontos/editar/${ponto.id}`}        >
-                                        Editar
                                     </SimpleButton>
 
                                     <SimpleButton icon="Trash" tema="red" raio="10" onClick={() => abrirExcluir(ponto)}>
-                                        Excluir
                                     </SimpleButton>
                                 </div>
                             </div>

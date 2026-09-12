@@ -33,6 +33,14 @@
     background-color: var(--verdeEscuroTransparente);
     color: var(--verdeEscuro);
 }
+.btn-select{
+    background-color: var(--verdeEscuroTransparente);
+    font-weight: 600;
+    border-radius: 10px !important;
+    border: 1px solid var(--verdeEscuro);
+    padding: 5px 10px !important;
+    font-size: 14px;
+}
 
 .circleButton{
     .btn{

@@ -50,16 +50,7 @@ export default function Trilhas() {
     return (
         <>
             {createPortal(
-                <div className="horizontal gap5" id="filtros">
-
-                    <Select
-                        options={Object.keys(order)}
-                        onChange={(newValue) => {
-                            setOrderKey(newValue as OrderKey);
-                        }}
-                        value={orderKey}
-                        style='none'
-                    />
+                <div className="horizontal gap5 filtrosMobile" id="filtros">
 
                     <div className="pesquisa horizontal">
                         <div className="pesquisaIcon"></div>
@@ -70,6 +61,17 @@ export default function Trilhas() {
                             onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
+
+                    <Select
+                        options={Object.keys(order)}
+                        onChange={(newValue) => {
+                            setOrderKey(newValue as OrderKey);
+                        }}
+                        value={orderKey}
+                        style='none'
+                        compacto
+                        icon='select'
+                    />
 
                 </div>,
                 document.body

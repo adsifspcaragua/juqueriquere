@@ -49,7 +49,7 @@ export default function QrCodeModal({ isOpen, onClose, path, title }: QrCodeModa
                 )}
 
                 <div className="vertical btnFull gap5" style={{ marginTop: '10px' }}>
-                    <SimpleButton tema="dark" icon="Download" raio="10" onClick={handleDownload}>
+                    <SimpleButton tema="dark" icon="download" raio="10" onClick={handleDownload}>
                         Baixar
                     </SimpleButton>
                     <SimpleButton tema="light" icon="X" raio="10" onClick={onClose}>
