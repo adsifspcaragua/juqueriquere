@@ -262,6 +262,9 @@ export default function EditarUsuario() {
                                     </SimpleButton>
                                 </div>
                             </div>
+                            <div className="card vertical gap15">
+                                <SimpleButton tema="dark" raio="10" path={`/admin/usuario/redefinir-senha/${usuario.id}`}>redefinir senha</SimpleButton>
+                            </div>
                         </div>
                     </>
                 )}
