@@ -44,6 +44,12 @@ interface EspacoParqueDB {
     updated_at?: string;
 }
 
+interface ImagemGaleriaDB {
+    id: number;
+    caminho_arquivo: string;
+    legenda?: string | null;
+}
+
 export default function EditarSobre() {
 
     const [sobre, setSobre] = useState<SobreDB | null>(null);
@@ -51,6 +57,11 @@ export default function EditarSobre() {
     const [salvando, setSalvando] = useState(false);
 
     const [espacos, setEspacos] = useState<EspacoParqueDB[]>([]);
+    const [imagensGaleria, setImagensGaleria] = useState<ImagemGaleriaDB[]>([]);
+    const [novaImagemGaleria, setNovaImagemGaleria] = useState<File | null>(null);
+    const [legendaGaleria, setLegendaGaleria] = useState("");
+    const [salvandoGaleria, setSalvandoGaleria] = useState(false);
+    const [removendoImagemGaleria, setRemovendoImagemGaleria] = useState<number | null>(null);
 
     const [adicionandoEspaco, setAdicionandoEspaco] = useState(false);
 
@@ -74,7 +85,7 @@ export default function EditarSobre() {
     useEffect(() => {
         carregarSobre();
         carregarEspacos();
-
+        carregarImagensGaleria();
     }, []);
 
     function abrirEdicaoEspaco(
@@ -167,12 +178,153 @@ export default function EditarSobre() {
         }
     }
 
-    async function salvarEdicaoEspaco(
-        e: React.FormEvent<HTMLFormElement>
+    function obterExtensao(arquivo: File) {
+        return arquivo.name.split(".").pop()?.toLowerCase() || "webp";
+    }
+
+    async function enviarImagem(caminho: string, arquivo: File) {
+        const { error } = await supabase.storage
+            .from("imagens")
+            .upload(caminho, arquivo, {
+                cacheControl: "3600",
+                upsert: false
+            });
+
+        if (error) throw error;
+    }
+
+    async function cadastrarImagem(
+        caminho: string,
+        legenda: string
     ) {
+        const { data, error } = await supabase
+            .from("imagens")
+            .insert({
+                trilha_id: null,
+                ponto_interesse_id: null,
+                caminho_arquivo: caminho,
+                legenda: legenda.trim() || null
+            })
+            .select("id, caminho_arquivo, legenda")
+            .single();
 
-        e.preventDefault();
+        if (error) throw error;
+        return data as ImagemGaleriaDB;
+    }
 
+    async function excluirImagem(
+        imagem: ImagemGaleriaDB
+    ) {
+        const { error: storageError } = await supabase.storage
+            .from("imagens")
+            .remove([imagem.caminho_arquivo]);
+
+        if (storageError) throw storageError;
+
+        const { error: dbError } = await supabase
+            .from("imagens")
+            .delete()
+            .eq("id", imagem.id);
+
+        if (dbError) throw dbError;
+    }
+
+    async function carregarImagensGaleria() {
+        const { data, error } = await supabase
+            .from("imagens")
+            .select("id, caminho_arquivo, legenda")
+            .like("caminho_arquivo", "galeria/%");
+
+        if (error) {
+            console.error("Erro ao carregar galeria:", error);
+            setImagensGaleria([]);
+            return;
+        }
+
+        setImagensGaleria(data || []);
+    }
+
+    function selecionarImagemGaleria(
+        e: React.ChangeEvent<HTMLInputElement>
+    ) {
+        setNovaImagemGaleria(e.target.files?.[0] || null);
+    }
+
+    async function adicionarImagemGaleria() {
+        if (!novaImagemGaleria) {
+            alert("Selecione uma imagem para a galeria.");
+            return;
+        }
+
+        setSalvandoGaleria(true);
+
+        const caminho = `galeria/${crypto.randomUUID()}.${obterExtensao(novaImagemGaleria)}`;
+
+        try {
+            await enviarImagem(caminho, novaImagemGaleria);
+
+            const imagem = await cadastrarImagem(
+                caminho,
+                legendaGaleria
+            );
+
+            setImagensGaleria((prev) => [...prev, imagem]);
+            setNovaImagemGaleria(null);
+            setLegendaGaleria("");
+
+            const input = document.getElementById(
+                "imagemGaleria"
+            ) as HTMLInputElement | null;
+
+            if (input) input.value = "";
+
+            alert("Imagem adicionada à galeria com sucesso!");
+        } catch (error: any) {
+            await supabase.storage
+                .from("imagens")
+                .remove([caminho]);
+
+            console.error("Erro ao adicionar imagem da galeria:", error);
+            alert(
+                `Não foi possível adicionar a imagem.\n\n${error?.message || error}`
+            );
+        } finally {
+            setSalvandoGaleria(false);
+        }
+    }
+
+    async function removerImagemGaleria(
+        imagem: ImagemGaleriaDB
+    ) {
+        if (
+            !window.confirm(
+                `Deseja realmente remover a imagem "${imagem.legenda || "sem legenda"}"?`
+            )
+        ) {
+            return;
+        }
+
+        setRemovendoImagemGaleria(imagem.id);
+
+        try {
+            await excluirImagem(imagem);
+
+            setImagensGaleria((prev) =>
+                prev.filter((item) => item.id !== imagem.id)
+            );
+
+            alert("Imagem removida da galeria com sucesso!");
+        } catch (error: any) {
+            console.error("Erro ao remover imagem da galeria:", error);
+            alert(
+                `Não foi possível remover a imagem.\n\n${error?.message || error}`
+            );
+        } finally {
+            setRemovendoImagemGaleria(null);
+        }
+    }
+
+    async function salvarEdicaoEspaco() {
         if (!editandoEspaco) return;
 
         if (!editandoEspaco.titulo.trim()) {
@@ -200,61 +352,20 @@ export default function EditarSobre() {
 
             if (imagemEdicao) {
 
-                const extensao =
-                    imagemEdicao.name
-                        .split(".")
-                        .pop()
-                        ?.toLowerCase() || "webp";
-
                 const nomeArquivo =
-                    `${crypto.randomUUID()}.${extensao}`;
+                    `${crypto.randomUUID()}.${obterExtensao(imagemEdicao)}`;
 
-                novoCaminhoArquivo =
-                    `areas/${nomeArquivo}`;
+                novoCaminhoArquivo = `areas/${nomeArquivo}`;
 
+                await enviarImagem(
+                    novoCaminhoArquivo,
+                    imagemEdicao
+                );
 
-                /*
-                 * Upload da nova imagem
-                 */
-
-                const { error: uploadError } =
-                    await supabase.storage
-                        .from("imagens")
-                        .upload(
-                            novoCaminhoArquivo,
-                            imagemEdicao,
-                            {
-                                cacheControl: "3600",
-                                upsert: false
-                            }
-                        );
-
-                if (uploadError) {
-                    throw uploadError;
-                }
-
-
-                /*
-                 * Cadastra nova imagem
-                 */
-
-                const {
-                    data: novaImagem,
-                    error: novaImagemError
-                } = await supabase
-                    .from("imagens")
-                    .insert({
-                        trilha_id: null,
-                        ponto_interesse_id: null,
-                        caminho_arquivo: novoCaminhoArquivo,
-                        legenda: editandoEspaco.titulo
-                    })
-                    .select()
-                    .single();
-
-                if (novaImagemError) {
-                    throw novaImagemError;
-                }
+                const novaImagem = await cadastrarImagem(
+                    novoCaminhoArquivo,
+                    editandoEspaco.titulo
+                );
 
                 novaImagemId = novaImagem.id;
 
@@ -649,12 +760,7 @@ export default function EditarSobre() {
 
     }
 
-    async function adicionarEspaco(
-        e: React.FormEvent<HTMLFormElement>
-    ) {
-
-        e.preventDefault();
-
+    async function adicionarEspaco() {
         if (!novoEspaco.titulo.trim()) {
             alert("Informe o título do espaço.");
             return;
@@ -683,71 +789,23 @@ export default function EditarSobre() {
              * ==========================================
              */
 
-            const extensaoOriginal =
-                novoEspaco.imagem.name
-                    .split(".")
-                    .pop()
-                    ?.toLowerCase() || "webp";
-
             const nomeArquivo =
-                `${crypto.randomUUID()}.${extensaoOriginal}`;
+                `${crypto.randomUUID()}.${obterExtensao(novoEspaco.imagem)}`;
 
             caminhoArquivo = `areas/${nomeArquivo}`;
 
+            await enviarImagem(
+                caminhoArquivo,
+                novoEspaco.imagem
+            );
 
-            /*
-             * ==========================================
-             * 2. ENVIAR IMAGEM PARA O STORAGE
-             * ==========================================
-             */
-
-            const { error: uploadError } =
-                await supabase.storage
-                    .from("imagens")
-                    .upload(
-                        caminhoArquivo,
-                        novoEspaco.imagem,
-                        {
-                            cacheControl: "3600",
-                            upsert: false
-                        }
-                    );
-
-            if (uploadError) {
-                throw uploadError;
-            }
-
-
-            /*
-             * ==========================================
-             * 3. CADASTRAR IMAGEM NA TABELA imagens
-             * ==========================================
-             */
-
-            const { data: imagemData, error: imagemError } =
-                await supabase
-                    .from("imagens")
-                    .insert({
-                        trilha_id: null,
-                        ponto_interesse_id: null,
-                        caminho_arquivo: caminhoArquivo,
-                        legenda: novoEspaco.titulo
-                    })
-                    .select()
-                    .single();
-
-            if (imagemError) {
-                throw imagemError;
-            }
+            const imagemData = await cadastrarImagem(
+                caminhoArquivo,
+                novoEspaco.titulo
+            );
 
             imagemId = imagemData.id;
 
-
-            /*
-             * ==========================================
-             * 4. DEFINIR ORDEM DO NOVO ESPAÇO
-             * ==========================================
-             */
 
             const maiorOrdem =
                 espacos.length > 0
@@ -760,12 +818,6 @@ export default function EditarSobre() {
 
             const novaOrdem = maiorOrdem + 1;
 
-
-            /*
-             * ==========================================
-             * 5. CADASTRAR ESPAÇO
-             * ==========================================
-             */
 
             const { data: espacoData, error: espacoError } =
                 await supabase
@@ -784,23 +836,11 @@ export default function EditarSobre() {
             }
 
 
-            /*
-             * ==========================================
-             * 6. ATUALIZAR ESTADO DA PÁGINA
-             * ==========================================
-             */
-
             setEspacos((prev) =>
                 [...prev, espacoData]
                     .sort((a, b) => a.ordem - b.ordem)
             );
 
-
-            /*
-             * ==========================================
-             * 7. LIMPAR FORMULÁRIO
-             * ==========================================
-             */
 
             setNovoEspaco({
                 titulo: "",
@@ -1351,12 +1391,7 @@ export default function EditarSobre() {
                                                 </div>
 
 
-                                                <form
-                                                    className="vertical gap15"
-                                                    onSubmit={
-                                                        salvarEdicaoEspaco
-                                                    }
-                                                >
+                                                <div className="vertical gap15">
 
                                                     {/* TÍTULO */}
 
@@ -1482,7 +1517,10 @@ export default function EditarSobre() {
                                                     <div className="horizontal gap5">
 
                                                         <button
-                                                            type="submit"
+                                                            type="button"
+                                                            onClick={() =>
+                                                                salvarEdicaoEspaco()
+                                                            }
                                                             disabled={
                                                                 salvandoEspaco
                                                             }
@@ -1515,7 +1553,7 @@ export default function EditarSobre() {
 
                                                     </div>
 
-                                                </form>
+                                                </div>
 
                                             </div>
 
@@ -1525,6 +1563,131 @@ export default function EditarSobre() {
 
                                 )}
 
+
+                                <div className="linhaPontilhadaDark" />
+
+                                <div className="vertical gap15">
+                                    <h2>Galeria</h2>
+
+                                    <div className="card vertical gap15">
+                                        <h3>Adicionar imagem</h3>
+
+                                        <div className="vertical gap5">
+                                            <label htmlFor="imagemGaleria">
+                                                Imagem:
+                                            </label>
+
+                                            <input
+                                                id="imagemGaleria"
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={selecionarImagemGaleria}
+                                                disabled={salvandoGaleria}
+                                            />
+
+                                            {novaImagemGaleria && (
+                                                <p>
+                                                    Imagem selecionada:{" "}
+                                                    <strong>
+                                                        {novaImagemGaleria.name}
+                                                    </strong>
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div className="vertical gap5">
+                                            <label htmlFor="legendaGaleria">
+                                                Legenda:
+                                            </label>
+
+                                            <input
+                                                id="legendaGaleria"
+                                                type="text"
+                                                value={legendaGaleria}
+                                                onChange={(e) =>
+                                                    setLegendaGaleria(e.target.value)
+                                                }
+                                                placeholder="Ex.: Sede administrativa"
+                                                disabled={salvandoGaleria}
+                                            />
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={adicionarImagemGaleria}
+                                            disabled={salvandoGaleria}
+                                        >
+                                            {salvandoGaleria
+                                                ? "Adicionando..."
+                                                : "Adicionar imagem"}
+                                        </button>
+                                    </div>
+
+                                    {imagensGaleria.length > 0 ? (
+                                        <div className="desktopWrap">
+                                            {imagensGaleria.map((imagem) => {
+                                                const {
+                                                    data: urlData
+                                                } = supabase.storage
+                                                    .from("imagens")
+                                                    .getPublicUrl(
+                                                        imagem.caminho_arquivo
+                                                    );
+
+                                                return (
+                                                    <div
+                                                        key={imagem.id}
+                                                        className="card vertical gap5"
+                                                    >
+                                                        <img
+                                                            src={urlData.publicUrl}
+                                                            alt={
+                                                                imagem.legenda ||
+                                                                "Imagem da galeria"
+                                                            }
+                                                            style={{
+                                                                width: "100%",
+                                                                maxHeight: 250,
+                                                                objectFit: "cover",
+                                                                borderRadius: 10
+                                                            }}
+                                                        />
+
+                                                        <p>
+                                                            {imagem.legenda ||
+                                                                "Sem legenda"}
+                                                        </p>
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                removerImagemGaleria(
+                                                                    imagem
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                removendoImagemGaleria !==
+                                                                    null ||
+                                                                salvandoGaleria
+                                                            }
+                                                        >
+                                                            {removendoImagemGaleria ===
+                                                            imagem.id
+                                                                ? "Removendo..."
+                                                                : "Remover imagem"}
+                                                        </button>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <p>
+                                            Nenhuma imagem cadastrada na galeria.
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="linhaPontilhadaDark" />
 
                                 <div className="desktopWrap">
                                     <div className="vertical gap15">
