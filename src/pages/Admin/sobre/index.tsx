@@ -1186,7 +1186,7 @@ export default function EditarSobre() {
 
                                             <button
                                                 type="button"
-                                                onClick={adicionarEspaco}
+                                                onClick={() => (adicionarEspaco)}
                                                 disabled={salvandoEspaco}
                                             >
                                                 {salvandoEspaco
