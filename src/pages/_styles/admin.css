@@ -27,6 +27,7 @@ label{
     font-weight: 600;
     width: fit-content;
     white-space: nowrap ;
+    font-size: 14px;
 }
 textarea{
     font-family: Inter, Arial, Helvetica, sans-serif;
@@ -122,7 +123,7 @@ button{
 
 .btnCancel{background-color: #008a6543;color: var(--verdeEscuro);}
 
-.modalOverlay {
+/* .modalOverlay {
     position: fixed;
     inset: 0;
 
@@ -154,7 +155,7 @@ button{
     padding: 25px;
 
     box-sizing: border-box;
-}
+} */
 
 form{
     .carrossel{
@@ -164,6 +165,15 @@ form{
             padding: 0;
         }
 }
+
+.carrossel:has(#adminSobreGaleria){
+    padding: 0 20px !important;
+}
+#adminSobreGaleria, #adminSobreEspacos{
+    background-color: var(--verdeEscuroTransparente);
+    border: 1px solid var(--headerBackground);
+}
+
 
 @media (width > 850px){
     .modal .card{
@@ -188,5 +198,9 @@ form{
         grid-column: 1;
         grid-row: 2;
         margin-top: -50px;
+    }
+
+    #sobreAdminGaleriaLeft{
+        min-width: unset;
     }
 }
