@@ -107,11 +107,46 @@ export default function AdminPontos() {
                             do parque.
                         </p>
                     </div>
+                    <div
+                        className="card vertical gap15 filtrosDesktop right"
+                        id="filtros"
+                    >
+                        <div className="pesquisa horizontal w100 center">
+                            <div className="pesquisaIcon"></div>
+                            <input
+                                type="text"
+                                placeholder="Pesquisar ponto..."
+                                value={search}
+                                onChange={(e) =>
+                                    setSearch(e.target.value)
+                                }
+                            />
+                        </div>
+
+                        <div className="horizontal justify w100 center">
+                            <SimpleButton
+                                path="/admin/pontos/cadastrar"
+                                icon="PlusDark"
+                                tema="dark"
+                                raio="10"
+                            >
+                                Cadastrar ponto
+                            </SimpleButton>
+                            <Select
+                                options={Object.keys(order)}
+                                value={orderKey}
+                                onChange={(value) =>
+                                    setOrderKey(value as OrderKey)
+                                }
+                                style="none"
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 {createPortal(
                     <div
-                        className="horizontal gap5"
+                        className="horizontal gap5 filtrosMobile"
                         id="filtros"
                     >
                         <Select
