@@ -1226,7 +1226,7 @@ export default function EditarSobre() {
 
                                             <button
                                                 type="button"
-                                                onClick={() => (adicionarEspaco)}
+                                                onClick={() => adicionarEspaco()} 
                                                 disabled={salvandoEspaco}
                                             >
                                                 {salvandoEspaco
@@ -1667,12 +1667,12 @@ export default function EditarSobre() {
                                                             }
                                                             disabled={
                                                                 removendoImagemGaleria !==
-                                                                    null ||
+                                                                null ||
                                                                 salvandoGaleria
                                                             }
                                                         >
                                                             {removendoImagemGaleria ===
-                                                            imagem.id
+                                                                imagem.id
                                                                 ? "Removendo..."
                                                                 : "Remover imagem"}
                                                         </button>
@@ -1904,7 +1904,7 @@ export default function EditarSobre() {
 
                     </div>
                 </form>
-                </section>
+            </section>
         </ProtectedRoute>
     );
 }
