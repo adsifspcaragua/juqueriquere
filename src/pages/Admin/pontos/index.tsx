@@ -235,7 +235,7 @@ export default function AdminPontos() {
                     title={itemParaQrCode?.nome || ''} 
                 />
 
-                <div className="vertical gap15">
+                <div className="vertical gap15"> 
                     <div className="vertical gap5">
                         <h2>Pontos cadastrados</h2>
                         <h4>({pontosFiltrados.length}) pontos encontrados</h4>
