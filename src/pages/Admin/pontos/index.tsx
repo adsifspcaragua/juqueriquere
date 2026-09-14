@@ -170,6 +170,8 @@ export default function AdminPontos() {
                                 setOrderKey(value as OrderKey)
                             }
                             style="none"
+                            compacto
+                            icon="select"
                         />
 
                         <div className="pesquisa horizontal">
@@ -233,8 +235,11 @@ export default function AdminPontos() {
                     title={itemParaQrCode?.nome || ''} 
                 />
 
-                <div className="vertical gap5">
-                    <h2>Pontos cadastrados ({pontosFiltrados.length})</h2>
+                <div className="vertical gap15">
+                    <div className="vertical gap5">
+                        <h2>Pontos cadastrados</h2>
+                        <h4>({pontosFiltrados.length}) pontos encontrados</h4>
+                    </div>
 
                     <div className="vertical gap15 desktopWrap">
                         {pontosFiltrados.map((ponto) => {

@@ -125,15 +125,40 @@ async function excluirTrilha() {
                         <h1>Gerenciar Trilhas</h1>
                         <p>Cadastre, edite e organize as trilhas do parque.</p>
                     </div>
+                    <div className="card vertical gap15 filtrosDesktop" id="filtros">
+                        <div className="pesquisa center horizontal">
+                            <div className="pesquisaIcon"></div>
+                            <input
+                                type="text"
+                                placeholder="Pesquisar trilha..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
+                        </div>
+                        <div className="horizontal gap15 justify w100 center">
+                            <SimpleButton path="/admin/trilhas/cadastrar" icon="PlusDark" tema="dark" raio="10">
+                                Cadastrar trilha
+                            </SimpleButton>
+                            <Select
+                                options={Object.keys(order)}
+                                value={orderKey}
+                                onChange={(value) => setOrderKey(value as OrderKey)}
+                                style="none"
+                                icon="select"
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 {createPortal(
-                    <div className="horizontal gap5" id="filtros">
+                    <div className="horizontal gap5 filtrosMobile" id="filtros">
                         <Select
                             options={Object.keys(order)}
                             value={orderKey}
                             onChange={(value) => setOrderKey(value as OrderKey)}
                             style="none"
+                            compacto
+                            icon="select"
                         />
                         <div className="pesquisa horizontal">
                             <div className="pesquisaIcon"></div>
@@ -186,8 +211,8 @@ async function excluirTrilha() {
 
                 <div className="vertical gap15">
                     <div className="vertical gap5">
-                        <h1>Trilhas cadastradas</h1>
-                        <p>{trilhasFiltradas.length} trilha(s) encontrada(s).</p>
+                        <h2>Trilhas cadastradas</h2>
+                        <h4>{trilhasFiltradas.length} trilha(s) encontrada(s).</h4>
                     </div>
 
                     <div className="listaGrid desktopWrap gap15">

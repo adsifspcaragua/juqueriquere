@@ -7,6 +7,7 @@ import CardTrilha from '../../components/ui/CardTrilha.tsx';
 import type Trilha from './TrilhaInfo';
 import { createPortal } from "react-dom";
 import '../_styles/trilhas.css'
+import SimpleButton from '../../components/ui/buttons/SimpleButton.tsx';
 
 export default function Trilhas() {
 
@@ -80,17 +81,41 @@ export default function Trilhas() {
             <div className="paddingHeader2"></div>
 
             <section>
-                <div className="conteudo vertical">
+                <div className="conteudo vertical desktopWrap1-2">
 
-                    <div className="img-fade" id="capivara"></div>
-
-                    <div className="info vertical gap5">
-                        <h1>Trilhas</h1>
-                        <p>Explore caminhos serenos, admire vistas deslumbrantes e encontre a paz na jornada.</p>
+                    <div className="vertical gap15">
+                        <div className="img-fade" id="capivara"></div>
+                        <SimpleButton path='../Mapa' type='back' icon='setaBack'>Voltar para o Mapa</SimpleButton>
+                        <div className="info vertical gap5">
+                            <h1>Trilhas</h1>
+                            <p>Explore caminhos serenos, admire vistas deslumbrantes e encontre a paz na jornada.</p>
+                        </div>
+                        <div className="card vertical gap15 filtrosDesktop" id="filtros">
+                            <div className="pesquisa center horizontal">
+                                <div className="pesquisaIcon"></div>
+                                <input
+                                    type="text"
+                                    placeholder="Pesquisar trilha..."
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+                            </div>
+                            <div className="horizontal w100 justifyRight">
+                                <Select
+                                    options={Object.keys(order)}
+                                    onChange={(newValue) => {
+                                        setOrderKey(newValue as OrderKey);
+                                    }}
+                                    value={orderKey}
+                                    icon='select'
+                                    style='none'
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="lista vertical">
-                        <p>{trilhasFiltradas.length} trilhas encontradas.</p>
+                        <p>{trilhasFiltradas.length} trilhas encontradas</p>
 
                         <div className="listaGrid">
                             {trilhasList}

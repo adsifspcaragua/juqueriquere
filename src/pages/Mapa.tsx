@@ -177,7 +177,7 @@ export default function Explorar() {
                                         >
                                             {pontos}
                                         </motion.div>
-                                        <p>(exibindo {pontosSize[0]} de {pontosSize[1]})</p>
+                                        <p>Exibindo {pontosSize[0]} de {pontosSize[1]} pontos de interesse</p>
                                         </>
                                         : 
                                         <>
