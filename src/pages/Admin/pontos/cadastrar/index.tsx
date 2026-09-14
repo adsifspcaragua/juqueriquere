@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "../../../../lib/supabase.ts";
 import { db, type ImagemDB } from "../../../../lib/dexie.ts";
+import { createRecord } from "../../../../lib/services/crud.ts";
+import { uploadImagem } from "../../../../lib/services/images.ts";
+import { convertToWebP } from "../../../../utils/imageConverter.ts";
+
 import SimpleButton from "../../../../components/ui/buttons/SimpleButton.tsx";
 import DraggableCarousel from "../../../../components/ui/DraggableCarousel.tsx";
 import AutoResizeTextarea from "../../../../utils/AutoResizeTextarea.tsx";
-import { convertToWebP } from "../../../../utils/imageConverter.ts";
-
-// Importações necessárias para simular a página Ponto.tsx no preview
 import Map from "../../../../components/ui/Map/Map.tsx";
-import "../../../_styles/ponto.css";
 import ProtectedRoute from "../../../../components/Protected.tsx";
+
+import "../../../_styles/ponto.css";
 
 interface Trilha {
     id: number;
@@ -23,7 +25,7 @@ export default function CadastrarPontoInteresse() {
     const [trilhaSelecionada, setTrilhaSelecionada] = useState<number | null>(null);
 
     const [imagensSelecionadas, setImagensSelecionadas] = useState<File[]>([]);
-    const [imagensBase64, setImagensBase64] = useState<string[]>([]);
+    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
     const [carregando, setCarregando] = useState(false);
 
     // --- ESTADOS DO PREVIEW ---
@@ -32,8 +34,8 @@ export default function CadastrarPontoInteresse() {
         nome: string;
         descricao: string;
         planta: string;
-        latitude: string; // Mudado para string para reverter perfeitamente para o input text/number
-        longitude: string; // Mudado para string para reverter perfeitamente para o input text/number
+        latitude: string;
+        longitude: string;
     } | null>(null);
 
     useEffect(() => {
@@ -50,46 +52,23 @@ export default function CadastrarPontoInteresse() {
         carregarTrilhas();
     }, []);
 
-
-    async function handleFileChange(
-        e: React.ChangeEvent<HTMLInputElement>
-    ) {
+    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         if (!e.target.files) return;
 
         const files = Array.from(e.target.files);
+        const newUrls = files.map((file) => URL.createObjectURL(file));
 
-        const novosBase64: string[] = [];
-
-        for (const file of files) {
-            const base64 = await new Promise<string>((resolve, reject) => {
-                const reader = new FileReader();
-
-                reader.onload = () => {
-                    resolve(reader.result as string);
-                };
-
-                reader.onerror = () => {
-                    reject(new Error("Erro ao carregar imagem."));
-                };
-
-                reader.readAsDataURL(file);
-            });
-
-            novosBase64.push(base64);
-        }
-
-        setImagensSelecionadas(files);
-        setImagensBase64(novosBase64);
+        setImagensSelecionadas((prev) => [...prev, ...files]);
+        setPreviewUrls((prev) => [...prev, ...newUrls]);
     }
-
-
 
     function handleRemoveImage(indexToRemove: number) {
+        URL.revokeObjectURL(previewUrls[indexToRemove]);
+
         setImagensSelecionadas((prev) => prev.filter((_, idx) => idx !== indexToRemove));
-        setImagensBase64((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+        setPreviewUrls((prev) => prev.filter((_, idx) => idx !== indexToRemove));
     }
 
-    // --- GERA OS DADOS PARA O PREVIEW ---
     function handleAtivarPreview() {
         if (!formRef.current) return;
 
@@ -110,7 +89,7 @@ export default function CadastrarPontoInteresse() {
 
         try {
             const formData = new FormData(e.currentTarget);
-            const dados = {
+            const dadosPontoSupabase = {
                 trilha_id: trilhaSelecionada,
                 nome: formData.get("nome") as string,
                 descricao: formData.get("descricao") as string,
@@ -121,75 +100,80 @@ export default function CadastrarPontoInteresse() {
                 longitude: formData.get("longitude") ? Number(formData.get("longitude")) : null,
             };
 
-            const { data: novoPonto, error: errorPonto } = await supabase
-                .from("pontos_interesse")
-                .insert(dados)
-                .select()
-                .single();
-
-            if (errorPonto) throw errorPonto;
+            const novoPonto = await createRecord<any>("pontos_interesse", dadosPontoSupabase);
+            if (!novoPonto) throw new Error("Não foi possível criar o ponto de interesse.");
 
             await db.pontos_interesse.put(novoPonto);
 
             if (imagensSelecionadas.length > 0) {
-                const promessasImagens = imagensSelecionadas.map(async (file, index) => {
-                    const stringWebPBase64 = await convertToWebP(file, 0.8);
-                    return {
+                for (let index = 0; index < imagensSelecionadas.length; index++) {
+                    const file = imagensSelecionadas[index];
+
+                    // Converte para Blob WebP
+                    const blobWebP = await convertToWebP(file, 0.8);
+
+                    const nomeArquivo = `${crypto.randomUUID()}.webp`;
+                    const caminho = `pontos/${nomeArquivo}`;
+
+                    // Upload para o Storage do Supabase
+                    await uploadImagem(blobWebP, caminho);
+
+                    const registroImagem = await createRecord<any>("imagens", {
                         trilha_id: null,
                         ponto_interesse_id: novoPonto.id,
-                        caminho_arquivo: stringWebPBase64,
-                        legenda: `Imagem ${index + 1} do ponto de interesse ${novoPonto.nome}`
-                    };
-                });
+                        caminho_arquivo: caminho,
+                        legenda: `Imagem ${index + 1} do ponto de interesse ${novoPonto.nome}`,
+                    });
 
-                const dadosImagens = await Promise.all(promessasImagens);
-                const { data: novasImagens, error: erroImagens } = await supabase
-                    .from("imagens")
-                    .insert(dadosImagens)
-                    .select();
-
-                if (erroImagens) throw erroImagens;
-                if (novasImagens) {
-                    await db.imagens.bulkPut(novasImagens as ImagemDB[]);
+                    // Se a imagem foi cadastrada no banco, grava no Dexie local com o Blob do arquivo
+                    if (registroImagem) {
+                        await db.imagens.put({
+                            ...registroImagem,
+                            arquivo: blobWebP,
+                        } as ImagemDB);
+                    }
                 }
             }
 
             alert("Ponto de interesse e imagens cadastrados com sucesso!");
+
+            // Limpa URLs da memória e reseta o formulário
+            previewUrls.forEach((url) => URL.revokeObjectURL(url));
             formRef.current?.reset();
-            setDadosPreview(null); // Limpa o cache temporário
+            setDadosPreview(null);
             setTrilhaSelecionada(null);
             setImagensSelecionadas([]);
-            setImagensBase64([]);
+            setPreviewUrls([]);
             setPreviewAtivo(false);
 
         } catch (error: any) {
-            console.error(error);
-            alert(`Erro ao cadastrar: ${error.message || error}`);
+            console.error("Erro ao cadastrar ponto de interesse:", error);
+            alert(`Erro ao cadastrar: ${error?.message || error}`);
         } finally {
             setCarregando(false);
         }
     }
 
-    const nomeTrilhaSelecionada = trilhas.find(t => t.id === trilhaSelecionada)?.nome || "Nenhuma Trilha";
+    const nomeTrilhaSelecionada = trilhas.find((t) => t.id === trilhaSelecionada)?.nome || "Nenhuma Trilha";
 
-    // renderização preview
+    // --- RENDERIZAÇÃO DO PREVIEW ---
     if (previewAtivo && dadosPreview) {
-        const imagensListPreview = imagensBase64.map((imagem, index) => (
+        const imagensListPreview = previewUrls.map((url, index) => (
             <div key={String(index)}>
-                <img src={imagem} alt="Preview" />
+                <img src={url} alt="Preview" />
             </div>
         ));
 
         return (
             <>
                 <div className="paddingHeader"></div>
-                <div style={{ background: '#ff9800', color: '#000', padding: '10px', textAlign: 'center', fontWeight: 'bold' }}>
+                <div style={{ background: "#ff9800", color: "#000", padding: "10px", textAlign: "center", fontWeight: "bold" }}>
                     MODO PREVIEW - O ponto ainda não foi salvo no banco de dados.
                 </div>
 
-                <section className='conteudo vertical gap15'>
+                <section className="conteudo vertical gap15">
                     <div className="horizontal gap15">
-                        <SimpleButton type="back" icon="setaBack" raio='10' onClick={() => setPreviewAtivo(false)}>
+                        <SimpleButton type="back" icon="setaBack" raio="10" onClick={() => setPreviewAtivo(false)}>
                             Voltar para a Edição/Formulário
                         </SimpleButton>
                     </div>
@@ -221,7 +205,7 @@ export default function CadastrarPontoInteresse() {
 
                                 <div className="vertical gap5">
                                     <p>Aparece em:</p>
-                                    <SimpleButton tema='dark' raio='10'>{nomeTrilhaSelecionada}</SimpleButton>
+                                    <SimpleButton tema="dark" raio="10">{nomeTrilhaSelecionada}</SimpleButton>
                                     {dadosPreview.latitude && dadosPreview.longitude && (
                                         <p>Coordenadas: {dadosPreview.latitude}, {dadosPreview.longitude}</p>
                                     )}
@@ -234,7 +218,7 @@ export default function CadastrarPontoInteresse() {
         );
     }
 
-    // renderização do forms
+    // --- RENDERIZAÇÃO DO FORMULÁRIO ---
     return (
         <ProtectedRoute>
             <div className="paddingHeader"></div>
@@ -336,7 +320,7 @@ export default function CadastrarPontoInteresse() {
                                 <DraggableCarousel
                                     items={imagensSelecionadas.map((file, idx) => (
                                         <div key={idx} className="uploadPreview vertical gap5 carrosselCard">
-                                            <img src={imagensBase64[idx]} alt={file.name} />
+                                            <img src={previewUrls[idx]} alt={file.name} />
                                             <button
                                                 type="button"
                                                 onClick={() => handleRemoveImage(idx)}
@@ -352,13 +336,13 @@ export default function CadastrarPontoInteresse() {
                         )}
                     </div>
 
-                    {/* Botões de Ação na parte inferior do formulário */}
-                    <div className="horizontal gap15" style={{ marginTop: '10px' }}>
+                    <div className="horizontal gap15" style={{ marginTop: "10px" }}>
                         <button
                             type="button"
                             className="btn-preview"
                             onClick={handleAtivarPreview}
-                            style={{ background: '#4a5568', color: '#fff', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer', flex: 1 }}
+                            disabled={carregando}
+                            style={{ background: "#4a5568", color: "#fff", padding: "10px 20px", borderRadius: "5px", cursor: "pointer", flex: 1 }}
                         >
                             Visualizar Preview da Página
                         </button>
