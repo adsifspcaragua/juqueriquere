@@ -203,38 +203,46 @@ export default function EditarUsuario() {
                             <p>Visualize as informações de perfil e credenciais de acesso ao painel de administração.</p>
                         </div>
 
-                        <div className="desktopWrap">
-                            <div className="card vertical gap15">
-                                <h3>Foto de perfil</h3>
-                                <div className="horizontal center  gap15">
-                                    <img
-                                        src={previewFotoUrl || defaultPfp}
-                                        alt="Foto do usuário"
-                                        className="userImg"
-                                    />
-                                    <div className="vertical btnFull gap5">
-                                        <input
-                                            type="file"
-                                            ref={fileInputRef}
-                                            accept="image/*"
-                                            onChange={handleFileSelect}
-                                            style={{ display: "none" }}
+                        <div className="desktopWrap1-2">
+                            <div className="vertical gap15">
+                                <div className="card vertical gap15 userCard">
+                                    <h3>Foto de perfil</h3>
+                                    <div className="horizontal center  gap15">
+                                        <img
+                                            src={previewFotoUrl || defaultPfp}
+                                            alt="Foto do usuário"
+                                            className="userImg"
                                         />
-                                        <div onClick={() => fileInputRef.current?.click()}>
-                                            <SimpleButton tema="dark" raio="10">
-                                                Carregar imagem
-                                            </SimpleButton>
-                                        </div>
-                                        {previewFotoUrl && (
-                                            <div onClick={handleRemoveImage}>
-                                                <SimpleButton tema="red" raio="10">
-                                                    Remover imagem
+                                        <div className="vertical btnFull gap5">
+                                            <input
+                                                type="file"
+                                                ref={fileInputRef}
+                                                accept="image/*"
+                                                onChange={handleFileSelect}
+                                                style={{ display: "none" }}
+                                            />
+                                            <div onClick={() => fileInputRef.current?.click()}>
+                                                <SimpleButton tema="dark" raio="10">
+                                                    Carregar imagem
                                                 </SimpleButton>
                                             </div>
-                                        )}
+                                            {previewFotoUrl && (
+                                                <div onClick={handleRemoveImage}>
+                                                    <SimpleButton tema="red" raio="10">
+                                                        Remover imagem
+                                                    </SimpleButton>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
+                                
+                                <div className="card vertical gap15">
+                                    <h4>Segurança:</h4>
+                                    <SimpleButton tema="dark" raio="10" path={`/admin/usuario/redefinir-senha/${usuario.id}`}>Redefinir senha</SimpleButton>
+                                </div>
                             </div>
+
                             <div className="card vertical gap15">
                                 <div className="vertical gap5">
                                     <label>Nome</label>
@@ -261,9 +269,6 @@ export default function EditarUsuario() {
                                         {isSaving ? "Salvando..." : "Salvar Alterações"}
                                     </SimpleButton>
                                 </div>
-                            </div>
-                            <div className="card vertical gap15">
-                                <SimpleButton tema="dark" raio="10" path={`/admin/usuario/redefinir-senha/${usuario.id}`}>redefinir senha</SimpleButton>
                             </div>
                         </div>
                     </>

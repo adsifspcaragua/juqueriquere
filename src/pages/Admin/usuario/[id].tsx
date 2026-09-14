@@ -65,20 +65,21 @@ export default function Usuario() {
         <ProtectedRoute>
             <div className="paddingHeader"></div>
 
-            <section className="conteudo vertical gap30">
-                <div className="vertical gap15">
-                    <SimpleButton type="back" icon="setaBack" path="/admin/usuario/list">
-                        Voltar para Usuários
-                    </SimpleButton>
+            <section className="conteudo vertical gap15">
+                <SimpleButton type="back" icon="setaBack" path="/admin/usuario/list">
+                    Voltar para Usuários
+                </SimpleButton>
 
-                    <div className="card vertical userCard desktopWrap center">
+                <div className="vertical gap15 desktopWrap1-2">
+                    
+                    <div className="card vertical left">
                         {loading ? (
                             <p>Carregando dados do usuário...</p>
                         ) : !usuario ? (
                             <p>Usuário não encontrado.</p> 
                         ) : (
                             <>
-                                <div className="horizontal gap15 center"> 
+                                <div className="horizontal gap15 center w100"> 
                                     <img
                                         src={usuario.foto_url || defaultPfp}
                                         alt={`Foto de ${usuario.name}`}
@@ -103,7 +104,7 @@ export default function Usuario() {
                                     </div>
                                 </div>
 
-                                <div className="horizontal gap5 HtoV">
+                                <div className="horizontal gap5 btnFull">
                                     <SimpleButton tema="dark" raio="10" path={`/admin/usuario/editar/${usuario.id}`}>
                                         Editar conta
                                     </SimpleButton>
@@ -117,16 +118,16 @@ export default function Usuario() {
                             </>
                         )}
                     </div>
-                </div>
 
-                {!loading && usuario && (
-                    <div className="vertical card gap15">
-                        <h4>Contribuições do usuário:</h4>
-                        <div className="vertical gap5">
-                            <p>Em breve...</p>
+                    {!loading && usuario && (
+                        <div className="vertical card gap15">
+                            <h4>Contribuições do usuário:</h4>
+                            <div className="vertical gap5">
+                                <p>Em breve...</p>
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </section>
         </ProtectedRoute>
     );

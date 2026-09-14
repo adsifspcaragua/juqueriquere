@@ -293,21 +293,20 @@ export default function Sobre() {
                 ) : (
 
                     <>
-                        <div className="desktopWrap gap15">
+                        <div className="desktopWrap1-2 gap30">
+                            <div className="vertical gap15">
+                                <h1>Sobre o parque</h1>
+                                <p>
+                                    {sobre?.descricao}
+                                    <br />
+                                    <br />
+                                    {sobre?.area}
+                                </p>
+                            </div>
 
-                            {/*
-                             * ==========================================
-                             * GALERIA
-                             * ==========================================
-                             */}
-
-                            <div
-                                className="carrossel horizontal galeria"
-                            >
-
+                            <div className="carrossel horizontal galeria" >
                                 {imagensGaleria.map(
                                     (imagem) => (
-
                                         <img
                                             key={imagem.id}
                                             src={obterUrlImagemGaleria(
@@ -319,21 +318,9 @@ export default function Sobre() {
                                                 "Imagem do Parque"
                                             }
                                         />
-
                                     )
                                 )}
-
                             </div>
-
-                            <p>
-                                {sobre?.descricao}
-
-                                <br />
-                                <br />
-
-                                {sobre?.area}
-                            </p>
-
                         </div>
 
                         <div className="linhaPontilhadaLight"></div>
@@ -342,10 +329,7 @@ export default function Sobre() {
                             Espaços do Parque
                         </h1>
 
-                        <div
-                            className="carrossel horizontal"
-                            id="carrosselEspacos"
-                        >
+                        <div className="carrossel horizontal" id="carrosselEspacos">
 
                             {espacos.map(
                                 (espaco) => (
@@ -358,18 +342,6 @@ export default function Sobre() {
                                                 `url(${espaco.imagemUrl || imgNotFound})`
                                         }}
                                     >
-
-                                        {espaco.imagemUrl && (
-                                            <img
-                                                src={
-                                                    espaco.imagemUrl
-                                                }
-                                                alt={
-                                                    espaco.titulo
-                                                }
-                                            />
-                                        )}
-
                                         <div
                                             className="fade vertical gap5"
                                         >

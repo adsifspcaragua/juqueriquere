@@ -597,8 +597,6 @@ ul{
         justify-content: end;
     }
 }
-#convivencia{background-image: url(assets/img/sobre/Sede\ administrativa_.webp);}
-#salaverde{background-image: url(assets/img/sobre/Vista\ interna\ da\ sala\ verde.webp);}
 
 /*  -- CARD PWA --  */
 .pwaCard{
@@ -715,7 +713,7 @@ ul{
     }
 
     .desktopWrap{
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 30px;
     }
     .desktopWrap3{
@@ -737,8 +735,19 @@ ul{
         }
     }
 
+    .galeria{
+        padding: 0;
+        margin: 0;
+        .carrosselCard{
+            min-width: unset !important;
+            height: 300px;
+            width: auto !important;
+        }
+    }
+
     #carrosselEspacos{
-        width: 100%;
+        padding: 0;
+        margin: 0;
         .carrosselCard{
             min-width: 0 !important;
             width: 30% !important;
