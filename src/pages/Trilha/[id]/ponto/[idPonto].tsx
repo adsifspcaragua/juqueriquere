@@ -17,14 +17,14 @@ import Map from '../../../../components/ui/Map/Map.tsx';
 
 export default function Ponto() {
     const { id, idPonto } = useParams<{
-        id: string;
+        id?: string;
         idPonto: string;
     }>();
 
     const [searchParams] = useSearchParams();
     let from = searchParams.get('from') || 'Mapa';
     
-    const [trilha, setTrilha] = useState<TrilhaDB>();
+    const [trilha, setTrilha] = useState<TrilhaDB | null>(null);
     const [ponto, setPontoDados] = useState<PontoInteresseDB>();
     const [imagens, setImagens] = useState<string[]>([]);
 
@@ -34,18 +34,20 @@ export default function Ponto() {
         let urlsCriadas: string[] = [];
 
         async function carregar() {
-            if (!id || !idPonto) return;
+            if (!idPonto) return;
 
-            const idTrilha = Number(id);
             const idPontoNumerico = Number(idPonto);
 
-            const trilhaDB = await db.trilhas.get(idTrilha);
+            const pontoDB = await db.pontos_interesse.get(idPontoNumerico);
+            if (!pontoDB) return;
 
-            const pontoDB = await db.pontos_interesse.get(
-                idPontoNumerico
-            );
+            // Identifica o ID da trilha via parâmetro de URL ou via campo no próprio ponto (caso exista)
+            const idTrilha = id ? Number(id) : pontoDB.trilha_id;
+            let trilhaDB: TrilhaDB | undefined = undefined;
 
-            if (!pontoDB || !trilhaDB) return;
+            if (idTrilha) {
+                trilhaDB = await db.trilhas.get(idTrilha);
+            }
 
             const imagensDB = await db.imagens
                 .where('ponto_interesse_id')
@@ -62,15 +64,13 @@ export default function Ponto() {
                     return url;
                 });
 
-            setTrilha(trilhaDB);
+            setTrilha(trilhaDB || null);
             setPontoDados(pontoDB);
             setImagens(urls);
         }
 
         carregar();
 
-        // Libera as URLs criadas quando o componente for desmontado
-        // ou quando id/idPonto mudar.
         return () => {
             urlsCriadas.forEach((url) => {
                 URL.revokeObjectURL(url);
@@ -78,7 +78,7 @@ export default function Ponto() {
         };
     }, [id, idPonto]);
 
-    if (!ponto || !trilha) {
+    if (!ponto) {
         return <NotFound />;
     }
 
@@ -87,29 +87,27 @@ export default function Ponto() {
     }
 
     const goBack = () => {
-        switch (from) {
-            case `${id}`:
-                return (
-                    <SimpleButton
-                        path={`/trilha/${id}`}
-                        type="back"
-                        icon="setaBack"
-                    >
-                        Voltar para {trilha.nome}
-                    </SimpleButton>
-                );
-
-            default:
-                return (
-                    <SimpleButton
-                        path={`/${from}/`}
-                        type="back"
-                        icon="setaBack"
-                    >
-                        Voltar para {from}
-                    </SimpleButton>
-                );
+        if (id && trilha && from === id) {
+            return (
+                <SimpleButton
+                    path={`/trilha/${id}`}
+                    type="back"
+                    icon="setaBack"
+                >
+                    Voltar para {trilha.nome}
+                </SimpleButton>
+            );
         }
+
+        return (
+            <SimpleButton
+                path={`/${from}/`}
+                type="back"
+                icon="setaBack"
+            >
+                Voltar para {from}
+            </SimpleButton>
+        );
     };
 
     return (
@@ -166,7 +164,7 @@ export default function Ponto() {
                                 <div className="mapa">
                                     <Map
                                         pointId={Number(idPonto)}
-                                        id={Number(id)}
+                                        id={trilha?.id}
                                     />
                                 </div>
                             )}
@@ -175,13 +173,17 @@ export default function Ponto() {
 
                                 <p>Aparece em:</p>
 
-                                <SimpleButton
-                                    path={`/trilha/${id}`}
-                                    tema="dark"
-                                    raio="10"
-                                >
-                                    {trilha.nome}
-                                </SimpleButton>
+                                {trilha ? (
+                                    <SimpleButton
+                                        path={`/trilha/${trilha.id}`}
+                                        tema="dark"
+                                        raio="10"
+                                    >
+                                        {trilha.nome}
+                                    </SimpleButton>
+                                ) : (
+                                    <p>Nenhuma trilha associada</p>
+                                )}
 
                                 {ponto.latitude && ponto.longitude && (
                                     <p>
@@ -202,4 +204,3 @@ export default function Ponto() {
         </>
     );
 }
-
