@@ -38,11 +38,9 @@ export default function AdminPontos() {
         setPontoSelecionada(null);
     }
 
-
-    //adicionar filtro por trilha
     const order = {
-        "Nome A-Z": (a: any, b: any) => a.nome.localeCompare(b.nome),
-        "Nome Z-A": (a: any, b: any) => b.nome.localeCompare(a.nome),
+        "Nome A-Z": (a: PontoInteresseDB, b: PontoInteresseDB) => a.nome.localeCompare(b.nome),
+        "Nome Z-A": (a: PontoInteresseDB, b: PontoInteresseDB) => b.nome.localeCompare(a.nome),
     } as const;
 
     type OrderKey = keyof typeof order;
@@ -65,15 +63,15 @@ export default function AdminPontos() {
             const data = await db.pontos_interesse.toArray();
 
             if (data) setPontos(data);
-            if (dadosTrilhas) setTrilhas(dadosTrilhas);
+            if (dadosTrilhas) setTrilhas(dadosTrilhas as unknown as Trilha[]);
         }
 
         loadData();
     }, []);
 
     const findTrilha = (ponto: PontoInteresseDB) => {
-        const trilha = trilhas?.find(t => Number(t.id) === Number(ponto.trilha_id));
-        return trilha;
+        if (!ponto.trilha_id) return null;
+        return trilhas?.find(t => Number(t.id) === Number(ponto.trilha_id)) || null;
     }
 
     const abrirExcluir = (ponto: any) => {
@@ -85,6 +83,25 @@ export default function AdminPontos() {
         setModalDelete(false);
         setPontoSelecionada(null);
     };
+
+    // Aplica a busca por nome do ponto, planta ou nome da trilha e ordena os resultados
+    const pontosFiltrados = pontos
+        .filter((ponto) => {
+            const termo = search.toLowerCase().trim();
+            if (!termo) return true;
+
+            const nomePonto = ponto.nome?.toLowerCase() || "";
+            const plantaPonto = ponto.planta?.toLowerCase() || "";
+            const trilha = findTrilha(ponto);
+            const nomeTrilha = trilha?.nome?.toLowerCase() || "";
+
+            return (
+                nomePonto.includes(termo) ||
+                plantaPonto.includes(termo) ||
+                nomeTrilha.includes(termo)
+            );
+        })
+        .sort(order[orderKey]);
 
     return (
         <ProtectedRoute>
@@ -103,8 +120,7 @@ export default function AdminPontos() {
                     <div className="card vertical gap5 adminCard" id="adminPontosCard">
                         <h1>Gerenciar Pontos</h1>
                         <p>
-                            Cadastre, edite e organize as pontos
-                            do parque.
+                            Cadastre, edite e organize os pontos do parque.
                         </p>
                     </div>
                     <div
@@ -115,11 +131,9 @@ export default function AdminPontos() {
                             <div className="pesquisaIcon"></div>
                             <input
                                 type="text"
-                                placeholder="Pesquisar ponto..."
+                                placeholder="Pesquisar por ponto, planta ou trilha..."
                                 value={search}
-                                onChange={(e) =>
-                                    setSearch(e.target.value)
-                                }
+                                onChange={(e) => setSearch(e.target.value)}
                             />
                         </div>
 
@@ -164,9 +178,7 @@ export default function AdminPontos() {
                                 type="text"
                                 placeholder="Pesquisar ponto..."
                                 value={search}
-                                onChange={(e) =>
-                                    setSearch(e.target.value)
-                                }
+                                onChange={(e) => setSearch(e.target.value)}
                             />
                         </div>
 
@@ -174,8 +186,7 @@ export default function AdminPontos() {
                             <SimpleButton
                                 path="/admin/pontos/cadastrar"
                                 icon="Plus"
-                            >
-                            </SimpleButton>
+                            />
                         </div>
                     </div>,
                     document.body
@@ -212,55 +223,77 @@ export default function AdminPontos() {
                         setQrModalOpen(false);
                         setItemParaQrCode(null);
                     }} 
-                    path={itemParaQrCode ? `trilha/${itemParaQrCode.trilha_id}/ponto/${itemParaQrCode.id}` : ''} 
+                    path={
+                        itemParaQrCode
+                            ? itemParaQrCode.trilha_id
+                                ? `trilha/${itemParaQrCode.trilha_id}/ponto/${itemParaQrCode.id}`
+                                : `ponto/${itemParaQrCode.id}`
+                            : ''
+                    } 
                     title={itemParaQrCode?.nome || ''} 
                 />
 
                 <div className="vertical gap5">
-                    <h2>Pontos cadastrados</h2>
+                    <h2>Pontos cadastrados ({pontosFiltrados.length})</h2>
 
                     <div className="vertical gap15 desktopWrap">
-                        {pontos.map((ponto) => (
-                            <div
-                                className="card horizontal gap5 justify"
-                                key={ponto.id}
-                            >
-                                <div className="cardPontoCompacto vertical gap15">
-                                    <div className="vertical gap5">
-                                        <SimpleButton tema="none" icon="none" path={`/trilha/${findTrilha(ponto)?.id}/ponto/${ponto.id}?from=admin/pontos`}>
-                                            <h2>{ponto.nome}</h2>
-                                        </SimpleButton>
-                                        
-                                        <h4>{ponto.planta}</h4>
-                                        <p>{ponto.latitude}, {ponto.longitude}</p>
+                        {pontosFiltrados.map((ponto) => {
+                            const trilha = findTrilha(ponto);
+                            const pathPonto = trilha
+                                ? `/trilha/${trilha.id}/ponto/${ponto.id}?from=admin/pontos`
+                                : `/ponto/${ponto.id}?from=admin/pontos`;
 
+                            return (
+                                <div
+                                    className="card horizontal gap5 justify"
+                                    key={ponto.id}
+                                >
+                                    <div className="cardPontoCompacto vertical gap15">
+                                        <div className="vertical gap5">
+                                            <SimpleButton tema="none" icon="none" path={pathPonto}>
+                                                <h2>{ponto.nome}</h2>
+                                            </SimpleButton>
+                                            
+                                            {ponto.planta && <h4>{ponto.planta}</h4>}
+                                            {ponto.latitude && ponto.longitude && (
+                                                <p>{ponto.latitude}, {ponto.longitude}</p>
+                                            )}
+                                        </div>
+
+                                        {trilha ? (
+                                            <Link to={`/trilha/${trilha.id}`} className="seloTrilha horizontal center">
+                                                <img src={distancia} alt="Ícone de distância" />
+                                                <p>{trilha.nome}</p>
+                                            </Link>
+                                        ) : (
+                                            <div className="seloTrilha horizontal center">
+                                                <p>Sem trilha associada</p>
+                                            </div>
+                                        )}
                                     </div>
-                                    <Link to={`/trilha/${findTrilha(ponto)?.id}`} className="seloTrilha horizontal center">
-                                        <img src={distancia} />
-                                        <p>{findTrilha(ponto)?.nome || "Trilha não encontrada"}</p>
-                                    </Link>
+
+                                    <div className="btnFull actions vertical gap5">
+                                        <SimpleButton 
+                                            icon="QR" 
+                                            tema="dark" 
+                                            raio="10" 
+                                            onClick={() => {
+                                                setItemParaQrCode(ponto);
+                                                setQrModalOpen(true);
+                                            }}
+                                        />
+
+                                        <SimpleButton icon="Edit" tema="dark" raio="10" path={`/admin/pontos/editar/${ponto.id}`} />
+
+                                        <SimpleButton icon="Trash" tema="red" raio="10" onClick={() => abrirExcluir(ponto)} />
+                                    </div>
                                 </div>
+                            );
+                        })}
 
-                                <div className="btnFull actions vertical gap5">
-                                    <SimpleButton 
-                                        icon="QR" 
-                                        tema="dark" 
-                                        raio="10" 
-                                        onClick={() => {
-                                            setItemParaQrCode(ponto);
-                                            setQrModalOpen(true);
-                                        }}
-                                    >
-                                    </SimpleButton>
-
-                                    <SimpleButton icon="Edit" tema="dark" raio="10" path={`/admin/pontos/editar/${ponto.id}`}        >
-                                    </SimpleButton>
-
-                                    <SimpleButton icon="Trash" tema="red" raio="10" onClick={() => abrirExcluir(ponto)}>
-                                    </SimpleButton>
-                                </div>
-                            </div>
-                        ))}
+                        {pontosFiltrados.length === 0 && (
+                            <p style={{ padding: "10px 0" }}>Nenhum ponto encontrado.</p>
+                        )}
                     </div>
                 </div>
 
