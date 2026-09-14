@@ -241,7 +241,7 @@ export default function AdminPontos() {
                             const trilha = findTrilha(ponto);
                             const pathPonto = trilha
                                 ? `/trilha/${trilha.id}/ponto/${ponto.id}?from=admin/pontos`
-                                : `/ponto/${ponto.id}?from=admin/pontos`;
+                                : `/trilha/null/ponto/${ponto.id}?from=admin/pontos`;//isso mesmo, não é o correto, mas a correção virá quando tempo existir
 
                             return (
                                 <div
