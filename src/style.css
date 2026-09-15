@@ -613,9 +613,10 @@ ul{
 }
 /**/
 
-.userImg{
+.userImg, .devImg{
     background-color: var(--verdeEscuro);
     height: 100px;
+    width: 100px;
     aspect-ratio: 1/1;
     border-radius: 100%;
     border: 3px solid var(--verdeEscuro);

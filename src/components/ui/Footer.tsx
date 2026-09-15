@@ -6,7 +6,7 @@ import '../styles/Footer.css';
 export default function Footer(){
     return (
         <footer className="vertical">
-            <div className="desktopWrap justify center w100 gap30">      
+            <div className="desktopWrap3 justify w100 gap30">      
                 <div className="horizontal gap15 center" id="footerLogos">
                     <img src={logo} alt="Parque Natural Municipal Juqueriquerê" id="logoPNMJ"/>
                     <div className="linhaVertical"/>
@@ -20,6 +20,10 @@ export default function Footer(){
                         <Link to={"/"}>Início</Link>
                         <Link to={"/Mapa"}>Mapa</Link>
                         <Link to={"/sobre"}>Sobre o parque</Link>
+                        <br />
+                        <Link to={"/admin"}>Administração do site</Link>
+                        <Link to={"/Legal/TermosDeUso"}>Termos de Uso</Link>
+                        <Link to={"/Legal/PoliticaDePrivacidade"}>Política de Privacidade</Link>
                     </div>
                     <div className="vertical gap5 left">
                         <h5>Categorias</h5>
@@ -28,16 +32,23 @@ export default function Footer(){
                     </div>
                 </div>
 
-            </div>
-            <div className="linhaHorizontal"></div>
-            <div className="vertical gap15 center">
-                <div className="horizontal gap5" id="termos">
-                    <Link to={"/Legal/TermosDeUso"}>Termos de Uso</Link>
-                    <p>•</p>
-                    <Link to={"/Legal/PoliticaDePrivacidade"}>Política de Privacidade</Link>
+                <div className="horizontal gap30" id="linksFooter">
+                    <div className="vertical gap5 left">
+                        <h5>Desenvolvido por: </h5>
+                        <Link to={'https://github.com/Kauangithub'}>Kauan Machado</Link>
+                        <Link to={'https://github.com/lucashirotsu'}>Lucas Hirotsu</Link>
+                        <Link to={'https://github.com/MRC0sta'}>Matheus Costa</Link>
+                    </div>
+                    <div className="vertical gap5 left">
+                        <br />
+                        <Link to={'https://github.com/RafaelRibeiro398'}>Rafael Ribeiro</Link>
+                        <Link to={'https://github.com/fatalrestart'}>Ygor Prado</Link>
+                        <Link to={"/Desenvolvimento"}>Mais informações →</Link>
+                    </div>
                 </div>
-                <p>© 2026 - Parque Natural Municipal Juqueriquerê</p>
             </div>
+            <div className="linhaHorizontal"/>
+            <p>© 2026 - Parque Natural Municipal Juqueriquerê</p>
         </footer>
     );
 }
