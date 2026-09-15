@@ -18,10 +18,13 @@ interface MapProps {
   highlight?: number | string | (number | string)[]; 
   previewGeoJson?: any;
   previewColor?: string;
-  onDeleteLine?: (featureIndex: number) => void; // Callback para deleção
+  onDeleteLine?: (featureIndex: number) => void; // Callback para deleção;
+  center?: [number, number];
 }
 
 const MAP_CENTER: [number, number] = [-23.678, -45.4395]; 
+const zoom = 18;
+
 
 const isLine = (feature: any) => {
   const type = feature?.geometry?.type;
@@ -58,10 +61,10 @@ export default function Map({
   highlight,
   previewGeoJson,
   previewColor = "#000000",
-  onDeleteLine
+  onDeleteLine,
+  center
 }: MapProps) {
   const { filteredData, isLineHighlighted, isPointHighlighted } = useMapData(id, highlight, pointId);
-
   const handleEachFeature = (feature: any, layer: L.Layer) => {
     layer.on({
       click: (e) => {
@@ -89,13 +92,13 @@ export default function Map({
   return (
     <div style={{ height: '100%', width: '100%', minHeight: '350px', borderRadius: '8px', overflow: 'hidden' }}>
       <MapContainer 
-        center={MAP_CENTER} 
-        zoom={50} 
+        center={center || MAP_CENTER} 
+        zoom={zoom} 
         scrollWheelZoom={false}
         dragging={!L.Browser.mobile}
         style={{ height: '100%', width: '100%' }}
       >
-        <RecenterButton center={MAP_CENTER} />
+        <RecenterButton center={center || MAP_CENTER} zoom={zoom} />
         
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"

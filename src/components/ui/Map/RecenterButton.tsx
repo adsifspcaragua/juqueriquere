@@ -3,7 +3,12 @@ import { useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import SimpleButton from '../buttons/SimpleButton';
 
-export function RecenterButton({ center }: { center: [number, number] }) {
+interface RecenterButtonProps {
+  center: [number, number];
+  zoom?: number; // Prop opcional de zoom
+}
+
+export function RecenterButton({ center, zoom }: RecenterButtonProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   const map = useMapEvents({
@@ -11,7 +16,6 @@ export function RecenterButton({ center }: { center: [number, number] }) {
       const currentCenter = map.getCenter();
       const originCenter = L.latLng(center[0], center[1]);
       
-     
       const distance = currentCenter.distanceTo(originCenter);
       
       // Se a distância for maior que 50 metros, mostra o botão
@@ -35,9 +39,11 @@ export function RecenterButton({ center }: { center: [number, number] }) {
       }}
     >
       <SimpleButton
-      onClick={(e) => {
+        onClick={(e) => {
           e.stopPropagation();
-          map.flyTo(center, map.getZoom(), { duration: 0.7 });
+          // Usa o zoom recebido via prop ou mantém o zoom atual se for indefinido
+          const targetZoom = zoom ?? map.getZoom();
+          map.flyTo(center, targetZoom, { duration: 0.7 });
           setIsVisible(false);
         }}
         icon='Explorar'

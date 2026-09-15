@@ -9,6 +9,7 @@ import { db } from '../../lib/dexie';
 
 interface Ponto {
     id: number;
+    trilha_id: number;
     nome: string;
     planta?: string;
     latitude?: number | null;
@@ -20,7 +21,7 @@ interface Props {
     trilhaId: number;
 }
 
-export default function CardPonto({ ponto, trilhaId }: Props) {
+export default function CardPonto({ ponto }: Props) {
     const [imagem, setImagem] = useState<string>(trilhaGeneric);
 
     useEffect(() => {
@@ -93,7 +94,7 @@ export default function CardPonto({ ponto, trilhaId }: Props) {
 
     return (
         <Link
-            to={`/trilha/${trilhaId}/ponto/${ponto.id}?from=${pageName}`}
+            to={`/ponto/${ponto.id}?from=${pageName}`}
             className="cardPonto carrosselCard"
             style={{
                 backgroundImage: `url("${imagem}")`

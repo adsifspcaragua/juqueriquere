@@ -1,30 +1,27 @@
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
-import { usePageTitle } from "../../../../lib/hooks/usePageTitle.ts";
+import { usePageTitle } from "../../lib/hooks/usePageTitle.ts";
 
 import {
     db,
     type PontoInteresseDB,
     type TrilhaDB
-} from '../../../../lib/dexie.ts';
+} from '../../lib/dexie.ts';
 
-import NotFound from '../../../_components/NotFound.tsx';
+import NotFound from '../_components/NotFound.tsx';
 
-import SimpleButton from '../../../../components/ui/buttons/SimpleButton.tsx';
-import '../../../_styles/ponto.css';
-import GaleriaImagens from '../../../../components/ui/GaleriaImagens.tsx';
-import Map from '../../../../components/ui/Map/Map.tsx';
+import SimpleButton from '../../components/ui/buttons/SimpleButton.tsx';
+import '../_styles/ponto.css';
+import GaleriaImagens from '../../components/ui/GaleriaImagens.tsx';
+import Map from '../../components/ui/Map/Map.tsx';
 
 export default function Ponto() {
-    const { id, idPonto } = useParams<{
-        id?: string;
-        idPonto: string;
-    }>();
+    const { id } = useParams<{ id: string }>();
 
     const [searchParams] = useSearchParams();
-    let from = searchParams.get('from') || 'Mapa';
+    const from = searchParams.get('from') || 'Mapa';
     
-    const [trilha, setTrilha] = useState<TrilhaDB | null>(null);
+    const [trilhas, setTrilhas] = useState<TrilhaDB[]>([]);
     const [ponto, setPontoDados] = useState<PontoInteresseDB>();
     const [imagens, setImagens] = useState<string[]>([]);
 
@@ -34,19 +31,29 @@ export default function Ponto() {
         let urlsCriadas: string[] = [];
 
         async function carregar() {
-            if (!idPonto) return;
+            if (!id) return;
 
-            const idPontoNumerico = Number(idPonto);
+            const idPontoNumerico = Number(id);
 
             const pontoDB = await db.pontos_interesse.get(idPontoNumerico);
             if (!pontoDB) return;
 
-            // Identifica o ID da trilha via parâmetro de URL ou via campo no próprio ponto (caso exista)
-            const idTrilha = id ? Number(id) : pontoDB.trilha_id;
-            let trilhaDB: TrilhaDB | undefined = undefined;
+            // Suporte para 0, 1 ou múltiplas trilhas
+            let trilhasEncontradas: TrilhaDB[] = [];
 
-            if (idTrilha) {
-                trilhaDB = await db.trilhas.get(idTrilha);
+            const idsTrilhas: number[] = Array.isArray((pontoDB as any).trilha_ids)
+                ? (pontoDB as any).trilha_ids
+                : pontoDB.trilha_id ? [pontoDB.trilha_id] : [];
+
+            if (idsTrilhas.length > 0) {
+                const resultados = await db.trilhas.bulkGet(idsTrilhas);
+                trilhasEncontradas = resultados.filter((t): t is TrilhaDB => Boolean(t));
+            } else {
+                // Fallback: busca por vínculo no array de pontos das próprias trilhas
+                const todasTrilhas = await db.trilhas.toArray();
+                trilhasEncontradas = todasTrilhas.filter((t: any) =>
+                    Array.isArray(t.ponto_ids) && t.ponto_ids.includes(idPontoNumerico)
+                );
             }
 
             const imagensDB = await db.imagens
@@ -58,13 +65,11 @@ export default function Ponto() {
                 .filter((img) => img.arquivo instanceof Blob)
                 .map((img) => {
                     const url = URL.createObjectURL(img.arquivo!);
-
                     urlsCriadas.push(url);
-
                     return url;
                 });
 
-            setTrilha(trilhaDB || null);
+            setTrilhas(trilhasEncontradas);
             setPontoDados(pontoDB);
             setImagens(urls);
         }
@@ -76,32 +81,32 @@ export default function Ponto() {
                 URL.revokeObjectURL(url);
             });
         };
-    }, [id, idPonto]);
+    }, [id]);
 
     if (!ponto) {
         return <NotFound />;
     }
 
-    if (!from) {
-        from = 'explorar';
-    }
-
     const goBack = () => {
-        if (id && trilha && from === id) {
+        const idTrilhaOrigem = Number(from);
+        
+        // Se 'from' for o ID numérico de uma trilha
+        if (!isNaN(idTrilhaOrigem) && idTrilhaOrigem > 0) {
+            const trilhaOrigem = trilhas.find((t) => t.id === idTrilhaOrigem);
             return (
                 <SimpleButton
-                    path={`/trilha/${id}`}
+                    path={`/trilha/${idTrilhaOrigem}`}
                     type="back"
                     icon="setaBack"
                 >
-                    Voltar para {trilha.nome}
+                    Voltar para {trilhaOrigem ? trilhaOrigem.nome : 'Trilha'}
                 </SimpleButton>
             );
         }
 
         return (
             <SimpleButton
-                path={`/${from}/`}
+                path={`/${from.toLowerCase()}/`}
                 type="back"
                 icon="setaBack"
             >
@@ -163,9 +168,9 @@ export default function Ponto() {
                             {ponto.latitude && ponto.longitude && (
                                 <div className="mapa">
                                     <Map
-                                        pointId={Number(idPonto)}
-                                        id={trilha?.id}
-                                        center={[ponto.latitude,ponto.longitude]}
+                                        pointId={Number(id)}
+                                        id={trilhas[0]?.id}
+                                        center={[ponto.latitude, ponto.longitude]}
                                     />
                                 </div>
                             )}
@@ -174,14 +179,19 @@ export default function Ponto() {
 
                                 <p>Aparece em:</p>
 
-                                {trilha ? (
-                                    <SimpleButton
-                                        path={`/trilha/${trilha.id}`}
-                                        tema="dark"
-                                        raio="10"
-                                    >
-                                        {trilha.nome}
-                                    </SimpleButton>
+                                {trilhas.length > 0 ? (
+                                    <div className="vertical gap5">
+                                        {trilhas.map((trilha) => (
+                                            <SimpleButton
+                                                key={trilha.id}
+                                                path={`/trilha/${trilha.id}`}
+                                                tema="dark"
+                                                raio="10"
+                                            >
+                                                {trilha.nome}
+                                            </SimpleButton>
+                                        ))}
+                                    </div>
                                 ) : (
                                     <p>Nenhuma trilha associada</p>
                                 )}
