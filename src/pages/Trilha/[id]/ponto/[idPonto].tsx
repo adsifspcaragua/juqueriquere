@@ -165,6 +165,7 @@ export default function Ponto() {
                                     <Map
                                         pointId={Number(idPonto)}
                                         id={trilha?.id}
+                                        center={[ponto.latitude,ponto.longitude]}
                                     />
                                 </div>
                             )}
