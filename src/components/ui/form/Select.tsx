@@ -48,7 +48,11 @@ export default function Select({
 
             <div className="circleButton">
                 <SimpleButton
-                    onClick={() => setOpen(!open)}
+                    onClick={(e) => {
+                        e?.preventDefault();
+                        e?.stopPropagation();
+                        setOpen((prev) => !prev);
+                    }}
                     icon={icon}
                     tema="select"
                 >
@@ -62,7 +66,9 @@ export default function Select({
                         <li
                             key={option}
                             className={option === value ? "active" : ""}
-                            onClick={() => {
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
                                 onChange(option);
                                 setOpen(false);
                             }}

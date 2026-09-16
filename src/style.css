@@ -100,6 +100,8 @@ body{
     overflow-x: hidden;
     gap: 15px;
     scroll-behavior: smooth;
+    min-height: 100dvh;
+    background-color: #2c2c2c;
 }
 #root{
     overflow-x: hidden;
@@ -255,7 +257,9 @@ option:checked {
     font-weight: bold;
 }
 
-
+.filtrosDesktop{
+        display: none;
+    }
 .filtrosMobile{
     position: fixed !important;
     bottom: 0;
@@ -586,6 +590,7 @@ ul{
     justify-content: end;
     overflow: hidden;
     padding: 0;
+    border: 1px solid var(--verdeClaroTransparente);
     p, h1{
         text-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
     }
@@ -597,8 +602,6 @@ ul{
         justify-content: end;
     }
 }
-#convivencia{background-image: url(assets/img/sobre/Sede\ administrativa_.webp);}
-#salaverde{background-image: url(assets/img/sobre/Vista\ interna\ da\ sala\ verde.webp);}
 
 /*  -- CARD PWA --  */
 .pwaCard{
@@ -610,9 +613,10 @@ ul{
 }
 /**/
 
-.userImg{
+.userImg, .devImg{
     background-color: var(--verdeEscuro);
     height: 100px;
+    width: 100px;
     aspect-ratio: 1/1;
     border-radius: 100%;
     border: 3px solid var(--verdeEscuro);
@@ -715,7 +719,7 @@ ul{
     }
 
     .desktopWrap{
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 30px;
     }
     .desktopWrap3{
@@ -737,11 +741,26 @@ ul{
         }
     }
 
+    .galeria{
+        padding: 0;
+        margin: 0;
+        .carrosselCard{
+            min-width: unset !important;
+            height: 300px;
+            width: auto !important;
+        }
+    }
+
     #carrosselEspacos{
-        width: 100%;
+        padding: 0;
+        margin: 0;
         .carrosselCard{
             min-width: 0 !important;
             width: 30% !important;
         }
+    }
+
+    .filtrosDesktop{
+        display: flex;
     }
 }

@@ -19,24 +19,24 @@ export default function Menu({ ativo, onChoice }: menuProps) {
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
     useEffect(() => {
-		const handleBeforeInstallPrompt = (e: Event) => {
-			setDeferredPrompt(e);
-		};
+        const handleBeforeInstallPrompt = (e: Event) => {
+            setDeferredPrompt(e);
+        };
 
-		window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-		return () => {
-			window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-		};
-	}, []);
+        return () => {
+            window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        };
+    }, []);
 
     const handleInstallClick = async () => {
         window.dispatchEvent(new CustomEvent('fecharBannerPWA'));
-		if (!deferredPrompt) return;
+        if (!deferredPrompt) return;
 
-		deferredPrompt.prompt();
+        deferredPrompt.prompt();
 
-		const { outcome } = await deferredPrompt.userChoice;
+        const { outcome } = await deferredPrompt.userChoice;
 
 		if (outcome === 'accepted') {
 			console.log('Usuário aceitou a instalação');
@@ -44,10 +44,10 @@ export default function Menu({ ativo, onChoice }: menuProps) {
 		} else {
 			console.log('Usuário recusou a instalação');
             window.dispatchEvent(new CustomEvent('fecharBannerPWA'));
-		}
+        }
 
-		setDeferredPrompt(null);
-	};
+        setDeferredPrompt(null);
+    };
 
     /* Fim da Função Instalar App */
 
@@ -60,8 +60,8 @@ export default function Menu({ ativo, onChoice }: menuProps) {
         async function loadData() {
             const data = (await db.trilhas.toArray()).slice(0, 5);
             const pontos = (await db.pontos_interesse.toArray()).slice(0, 5);
-            if(data)setTrilhas(data as Trilha[]);
-            if(pontos)setPontos(pontos)
+            if (data) setTrilhas(data as Trilha[]);
+            if (pontos) setPontos(pontos)
 
         }
 
@@ -214,20 +214,18 @@ export default function Menu({ ativo, onChoice }: menuProps) {
 
                     </div>
                     <div className="menuLinks">
-                        <div className='MenuGroup'>
-                            <SimpleButton path='/admin' raio='0'>
-                                Administração do Site
-                            </SimpleButton>
-
-                            {/* ADMIN / LOGOUT */}
-                            {user ? (
-                                <SimpleButton raio="0" onClick={handleLogout}>
+                        {/* ADMIN / LOGOUT */}
+                        {user ? (
+                            <div className='MenuGroup'>
+                                <SimpleButton path='/admin' raio='0'>
+                                    Administração do Site
+                                </SimpleButton><SimpleButton raio="0" onClick={handleLogout}>
                                     Logout
-                                </SimpleButton>
-                            ) : (
-                                null
-                            )}
-                        </div>
+                                </SimpleButton></div>
+                        ) : (
+                            null
+                        )}
+
                     </div>
 
                 </div>

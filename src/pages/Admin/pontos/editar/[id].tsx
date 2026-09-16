@@ -256,7 +256,6 @@ export default function EditarPontoInteresse() {
                             name="trilha"
                             value={trilhaSelecionada ?? ""}
                             onChange={(e) => setTrilhaSelecionada(e.target.value ? Number(e.target.value) : null)}
-                            required
                             disabled={carregando}
                         >
                             <option value="">Ponto não pertence a nenhuma trilha</option>

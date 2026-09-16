@@ -8,6 +8,8 @@ import "../../../style.css"
 import SimpleButton from "../../../components/ui/buttons/SimpleButton";
 import AutoResizeTextarea from "../../../utils/AutoResizeTextarea";
 import ProtectedRoute from "../../../components/Protected.tsx";
+import NativeCarousel from "../../../components/ui/DraggableCarousel";
+import { createPortal } from "react-dom";
 
 interface SobreDB {
     id: number;
@@ -1093,206 +1095,253 @@ export default function EditarSobre() {
                     className="card vertical gap30"
                     onSubmit={handleSubmit}
                 >
-                    <div className="desktopWrap">
-                        <div className="vertical gap15">
+                    <div className="vertical gap15">
+                        <h2>Informações gerais</h2>
+                        <div className="vertical gap5">
+                            <label>Descrição do parque:</label>
+                            <AutoResizeTextarea
+                                value={sobre.descricao}
+                                onChange={(e) =>
+                                    atualizarCampo(
+                                        "descricao",
+                                        e.target.value
+                                    )
+                                }
+                                disabled={salvando}
+                                required
+                            />
+                        </div>
+                    </div>
 
-                            <h2>Informações gerais</h2>
+                    <div className="linhaHorizontalDark"></div>
 
-                            <div className="vertical gap5">
-                                <label>Descrição do parque:</label>
-                                <AutoResizeTextarea
-                                    value={sobre.descricao}
-                                    onChange={(e) =>
-                                        atualizarCampo(
-                                            "descricao",
-                                            e.target.value
-                                        )
-                                    }
-                                    disabled={salvando}
-                                    required
-                                />
+                    <div className="vertical gap15" id="secaoGaleriaSobre">
+                        <h2>Galeria</h2>
+
+                        <div className="vertical desktopWrap gap30">
+                            <div className="vertical gap15" id="sobreAdminGaleriaLeft">
+                                <h4>Adicionar imagem</h4>
+                                <div className="vertical gap5">
+                                    <label htmlFor="imagemGaleria">
+                                        Imagem:
+                                    </label>
+                                    <input
+                                        id="imagemGaleria"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={selecionarImagemGaleria}
+                                        disabled={salvandoGaleria}
+                                    />
+                                    {novaImagemGaleria && (
+                                        <p>
+                                            Imagem selecionada:{" "}
+                                            <strong>
+                                                {novaImagemGaleria.name}
+                                            </strong>
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="vertical gap5">
+                                    <label htmlFor="legendaGaleria">
+                                        Legenda:
+                                    </label>
+                                    <input
+                                        id="legendaGaleria"
+                                        type="text"
+                                        value={legendaGaleria}
+                                        onChange={(e) =>
+                                            setLegendaGaleria(e.target.value)
+                                        }
+                                        placeholder="Ex.: Sede administrativa"
+                                        disabled={salvandoGaleria}
+                                    />
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={adicionarImagemGaleria}
+                                    disabled={salvandoGaleria}
+                                >
+                                    {salvandoGaleria
+                                        ? "Adicionando..."
+                                        : "Adicionar imagem"}
+                                </button>
                             </div>
 
+                            <div className="vertical gap5">
+                                <h4>Imagens cadastradas:</h4>
 
-                            <div className="vertical gap15">
-
-                                <h2>Espaços do Parque</h2>
-
-                                {/* ========================================== */}
-                                {/* BOTÃO ADICIONAR ESPAÇO */}
-                                {/* ========================================== */}
-
-                                {!adicionandoEspaco && (
-
-                                    <div className="btnFull">
-
-                                        <button
-                                            type="button"
-                                            onClick={() => setAdicionandoEspaco(true)}
-                                            disabled={salvando}
-                                        >
-                                            Adicionar espaço
-                                        </button>
-
-                                    </div>
-
-                                )}
-
-
-                                {/* ========================================== */}
-                                {/* FORMULÁRIO NOVO ESPAÇO */}
-                                {/* ========================================== */}
-
-                                {adicionandoEspaco && (
-
-                                    <div className="card vertical gap15">
-
-                                        <h3>Novo espaço</h3>
-
-                                        <div className="vertical gap5">
-
-                                            <label>
-                                                Título:
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                value={novoEspaco.titulo}
-                                                onChange={(e) =>
-                                                    atualizarNovoEspaco(
-                                                        "titulo",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="Ex.: Área de Convivência"
-                                                disabled={salvandoEspaco}
-                                                required
-                                            />
-
-                                        </div>
-
-
-                                        <div className="vertical gap5">
-
-                                            <label>
-                                                Descrição:
-                                            </label>
-
-                                            <AutoResizeTextarea
-                                                value={novoEspaco.descricao}
-                                                onChange={(e) =>
-                                                    atualizarNovoEspaco(
-                                                        "descricao",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="Descreva este espaço do parque..."
-                                                disabled={salvandoEspaco}
-                                                required
-                                            />
-
-                                        </div>
-
-
-                                        <div className="vertical gap5">
-
-                                            <label>
-                                                Imagem:
-                                            </label>
-
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={selecionarImagemEspaco}
-                                                disabled={salvandoEspaco}
-                                                required
-                                            />
-
-                                            {novoEspaco.imagem && (
-
-                                                <p>
-                                                    Imagem selecionada:{" "}
-                                                    <strong>
-                                                        {novoEspaco.imagem.name}
-                                                    </strong>
-                                                </p>
-
-                                            )}
-
-                                        </div>
-
-
-                                        <div className="horizontal gap5">
-
-                                            <button
-                                                type="button"
-                                                onClick={() => (adicionarEspaco)}
-                                                disabled={salvandoEspaco}
-                                            >
-                                                {salvandoEspaco
-                                                    ? "Salvando..."
-                                                    : "Salvar espaço"
-                                                }
-                                            </button>
-
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-
-                                                    setAdicionandoEspaco(false);
-
-                                                    setNovoEspaco({
-                                                        titulo: "",
-                                                        descricao: "",
-                                                        imagem: null
-                                                    });
-
-                                                }}
-                                                disabled={salvandoEspaco}
-                                            >
-                                                Cancelar
-                                            </button>
-
-                                        </div>
-
-                                    </div>
-
-                                )}
-
-
-
-
-                                {/* ========================================== */}
-                                {/* ESPAÇOS CADASTRADOS */}
-                                {/* ========================================== */}
-
-                                {espacos.length > 0 && (
-
-                                    <div className="vertical gap15">
-
-                                        {espacos.map((espaco) => (
-
-                                            <div
-                                                key={espaco.id}
-                                                className="card vertical gap5"
-                                            >
-
-                                                <h3>
-                                                    {espaco.ordem}. {espaco.titulo}
-                                                </h3>
-
-                                                <p>
-                                                    {espaco.descricao}
-                                                </p>
-
-                                                <div className="horizontal gap5">
-
+                                {imagensGaleria.length > 0 ? (
+                                    <NativeCarousel
+                                        items={imagensGaleria.map((imagem) => {
+                                            const { data: urlData } = supabase.storage
+                                                .from("imagens")
+                                                .getPublicUrl(imagem.caminho_arquivo);
+                                            return (
+                                                <div
+                                                    key={imagem.id}
+                                                    className="card vertical gap5"
+                                                    id="adminSobreGaleria"
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%"
+                                                    }}
+                                                >
+                                                    <img
+                                                        src={urlData.publicUrl}
+                                                        alt={
+                                                            imagem.legenda ||
+                                                            "Imagem da galeria"
+                                                        }
+                                                        style={{
+                                                            width: "100%",
+                                                            height: 250,
+                                                            objectFit: "cover",
+                                                            borderRadius: 10
+                                                        }}
+                                                    />
+                                                    <p>
+                                                        {imagem.legenda || "Sem legenda"}
+                                                    </p>
                                                     <button
                                                         type="button"
                                                         onClick={() =>
-                                                            abrirEdicaoEspaco(
-                                                                espaco
-                                                            )
+                                                            removerImagemGaleria(imagem)
+                                                        }
+                                                        disabled={
+                                                            removendoImagemGaleria !== null ||
+                                                            salvandoGaleria
+                                                        }
+                                                    >
+                                                        {removendoImagemGaleria === imagem.id
+                                                            ? "Removendo..."
+                                                            : "Remover imagem"}
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
+                                    />
+                                ) : (
+                                    <p>
+                                        Nenhuma imagem cadastrada na galeria.
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div className="linhaHorizontalDark"></div>
+
+                    <div className="vertical gap15">
+                        <h2>Espaços do Parque</h2>
+
+                        <div className="desktopWrap">
+                            {/* FORMULÁRIO NOVO ESPAÇO */}
+                            <div className="vertical gap15">
+                                <h4>Novo espaço</h4>
+                                <div className="vertical gap5">
+                                    <label>Título:</label>
+                                    <input
+                                        type="text"
+                                        value={novoEspaco.titulo}
+                                        onChange={(e) =>
+                                            atualizarNovoEspaco(
+                                                "titulo",
+                                                e.target.value
+                                            )
+                                        }
+                                        placeholder="Ex.: Área de Convivência"
+                                        disabled={salvandoEspaco}
+                                        required
+                                    />
+                                </div>
+                                <div className="vertical gap5">
+                                    <label>Descrição:</label>
+                                    <AutoResizeTextarea
+                                        value={novoEspaco.descricao}
+                                        onChange={(e) =>
+                                            atualizarNovoEspaco(
+                                                "descricao",
+                                                e.target.value
+                                            )
+                                        }
+                                        placeholder="Descreva este espaço do parque..."
+                                        disabled={salvandoEspaco}
+                                        required
+                                    />
+                                </div>
+                                <div className="vertical gap5">
+                                    <label>Imagem:</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={selecionarImagemEspaco}
+                                        disabled={salvandoEspaco}
+                                        required
+                                    />
+                                    {novoEspaco.imagem && (
+                                        <p>
+                                            Imagem selecionada:{" "}
+                                            <strong>{novoEspaco.imagem.name}</strong>
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="horizontal gap5">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setNovoEspaco({
+                                                titulo: "",
+                                                descricao: "",
+                                                imagem: null
+                                            });
+                                        }}
+                                        disabled={salvandoEspaco}
+                                        className="btn-light"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => adicionarEspaco()}
+                                        disabled={salvandoEspaco}
+                                    >
+                                        {salvandoEspaco
+                                            ? "Adicionando..."
+                                            : "Adicionar espaço"
+                                        }
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* ESPAÇOS CADASTRADOS */}
+                            {espacos.length > 0 && (
+                                <div className="vertical gap5">
+                                    <NativeCarousel
+                                        items={espacos.map((espaco) => (
+                                            <div
+                                                key={espaco.id}
+                                                className="card vertical gap30 justify"
+                                                id="adminSobreEspacos"
+                                                style={{
+                                                    width: "100%",
+                                                    height: "100%"
+                                                }}
+                                            >
+                                                <div className="vertical gap5">
+                                                    <h3>
+                                                        {espaco.ordem}. {espaco.titulo}
+                                                    </h3>
+                                                    <p>
+                                                        {espaco.descricao}
+                                                    </p>
+                                                </div>
+                                                
+                                                <div className="horizontal gap5">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            abrirEdicaoEspaco(espaco)
                                                         }
                                                         disabled={
                                                             salvandoEspaco ||
@@ -1301,13 +1350,10 @@ export default function EditarSobre() {
                                                     >
                                                         Editar
                                                     </button>
-
                                                     <button
                                                         type="button"
                                                         onClick={() =>
-                                                            removerEspaco(
-                                                                espaco
-                                                            )
+                                                            removerEspaco(espaco)
                                                         }
                                                         disabled={
                                                             salvandoEspaco ||
@@ -1316,595 +1362,391 @@ export default function EditarSobre() {
                                                     >
                                                         {removendoEspaco === espaco.id
                                                             ? "Removendo..."
-                                                            : "Remover"
-                                                        }
+                                                            : "Remover"}
                                                     </button>
-
                                                 </div>
-
                                             </div>
-
                                         ))}
-
-                                    </div>
-
+                                    />
+                                </div>
+                            )}
+                            {espacos.length === 0 &&
+                                !adicionandoEspaco && (
+                                    <p>
+                                        Nenhum espaço do parque cadastrado.
+                                    </p>
                                 )}
+                        </div>
 
-                                {espacos.length === 0 &&
-                                    !adicionandoEspaco && (
-
-                                        <p>
-                                            Nenhum espaço do parque cadastrado.
-                                        </p>
-
-                                    )}
-
-
-                                {/* ========================================== */}
-                                {/* MODAL DE EDIÇÃO DO ESPAÇO */}
-                                {/* ========================================== */}
-
-                                {editandoEspaco && (
-
+                        {/* MODAL DE EDIÇÃO DO ESPAÇO */}
+                        {editandoEspaco && (
+                            createPortal(
+                                <div
+                                    className="modal vertical center"
+                                    onClick={() => {
+                                        if (!salvandoEspaco) {
+                                            setEditandoEspaco(null);
+                                            setImagemEdicao(null);
+                                        }
+                                    }}
+                                >
                                     <div
-                                        className="modalOverlay"
-                                        onClick={() => {
-
-                                            if (!salvandoEspaco) {
-                                                setEditandoEspaco(null);
-                                                setImagemEdicao(null);
-                                            }
-
-                                        }}
+                                        className="modal-content card vertical gap15"
+                                        onClick={(e) =>
+                                            e.stopPropagation()
+                                        }
                                     >
-
-                                        <div
-                                            className="modal"
-                                            onClick={(e) =>
-                                                e.stopPropagation()
-                                            }
-                                        >
-
+                                        <div className="vertical gap15">
+                                            <div className="horizontal">
+                                                <h2>
+                                                    Editar espaço
+                                                </h2>
+                                            </div>
                                             <div className="vertical gap15">
-
-                                                <div className="horizontal">
-
-                                                    <h2>
-                                                        Editar espaço
-                                                    </h2>
-
+                                                {/* TÍTULO */}
+                                                <div className="vertical gap5">
+                                                    <label>
+                                                        Título:
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        value={
+                                                            editandoEspaco.titulo
+                                                        }
+                                                        onChange={(e) =>
+                                                            setEditandoEspaco(
+                                                                (prev) =>
+                                                                    prev
+                                                                        ? {
+                                                                            ...prev,
+                                                                            titulo:
+                                                                                e.target.value
+                                                                        }
+                                                                        : prev
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            salvandoEspaco
+                                                        }
+                                                        required
+                                                    />
+                                                </div>
+                                                {/* DESCRIÇÃO */}
+                                                <div className="vertical gap5">
+                                                    <label>
+                                                        Descrição:
+                                                    </label>
+                                                    <AutoResizeTextarea
+                                                        value={
+                                                            editandoEspaco.descricao
+                                                        }
+                                                        onChange={(e) =>
+                                                            setEditandoEspaco(
+                                                                (prev) =>
+                                                                    prev
+                                                                        ? {
+                                                                            ...prev,
+                                                                            descricao:
+                                                                                e.target.value
+                                                                        }
+                                                                        : prev
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            salvandoEspaco
+                                                        }
+                                                        required
+                                                    />
+                                                </div>
+                                                {/* IMAGEM ATUAL */}
+                                                <div className="vertical gap5">
+                                                    <label>
+                                                        Imagem atual:
+                                                    </label>
+                                                    <p>
+                                                        A imagem atual será mantida
+                                                        caso nenhuma nova imagem
+                                                        seja selecionada.
+                                                    </p>
+                                                </div>
+                                                {/* NOVA IMAGEM */}
+                                                <div className="vertical gap5">
+                                                    <label>
+                                                        Alterar imagem:
+                                                    </label>
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={
+                                                            selecionarImagemEdicao
+                                                        }
+                                                        disabled={
+                                                            salvandoEspaco
+                                                        }
+                                                    />
+                                                    {imagemEdicao && (
+                                                        <p>
+                                                            Nova imagem:{" "}
+                                                            <strong>
+                                                                {
+                                                                    imagemEdicao.name
+                                                                }
+                                                            </strong>
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                {/* BOTÕES */}
+                                                <div className="horizontal gap5">
                                                     <button
                                                         type="button"
+                                                        className="btn-light"
                                                         onClick={() => {
-
-                                                            if (!salvandoEspaco) {
-                                                                setEditandoEspaco(null);
-                                                                setImagemEdicao(null);
-                                                            }
-
+                                                            setEditandoEspaco(
+                                                                null
+                                                            );
+                                                            setImagemEdicao(
+                                                                null
+                                                            );
                                                         }}
-                                                        disabled={salvandoEspaco}
+                                                        disabled={
+                                                            salvandoEspaco
+                                                        }
                                                     >
-                                                        ×
+                                                        Cancelar
                                                     </button>
-
-                                                </div>
-
-
-                                                <div className="vertical gap15">
-
-                                                    {/* TÍTULO */}
-
-                                                    <div className="vertical gap5">
-
-                                                        <label>
-                                                            Título:
-                                                        </label>
-
-                                                        <input
-                                                            type="text"
-                                                            value={
-                                                                editandoEspaco.titulo
-                                                            }
-                                                            onChange={(e) =>
-                                                                setEditandoEspaco(
-                                                                    (prev) =>
-                                                                        prev
-                                                                            ? {
-                                                                                ...prev,
-                                                                                titulo:
-                                                                                    e.target.value
-                                                                            }
-                                                                            : prev
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                salvandoEspaco
-                                                            }
-                                                            required
-                                                        />
-
-                                                    </div>
-
-
-                                                    {/* DESCRIÇÃO */}
-
-                                                    <div className="vertical gap5">
-
-                                                        <label>
-                                                            Descrição:
-                                                        </label>
-
-                                                        <AutoResizeTextarea
-                                                            value={
-                                                                editandoEspaco.descricao
-                                                            }
-                                                            onChange={(e) =>
-                                                                setEditandoEspaco(
-                                                                    (prev) =>
-                                                                        prev
-                                                                            ? {
-                                                                                ...prev,
-                                                                                descricao:
-                                                                                    e.target.value
-                                                                            }
-                                                                            : prev
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                salvandoEspaco
-                                                            }
-                                                            required
-                                                        />
-
-                                                    </div>
-
-
-                                                    {/* IMAGEM ATUAL */}
-
-                                                    <div className="vertical gap5">
-
-                                                        <label>
-                                                            Imagem atual:
-                                                        </label>
-
-                                                        <p>
-                                                            A imagem atual será mantida
-                                                            caso nenhuma nova imagem
-                                                            seja selecionada.
-                                                        </p>
-
-                                                    </div>
-
-
-                                                    {/* NOVA IMAGEM */}
-
-                                                    <div className="vertical gap5">
-
-                                                        <label>
-                                                            Alterar imagem:
-                                                        </label>
-
-                                                        <input
-                                                            type="file"
-                                                            accept="image/*"
-                                                            onChange={
-                                                                selecionarImagemEdicao
-                                                            }
-                                                            disabled={
-                                                                salvandoEspaco
-                                                            }
-                                                        />
-
-                                                        {imagemEdicao && (
-
-                                                            <p>
-                                                                Nova imagem:{" "}
-                                                                <strong>
-                                                                    {
-                                                                        imagemEdicao.name
-                                                                    }
-                                                                </strong>
-                                                            </p>
-
-                                                        )}
-
-                                                    </div>
-
-
-                                                    {/* BOTÕES */}
-
-                                                    <div className="horizontal gap5">
-
-                                                        <button
-                                                            type="button"
-                                                            onClick={() =>
-                                                                salvarEdicaoEspaco()
-                                                            }
-                                                            disabled={
-                                                                salvandoEspaco
-                                                            }
-                                                        >
-                                                            {salvandoEspaco
-                                                                ? "Salvando..."
-                                                                : "Salvar alterações"
-                                                            }
-                                                        </button>
-
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => {
-
-                                                                setEditandoEspaco(
-                                                                    null
-                                                                );
-
-                                                                setImagemEdicao(
-                                                                    null
-                                                                );
-
-                                                            }}
-                                                            disabled={
-                                                                salvandoEspaco
-                                                            }
-                                                        >
-                                                            Cancelar
-                                                        </button>
-
-                                                    </div>
-
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                )}
-
-
-                                <div className="linhaPontilhadaDark" />
-
-                                <div className="vertical gap15">
-                                    <h2>Galeria</h2>
-
-                                    <div className="card vertical gap15">
-                                        <h3>Adicionar imagem</h3>
-
-                                        <div className="vertical gap5">
-                                            <label htmlFor="imagemGaleria">
-                                                Imagem:
-                                            </label>
-
-                                            <input
-                                                id="imagemGaleria"
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={selecionarImagemGaleria}
-                                                disabled={salvandoGaleria}
-                                            />
-
-                                            {novaImagemGaleria && (
-                                                <p>
-                                                    Imagem selecionada:{" "}
-                                                    <strong>
-                                                        {novaImagemGaleria.name}
-                                                    </strong>
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        <div className="vertical gap5">
-                                            <label htmlFor="legendaGaleria">
-                                                Legenda:
-                                            </label>
-
-                                            <input
-                                                id="legendaGaleria"
-                                                type="text"
-                                                value={legendaGaleria}
-                                                onChange={(e) =>
-                                                    setLegendaGaleria(e.target.value)
-                                                }
-                                                placeholder="Ex.: Sede administrativa"
-                                                disabled={salvandoGaleria}
-                                            />
-                                        </div>
-
-                                        <button
-                                            type="button"
-                                            onClick={adicionarImagemGaleria}
-                                            disabled={salvandoGaleria}
-                                        >
-                                            {salvandoGaleria
-                                                ? "Adicionando..."
-                                                : "Adicionar imagem"}
-                                        </button>
-                                    </div>
-
-                                    {imagensGaleria.length > 0 ? (
-                                        <div className="desktopWrap">
-                                            {imagensGaleria.map((imagem) => {
-                                                const {
-                                                    data: urlData
-                                                } = supabase.storage
-                                                    .from("imagens")
-                                                    .getPublicUrl(
-                                                        imagem.caminho_arquivo
-                                                    );
-
-                                                return (
-                                                    <div
-                                                        key={imagem.id}
-                                                        className="card vertical gap5"
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            salvarEdicaoEspaco()
+                                                        }
+                                                        disabled={
+                                                            salvandoEspaco
+                                                        }
                                                     >
-                                                        <img
-                                                            src={urlData.publicUrl}
-                                                            alt={
-                                                                imagem.legenda ||
-                                                                "Imagem da galeria"
-                                                            }
-                                                            style={{
-                                                                width: "100%",
-                                                                maxHeight: 250,
-                                                                objectFit: "cover",
-                                                                borderRadius: 10
-                                                            }}
-                                                        />
-
-                                                        <p>
-                                                            {imagem.legenda ||
-                                                                "Sem legenda"}
-                                                        </p>
-
-                                                        <button
-                                                            type="button"
-                                                            onClick={() =>
-                                                                removerImagemGaleria(
-                                                                    imagem
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                removendoImagemGaleria !==
-                                                                    null ||
-                                                                salvandoGaleria
-                                                            }
-                                                        >
-                                                            {removendoImagemGaleria ===
-                                                            imagem.id
-                                                                ? "Removendo..."
-                                                                : "Remover imagem"}
-                                                        </button>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    ) : (
-                                        <p>
-                                            Nenhuma imagem cadastrada na galeria.
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div className="linhaPontilhadaDark" />
-
-                                <div className="desktopWrap">
-                                    <div className="vertical gap15">
-                                        <h2>Acessibilidade</h2>
-                                        <div className="vertical gap5">
-                                            <label>Título:</label>
-                                            <input
-                                                type="text"
-                                                value={
-                                                    sobre.acessibilidade_titulo
-                                                }
-                                                onChange={(e) =>
-                                                    atualizarCampo(
-                                                        "acessibilidade_titulo",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                disabled={salvando}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="vertical gap5">
-                                            <label>Informações sobre acessibilidade:</label>
-                                            <AutoResizeTextarea
-                                                value={
-                                                    sobre.acessibilidade_descricao
-                                                }
-                                                onChange={(e) =>
-                                                    atualizarCampo(
-                                                        "acessibilidade_descricao",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                disabled={salvando}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="vertical gap15">
-                                        <h2>Visitas em grupo</h2>
-                                        <div className="vertical gap5">
-                                            <label>Título:</label>
-                                            <input
-                                                type="text"
-                                                value={
-                                                    sobre.visitas_grupo_titulo
-                                                }
-                                                onChange={(e) =>
-                                                    atualizarCampo(
-                                                        "visitas_grupo_titulo",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                disabled={salvando}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="vertical gap5">
-                                            <label>Informações sobre visitas em grupo:</label>
-                                            <AutoResizeTextarea
-                                                value={
-                                                    sobre.visitas_grupo_descricao
-                                                }
-                                                onChange={(e) =>
-                                                    atualizarCampo(
-                                                        "visitas_grupo_descricao",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                disabled={salvando}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="vertical gap5">
-                                            <label>E-mail para agendamento:</label>
-                                            <input
-                                                type="email"
-                                                value={
-                                                    sobre.email_agendamento
-                                                }
-                                                onChange={(e) =>
-                                                    atualizarCampo(
-                                                        "email_agendamento",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="exemplo@caraguatatuba.sp.gov.br"
-                                                disabled={salvando}
-                                                required
-                                            />
+                                                        {salvandoEspaco
+                                                            ? "Salvando..."
+                                                            : "Salvar alterações"
+                                                        }
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
+                                , document.body)
+                        )}
+                    </div>
 
-                                <div className="linhaPontilhadaDark" />
+                    <div className="linhaHorizontalDark"></div>
 
-                                <div className="desktopWrap">
-                                    <div className="vertical gap15">
-                                        <h2>Horário de funcionamento</h2>
-                                        <div className="vertical gap5">
-                                            <label>
-                                                Título:
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={
-                                                    sobre.horario_titulo
-                                                }
-                                                onChange={(e) =>
-                                                    atualizarCampo(
-                                                        "horario_titulo",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                disabled={salvando}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="vertical gap5">
-                                            <label>
-                                                Horário:
-                                            </label>
-                                            <AutoResizeTextarea
-                                                value={
-                                                    sobre.horario_descricao
-                                                }
-                                                onChange={(e) =>
-                                                    atualizarCampo(
-                                                        "horario_descricao",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                disabled={salvando}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="vertical gap15">
-                                        <h2>Endereço</h2>
-                                        <div className="vertical gap5">
-                                            <label>
-                                                Título:
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={
-                                                    sobre.endereco_titulo
-                                                }
-                                                onChange={(e) =>
-                                                    atualizarCampo(
-                                                        "endereco_titulo",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                disabled={salvando}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="vertical gap5">
-                                            <label>
-                                                Endereço:
-                                            </label>
-                                            <AutoResizeTextarea
-                                                value={
-                                                    sobre.endereco_descricao
-                                                }
-                                                onChange={(e) =>
-                                                    atualizarCampo(
-                                                        "endereco_descricao",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                disabled={salvando}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="vertical gap5">
-                                            <label>
-                                                Link do Google Maps:
-                                            </label>
-                                            <input
-                                                type="url"
-                                                value={sobre.link_mapa}
-                                                onChange={(e) =>
-                                                    atualizarCampo(
-                                                        "link_mapa",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="https://maps.google.com/..."
-                                                disabled={salvando}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="btnFull">
-
-                                    <button
-                                        type="submit"
-                                        disabled={salvando}
-                                    >
-                                        {salvando
-                                            ? "Salvando..."
-                                            : "Salvar alterações"
+                    <div className="desktopWrap">
+                        <div className="vertical gap30">
+                            <div className="vertical gap15">
+                                <h2>Acessibilidade</h2>
+                                {/* <div className="vertical gap5">
+                                    <label>Título:</label>
+                                    <input
+                                        type="text"
+                                        value={
+                                            sobre.acessibilidade_titulo
                                         }
-                                    </button>
-
+                                        onChange={(e) =>
+                                            atualizarCampo(
+                                                "acessibilidade_titulo",
+                                                e.target.value
+                                            )
+                                        }
+                                        disabled={salvando}
+                                        required
+                                    />
+                                </div> */}
+                                <div className="vertical gap5">
+                                    <label>Informações sobre acessibilidade:</label>
+                                    <AutoResizeTextarea
+                                        value={
+                                            sobre.acessibilidade_descricao
+                                        }
+                                        onChange={(e) =>
+                                            atualizarCampo(
+                                                "acessibilidade_descricao",
+                                                e.target.value
+                                            )
+                                        }
+                                        disabled={salvando}
+                                        required
+                                    />
                                 </div>
+                            </div>
+                            <div className="vertical gap15">
+                                <h2>Horário de funcionamento</h2>
+                                {/* <div className="vertical gap5">
+                                    <label>Título:</label>
+                                    <input
+                                        type="text"
+                                        value={
+                                            sobre.horario_titulo
+                                        }
+                                        onChange={(e) =>
+                                            atualizarCampo(
+                                                "horario_titulo",
+                                                e.target.value
+                                            )
+                                        }
+                                        disabled={salvando}
+                                        required
+                                    />
+                                </div> */}
+                                <div className="vertical gap5">
+                                    <label>
+                                        Horário:
+                                    </label>
+                                    <AutoResizeTextarea
+                                        value={
+                                            sobre.horario_descricao
+                                        }
+                                        onChange={(e) =>
+                                            atualizarCampo(
+                                                "horario_descricao",
+                                                e.target.value
+                                            )
+                                        }
+                                        disabled={salvando}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div className="vertical gap15">
+                                <h2>Endereço</h2>
+                                {/* <div className="vertical gap5">
+                                    <label>
+                                        Título:
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={
+                                            sobre.endereco_titulo
+                                        }
+                                        onChange={(e) =>
+                                            atualizarCampo(
+                                                "endereco_titulo",
+                                                e.target.value
+                                            )
+                                        }
+                                        disabled={salvando}
+                                        required
+                                    />
+                                </div> */}
+                                <div className="vertical gap5">
+                                    <label>
+                                        Endereço:
+                                    </label>
+                                    <AutoResizeTextarea
+                                        value={
+                                            sobre.endereco_descricao
+                                        }
+                                        onChange={(e) =>
+                                            atualizarCampo(
+                                                "endereco_descricao",
+                                                e.target.value
+                                            )
+                                        }
+                                        disabled={salvando}
+                                        required
+                                    />
+                                </div>
+                                <div className="vertical gap5">
+                                    <label>
+                                        Link do Google Maps:
+                                    </label>
+                                    <input
+                                        type="url"
+                                        value={sobre.link_mapa}
+                                        onChange={(e) =>
+                                            atualizarCampo(
+                                                "link_mapa",
+                                                e.target.value
+                                            )
+                                        }
+                                        placeholder="https://maps.google.com/..."
+                                        disabled={salvando}
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div className="vertical gap15">
+                            <h2>Visitas em grupo</h2>
+                            {/* <div className="vertical gap5">
+                                <label>Título:</label>
+                                <input
+                                    type="text"
+                                    value={
+                                        sobre.visitas_grupo_titulo
+                                    }
+                                    onChange={(e) =>
+                                        atualizarCampo(
+                                            "visitas_grupo_titulo",
+                                            e.target.value
+                                        )
+                                    }
+                                    disabled={salvando}
+                                    required
+                                />
+                            </div> */}
+                            <div className="vertical gap5">
+                                <label>Informações sobre visitas em grupo:</label>
+                                <AutoResizeTextarea
+                                    value={
+                                        sobre.visitas_grupo_descricao
+                                    }
+                                    onChange={(e) =>
+                                        atualizarCampo(
+                                            "visitas_grupo_descricao",
+                                            e.target.value
+                                        )
+                                    }
+                                    disabled={salvando}
+                                    required
+                                />
+                            </div>
+                            <div className="vertical gap5">
+                                <label>E-mail para agendamento:</label>
+                                <input
+                                    type="email"
+                                    value={
+                                        sobre.email_agendamento
+                                    }
+                                    onChange={(e) =>
+                                        atualizarCampo(
+                                            "email_agendamento",
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="exemplo@caraguatatuba.sp.gov.br"
+                                    disabled={salvando}
+                                    required
+                                />
                             </div>
                         </div>
 
                     </div>
+
+                    <div className="btnFull">
+                        <button
+                            type="submit"
+                            disabled={salvando}
+                        >
+                            {salvando
+                                ? "Salvando..."
+                                : "Salvar alterações"
+                            }
+                        </button>
+                    </div>
                 </form>
-                </section>
+            </section>
         </ProtectedRoute>
     );
 }

@@ -54,4 +54,7 @@ footer{
         width: 100%;
         justify-content: right;
     }
+    #footerLogos{
+        height: fit-content;
+    }
 }

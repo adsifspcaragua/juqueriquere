@@ -36,24 +36,33 @@ export default function Ponto() {
         let urlsCriadas: string[] = [];
 
         async function carregar() {
-            if (!id || !idPonto) return;
+            if (!idPonto) return;
 
-            const idTrilha = Number(id);
             const idPontoNumerico = Number(idPonto);
 
             try {
-                const [trilhaDB, pontoDB, urls] = await Promise.all([
-                    db.trilhas.get(idTrilha),
+                // Busca o ponto e as imagens associadas em paralelo
+                const [pontoDB, urls] = await Promise.all([
                     db.pontos_interesse.get(idPontoNumerico),
                     obterImagensPorPonto(idPontoNumerico)
                 ]);
 
-                if (!pontoDB || !trilhaDB || !isMounted) return;
+                if (!pontoDB || !isMounted) return;
+
+                // Identifica a trilha pela URL ou fallback pelo id contido no ponto
+                const targetTrilhaId = id ? Number(id) : pontoDB.trilha_id;
+                let trilhaDB: TrilhaDB | undefined = undefined;
+
+                if (targetTrilhaId) {
+                    trilhaDB = await db.trilhas.get(targetTrilhaId);
+                }
+
+                if (!isMounted) return;
 
                 urlsCriadas = urls;
 
-                setTrilha(trilhaDB);
                 setPontoDados(pontoDB);
+                setTrilha(trilhaDB);
                 setImagens(urls);
             } catch (error) {
                 console.error("Erro ao carregar dados do ponto:", error);
@@ -170,7 +179,7 @@ export default function Ponto() {
                                 <p>Aparece em:</p>
 
                                 <SimpleButton
-                                    path={`/trilha/${id}`}
+                                    path={`/trilha/${id ?? trilha.id}`}
                                     tema="dark"
                                     raio="10"
                                 >

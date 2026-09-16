@@ -111,18 +111,18 @@ export default function RedefinirSenha() {
                         Voltar para Perfil
                     </SimpleButton>
 
-                    <div className="card vertical userCard desktopWrap center">
-                        {loading ? (
-                            <p>Carregando dados do usuário...</p>
-                        ) : !usuario ? (
-                            <p>Usuário não encontrado.</p>
-                        ) : !temPermissao ? (
-                            <p style={{ color: "red" }}>
-                                Você não tem permissão para redefinir a senha deste usuário.
-                            </p>
-                        ) : (
-                            <>
-                                <div className="horizontal gap15 center">
+                    {loading ? (
+                        <p>Carregando dados do usuário...</p>
+                    ) : !usuario ? (
+                        <p>Usuário não encontrado.</p>
+                    ) : !temPermissao ? (
+                        <p style={{ color: "red" }}>
+                            Você não tem permissão para redefinir a senha deste usuário.
+                        </p>
+                    ) : (
+                        <>
+                            <div className="vertical desktopWrap1-2">
+                                <div className="card userCard horizontal gap15 center">
                                     <img
                                         src={usuario.foto_url || defaultPfp}
                                         alt={`Foto de ${usuario.name}`}
@@ -142,12 +142,8 @@ export default function RedefinirSenha() {
                                         </div>
                                     </div>
                                 </div>
-
-                                <div className="linhaHorizontalDark"></div>
-
-                                <form onSubmit={handleRedefinirSenha} className="vertical gap15 w100">
+                                <form onSubmit={handleRedefinirSenha} className="card vertical gap15 w100">
                                     <h3>Redefinir Senha</h3>
-
                                     <div className="vertical gap5">
                                         <label>Nova Senha</label>
                                         <input
@@ -158,7 +154,6 @@ export default function RedefinirSenha() {
                                             minLength={6}
                                         />
                                     </div>
-
                                     <div className="vertical gap5">
                                         <label>Confirmar Nova Senha</label>
                                         <input
@@ -169,9 +164,7 @@ export default function RedefinirSenha() {
                                             minLength={6}
                                         />
                                     </div>
-
                                     {erro && <p style={{ color: "red" }}>{erro}</p>}
-
                                     <div className="vertical gap5">
                                         <button type="submit" disabled={carregandoForm} className="r10">
                                             {carregandoForm ? "Salvando..." : "Redefinir Senha"}
@@ -185,9 +178,9 @@ export default function RedefinirSenha() {
                                         </button>
                                     </div>
                                 </form>
-                            </>
-                        )}
-                    </div>
+                            </div>
+                        </>
+                    )}
                 </div>
             </section>
         </ProtectedRoute>
