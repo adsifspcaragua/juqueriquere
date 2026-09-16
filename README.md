@@ -11,7 +11,7 @@ O site do parque conta com diversas informações úteis para os que desejam vis
 
 Desde pontos interessantes até dificuldades a serem enfrentadas, o sistema busca auxiliar e enriquecer ao máximo a visita ao parque, aprimorando ainda mais a experiência das belezas naturais brasileiras.
 
-[juqueriquere.vercel.app](acesse)
+[link do site](juqueriquere.vercel.app)
 
 ## Funcionalidades principais
 
