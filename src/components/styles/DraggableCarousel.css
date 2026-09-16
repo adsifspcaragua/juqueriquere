@@ -29,6 +29,12 @@
     .carrosselFade#right {background-image: linear-gradient(to left, var(--verdeClaro) 10%, transparent);}
 }
 
+#carrosselNoFade{
+    overflow: hidden;
+    #left{left: 0px;}
+    #right{right: 0px;}
+}
+
 .circleButton.left, .circleButton.right {
     z-index: 10;
 }
