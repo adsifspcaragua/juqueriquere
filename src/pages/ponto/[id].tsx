@@ -7,6 +7,7 @@ import {
     type PontoInteresseDB,
     type TrilhaDB
 } from '../../lib/dexie.ts';
+import { obterImagensPorPonto } from '../../lib/services/sync.ts';
 
 import NotFound from '../_components/NotFound.tsx';
 
@@ -28,6 +29,7 @@ export default function Ponto() {
     usePageTitle(ponto?.nome);
 
     useEffect(() => {
+        let isMounted = true;
         let urlsCriadas: string[] = [];
 
         async function carregar() {
@@ -35,50 +37,53 @@ export default function Ponto() {
 
             const idPontoNumerico = Number(id);
 
-            const pontoDB = await db.pontos_interesse.get(idPontoNumerico);
-            if (!pontoDB) return;
+            try {
+                // Carrega os dados do ponto e as imagens (via Dexie + Supabase Fallback) em paralelo
+                const [pontoDB, urls] = await Promise.all([
+                    db.pontos_interesse.get(idPontoNumerico),
+                    obterImagensPorPonto(idPontoNumerico)
+                ]);
 
-            // Suporte para 0, 1 ou múltiplas trilhas
-            let trilhasEncontradas: TrilhaDB[] = [];
+                if (!pontoDB || !isMounted) return;
 
-            const idsTrilhas: number[] = Array.isArray((pontoDB as any).trilha_ids)
-                ? (pontoDB as any).trilha_ids
-                : pontoDB.trilha_id ? [pontoDB.trilha_id] : [];
+                urlsCriadas = urls;
 
-            if (idsTrilhas.length > 0) {
-                const resultados = await db.trilhas.bulkGet(idsTrilhas);
-                trilhasEncontradas = resultados.filter((t): t is TrilhaDB => Boolean(t));
-            } else {
-                // Fallback: busca por vínculo no array de pontos das próprias trilhas
-                const todasTrilhas = await db.trilhas.toArray();
-                trilhasEncontradas = todasTrilhas.filter((t: any) =>
-                    Array.isArray(t.ponto_ids) && t.ponto_ids.includes(idPontoNumerico)
-                );
+                // Suporte para 0, 1 ou múltiplas trilhas associadas
+                let trilhasEncontradas: TrilhaDB[] = [];
+
+                const idsTrilhas: number[] = Array.isArray((pontoDB as any).trilha_ids)
+                    ? (pontoDB as any).trilha_ids
+                    : pontoDB.trilha_id ? [pontoDB.trilha_id] : [];
+
+                if (idsTrilhas.length > 0) {
+                    const resultados = await db.trilhas.bulkGet(idsTrilhas);
+                    trilhasEncontradas = resultados.filter((t): t is TrilhaDB => Boolean(t));
+                } else {
+                    // Fallback: busca por vínculo no array de pontos das próprias trilhas
+                    const todasTrilhas = await db.trilhas.toArray();
+                    trilhasEncontradas = todasTrilhas.filter((t: any) =>
+                        Array.isArray(t.ponto_ids) && t.ponto_ids.includes(idPontoNumerico)
+                    );
+                }
+
+                if (!isMounted) return;
+
+                setTrilhas(trilhasEncontradas);
+                setPontoDados(pontoDB);
+                setImagens(urls);
+            } catch (error) {
+                console.error("Erro ao carregar dados do ponto:", error);
             }
-
-            const imagensDB = await db.imagens
-                .where('ponto_interesse_id')
-                .equals(idPontoNumerico)
-                .toArray();
-
-            const urls = imagensDB
-                .filter((img) => img.arquivo instanceof Blob)
-                .map((img) => {
-                    const url = URL.createObjectURL(img.arquivo!);
-                    urlsCriadas.push(url);
-                    return url;
-                });
-
-            setTrilhas(trilhasEncontradas);
-            setPontoDados(pontoDB);
-            setImagens(urls);
         }
 
         carregar();
 
         return () => {
+            isMounted = false;
             urlsCriadas.forEach((url) => {
-                URL.revokeObjectURL(url);
+                if (url.startsWith("blob:")) {
+                    URL.revokeObjectURL(url);
+                }
             });
         };
     }, [id]);
