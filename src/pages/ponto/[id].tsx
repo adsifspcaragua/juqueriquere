@@ -48,7 +48,7 @@ export default function Ponto() {
 
                 urlsCriadas = urls;
 
-                // Suporte para 0, 1 ou múltiplas trilhas associadas
+                // Suporte para 0, 1 ou múltiplas trilhas associadas 
                 let trilhasEncontradas: TrilhaDB[] = [];
 
                 const idsTrilhas: number[] = Array.isArray((pontoDB as any).trilha_ids)
