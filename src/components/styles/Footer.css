@@ -1,7 +1,7 @@
 footer{
     background-color: #2c2c2c;
     padding: 30px;
-    padding-bottom: 110px;
+    padding-bottom: 120px;
     align-items: center;
     justify-content: center;
     gap: 30px;
@@ -31,6 +31,9 @@ footer{
     flex-direction: column;
     gap: 40px;
 }
+#footerBolinha{
+    display: none;
+}
 
 @media (width > 850px){
     footer{
@@ -57,4 +60,18 @@ footer{
     #footerLogos{
         height: fit-content;
     }
+    #footerLinha1{
+        flex-direction: row;
+    }
+    #footerLinha3{
+        flex-direction: column-reverse;
+
+        .vertical{
+            flex-direction: row;
+            gap: 15px !important;
+        }
+    }
+        #footerBolinha {
+            display: flex;
+        }
 }
