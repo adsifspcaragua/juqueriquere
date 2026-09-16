@@ -3,6 +3,13 @@ import SimpleButton from '../components/ui/buttons/SimpleButton';
 import { createPortal } from "react-dom";
 import icon from '../assets/icon.png';
 
+export async function solicitarPersistencia() {
+	if (navigator.storage && navigator.storage.persist) {
+		const isPersisted = await navigator.storage.persist();
+		console.log(`Armazenamento persistente: ${isPersisted ? "concedido" : "negado"}`);
+	}
+}
+
 export function InstallPrompt() {
 	const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 	const [showBanner, setShowBanner] = useState(false);
@@ -13,7 +20,7 @@ export function InstallPrompt() {
 
 			const hidePrompt = localStorage.getItem('hideInstallPrompt');
 			const bannerFechadoNestaSessao = sessionStorage.getItem('bannerFechadoTemporariamente');
-			
+
 			if (hidePrompt !== 'true' && bannerFechadoNestaSessao !== 'true') {
 				setShowBanner(true);
 			}
@@ -34,21 +41,21 @@ export function InstallPrompt() {
 		};
 	}, []);
 
+
+
 	const handleInstallClick = async () => {
+		window.dispatchEvent(new CustomEvent('fecharBannerPWA'));
 		if (!deferredPrompt) return;
 
 		deferredPrompt.prompt();
-
 		const { outcome } = await deferredPrompt.userChoice;
 
 		if (outcome === 'accepted') {
 			console.log('Usuário aceitou a instalação');
-		} else {
-			console.log('Usuário recusou a instalação');
+			solicitarPersistencia();
 		}
 
 		setDeferredPrompt(null);
-		setShowBanner(false);
 	};
 
 	const handleDismissClick = () => {
@@ -57,8 +64,8 @@ export function InstallPrompt() {
 
 	const handleNeverShowAgainClick = () => {
 		localStorage.setItem('hideInstallPrompt', 'true');
-        setShowBanner(false);
-        setDeferredPrompt(null);
+		setShowBanner(false);
+		setDeferredPrompt(null);
 	};
 
 	if (!showBanner) return null;
@@ -69,7 +76,7 @@ export function InstallPrompt() {
 				<div className="modal vertical center">
 					<div className='pwaCard card vertical'>
 						<div className='vertical center gap15'>
-							<img src={icon} style={{width:70}}/>
+							<img src={icon} style={{ width: 70 }} />
 							<div className="vertical gap5">
 								<h2>Instale o App</h2>
 								<p>Acesse as trilhas offline de forma mais rápida!</p>

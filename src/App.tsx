@@ -1,6 +1,7 @@
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { BrowserRouter as Router, useLocation, useRoutes } from "react-router-dom";
 import routes from "~react-pages";
+import { sincronizarImagens } from "./lib/services/sync.ts";
 
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -26,7 +27,6 @@ function PageTransition({ children }: { children: React.ReactNode }) {
 
 function AnimatedRoutes() {
     const location = useLocation();
-    // Gera o mapa de componentes baseado na pasta pages
     const element = useRoutes(routes); 
 
     return (
@@ -50,6 +50,17 @@ function AnimatedRoutes() {
 
 export default function App() {
     useSync();
+
+    useEffect(() => {
+        // Verifica se o app está rodando instalado (Standalone) ou no navegador
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches 
+                          || (navigator as any).standalone;
+
+        if (isStandalone && navigator.onLine) {
+            // Executa em segundo plano sem travar a interface do usuário
+            sincronizarImagens().catch(console.error);
+        }
+    }, []);
 
     return (
         <Router>

@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/Menu.css';
 
 import { logout } from '../../lib/auth';
+import { solicitarPersistencia } from '../../utils/InstallPrompt.tsx';
 
 interface menuProps {
     ativo: boolean;
@@ -39,6 +40,7 @@ export default function Menu({ ativo, onChoice }: menuProps) {
 
 		if (outcome === 'accepted') {
 			console.log('Usuário aceitou a instalação');
+			solicitarPersistencia();
 		} else {
 			console.log('Usuário recusou a instalação');
             window.dispatchEvent(new CustomEvent('fecharBannerPWA'));

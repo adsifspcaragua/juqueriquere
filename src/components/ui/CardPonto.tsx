@@ -1,11 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import '../styles/CardPonto.css'
-import '../styles/CardTrilha.css'
-import trilhaGeneric from '../../assets/img/CardTrilha.webp'
+import '../styles/CardPonto.css';
+import '../styles/CardTrilha.css';
+import trilhaGeneric from '../../assets/img/CardTrilha.webp';
 
-import { db } from '../../lib/dexie';
+import { obterCapa } from '../../lib/services/sync';
 
 interface Ponto {
     id: number;
@@ -23,71 +23,39 @@ interface Props {
 export default function CardPonto({ ponto, trilhaId }: Props) {
     const [imagem, setImagem] = useState<string>(trilhaGeneric);
 
-    useEffect(() => {
-        if (!ponto.id) return;
+    const location = useLocation();
+    const pageName = location.pathname.split("/").filter(Boolean).pop() || "Mapa";
 
-        let objectUrl: string | null = null;
-        let cancelado = false;
+    useEffect(() => {
+        let isMounted = true;
+        let urlBlobCriada: string | null = null;
 
         async function carregarImagem() {
-            try {
-                const imagemDb = await db.imagens
-                    .where('ponto_interesse_id')
-                    .equals(Number(ponto.id))
-                    .first();
+            if (!ponto.id) return;
 
-                if (cancelado) return;
+            const url = await obterCapa('ponto', Number(ponto.id));
 
-                // Imagem encontrada no Dexie
-                if (imagemDb?.arquivo instanceof Blob) {
-                    objectUrl = URL.createObjectURL(imagemDb.arquivo);
-
-                    setImagem(objectUrl);
-                    return;
-                }
-
-                // Caso exista uma URL válida no caminho_arquivo
-                if (
-                    imagemDb?.caminho_arquivo &&
-                    (
-                        imagemDb.caminho_arquivo.startsWith('http://') ||
-                        imagemDb.caminho_arquivo.startsWith('https://') ||
-                        imagemDb.caminho_arquivo.startsWith('data:')
-                    )
-                ) {
-                    setImagem(imagemDb.caminho_arquivo);
-                    return;
-                }
-
-                // Caso não exista imagem
-                setImagem(trilhaGeneric);
-
-            } catch (error) {
-                console.error(
-                    `Erro ao carregar imagem do ponto ${ponto.id}:`,
-                    error
-                );
-
-                if (!cancelado) {
+            if (isMounted) {
+                if (url) {
+                    if (url.startsWith("blob:")) urlBlobCriada = url;
+                    setImagem(url);
+                } else {
                     setImagem(trilhaGeneric);
                 }
+            } else if (url && url.startsWith("blob:")) {
+                URL.revokeObjectURL(url);
             }
         }
 
         carregarImagem();
 
-        // Libera a ObjectURL criada
         return () => {
-            cancelado = true;
-
-            if (objectUrl) {
-                URL.revokeObjectURL(objectUrl);
+            isMounted = false;
+            if (urlBlobCriada) {
+                URL.revokeObjectURL(urlBlobCriada);
             }
         };
     }, [ponto.id]);
-
-    const location = useLocation();
-    const pageName = location.pathname.split("/").filter(Boolean).pop() || "Mapa";
 
     if (!ponto.nome) return null;
 
@@ -109,4 +77,3 @@ export default function CardPonto({ ponto, trilhaId }: Props) {
         </Link>
     );
 }
-

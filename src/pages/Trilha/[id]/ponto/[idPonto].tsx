@@ -7,6 +7,7 @@ import {
     type PontoInteresseDB,
     type TrilhaDB
 } from '../../../../lib/dexie.ts';
+import { obterImagensPorPonto } from '../../../../lib/services/sync.ts';
 
 import NotFound from '../../../_components/NotFound.tsx';
 
@@ -23,7 +24,7 @@ export default function Ponto() {
 
     const [searchParams] = useSearchParams();
     let from = searchParams.get('from') || 'Mapa';
-    
+
     const [trilha, setTrilha] = useState<TrilhaDB>();
     const [ponto, setPontoDados] = useState<PontoInteresseDB>();
     const [imagens, setImagens] = useState<string[]>([]);
@@ -31,6 +32,7 @@ export default function Ponto() {
     usePageTitle(ponto?.nome);
 
     useEffect(() => {
+        let isMounted = true;
         let urlsCriadas: string[] = [];
 
         async function carregar() {
@@ -39,41 +41,33 @@ export default function Ponto() {
             const idTrilha = Number(id);
             const idPontoNumerico = Number(idPonto);
 
-            const trilhaDB = await db.trilhas.get(idTrilha);
+            try {
+                const [trilhaDB, pontoDB, urls] = await Promise.all([
+                    db.trilhas.get(idTrilha),
+                    db.pontos_interesse.get(idPontoNumerico),
+                    obterImagensPorPonto(idPontoNumerico)
+                ]);
 
-            const pontoDB = await db.pontos_interesse.get(
-                idPontoNumerico
-            );
+                if (!pontoDB || !trilhaDB || !isMounted) return;
 
-            if (!pontoDB || !trilhaDB) return;
+                urlsCriadas = urls;
 
-            const imagensDB = await db.imagens
-                .where('ponto_interesse_id')
-                .equals(idPontoNumerico)
-                .toArray();
-
-            const urls = imagensDB
-                .filter((img) => img.arquivo instanceof Blob)
-                .map((img) => {
-                    const url = URL.createObjectURL(img.arquivo!);
-
-                    urlsCriadas.push(url);
-
-                    return url;
-                });
-
-            setTrilha(trilhaDB);
-            setPontoDados(pontoDB);
-            setImagens(urls);
+                setTrilha(trilhaDB);
+                setPontoDados(pontoDB);
+                setImagens(urls);
+            } catch (error) {
+                console.error("Erro ao carregar dados do ponto:", error);
+            }
         }
 
         carregar();
 
-        // Libera as URLs criadas quando o componente for desmontado
-        // ou quando id/idPonto mudar.
         return () => {
+            isMounted = false;
             urlsCriadas.forEach((url) => {
-                URL.revokeObjectURL(url);
+                if (url.startsWith("blob:")) {
+                    URL.revokeObjectURL(url);
+                }
             });
         };
     }, [id, idPonto]);
@@ -202,4 +196,3 @@ export default function Ponto() {
         </>
     );
 }
-

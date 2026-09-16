@@ -1,103 +1,88 @@
-    import type Trilha from '../../pages/Trilhas/TrilhaInfo';
-    import trilhaGeneric from '../../assets/img/CardTrilha.webp';
+import type Trilha from '../../pages/Trilhas/TrilhaInfo';
+import trilhaGeneric from '../../assets/img/CardTrilha.webp';
 
-    import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
+import { useEffect, useState, type JSX } from 'react';
 
-    import { icons } from './icons';
-    import '../styles/CardTrilha.css';
+import { icons } from './icons';
+import '../styles/CardTrilha.css';
 
-    import { Link } from "react-router-dom";
-    import { useEffect, useState, type JSX } from 'react';
+import { obterCapa } from '../../lib/services/sync';
 
-    import { db } from '../../lib/dexie';
+type Props = {
+    trilha: Trilha;
+    id?: string | number;
+    getImg?: (img: string | undefined) => void;
+};
 
-    type Props = {
-        trilha: Trilha;
-        id?: string | number;
-        getImg?: (img: string | undefined) => void;
-    };
+export default function CardTrilha({ trilha, id }: Props): JSX.Element {
+    const { Dificuldade, Distancia, Tempo } = icons.dark;
 
-    export default function CardTrilha({ trilha, id }: Props): JSX.Element {
-        const { Dificuldade, Distancia, Tempo } = icons.dark;
+    const [imagem, setImagem] = useState<string>(`url(${trilhaGeneric})`);
 
-        const [imagem, setImagem] = useState<string>();
+    const location = useLocation();
+    const pageName = location.pathname.split("/").filter(Boolean).pop() || "Mapa";
 
-        
-        const location = useLocation();
-        const pageName = location.pathname.split("/").filter(Boolean).pop() || "Mapa";
+    useEffect(() => {
+        let isMounted = true;
+        let urlBlobCriada: string | null = null;
 
+        async function carregarCapa() {
+            const targetId = id ?? trilha.id;
+            if (!targetId) return;
 
-        useEffect(() => {
-            let urlLocal: string | undefined;
+            const url = await obterCapa('trilha', Number(targetId));
 
-            async function loadImagem() {
-                try {
-                    if (!id) {
-                        setImagem(`url(${trilhaGeneric})`);
-                        return;
-                    }
-
-                    const imagemDb = await db.imagens
-                        .where("trilha_id")
-                        .equals(Number(trilha.id))
-                        .first();
-
-                    if (imagemDb?.arquivo) {
-                        urlLocal = URL.createObjectURL(imagemDb.arquivo);
-
-                        setImagem(`url(${urlLocal})`);
-                        return;
-                    }
-
-                    setImagem(`url(${trilhaGeneric})`);
-                } catch (error) {
-                    console.error("Erro ao carregar imagem:", error);
+            if (isMounted) {
+                if (url) {
+                    if (url.startsWith("blob:")) urlBlobCriada = url;
+                    setImagem(`url(${url})`);
+                } else {
                     setImagem(`url(${trilhaGeneric})`);
                 }
+            } else if (url && url.startsWith("blob:")) {
+                URL.revokeObjectURL(url);
             }
+        }
 
-            loadImagem();
+        carregarCapa();
 
-            return () => {
-                if (urlLocal) {
-                    URL.revokeObjectURL(urlLocal);
-                }
-            };
-        }, [id, trilha.id]);
+        return () => {
+            isMounted = false;
+            if (urlBlobCriada) {
+                URL.revokeObjectURL(urlBlobCriada);
+            }
+        };
+    }, [id, trilha.id]);
 
-        return (
-            <Link
-                to={`/trilha/${id}?from=${pageName}`}
-                className="cardTrilha carrosselCard"
-                style={{ backgroundImage: imagem }}
-            >
-                <div className="info vertical">
+    return (
+        <Link
+            to={`/trilha/${id ?? trilha.id}?from=${pageName}`}
+            className="cardTrilha carrosselCard"
+            style={{ backgroundImage: imagem }}
+        >
+            <div className="info vertical">
+                <h2>{trilha.nome}</h2>
 
-                    <h2>{trilha.nome}</h2>
+                <div className="linhaPontilhadaDark"></div>
 
-                    <div className="linhaPontilhadaDark"></div>
-
-                    <div className="vertical gap5">
-
-                        <div className="horizontal gap5">
-                            <img src={Dificuldade} />
-                            <p>{trilha.dificuldade}</p>
-                        </div>
-
-                        <div className="horizontal gap5">
-                            <img src={Distancia} />
-                            <p>{trilha.extensao}</p>
-                        </div>
-
-                        <div className="horizontal gap5">
-                            <img src={Tempo} />
-                            <p>{trilha.duracao}</p>
-                        </div>
-
+                <div className="vertical gap5">
+                    <div className="horizontal gap5">
+                        <img src={Dificuldade} alt="Dificuldade" />
+                        <p>{trilha.dificuldade}</p>
                     </div>
 
-                </div>
-            </Link>
-        );
-    }
+                    <div className="horizontal gap5">
+                        <img src={Distancia} alt="Distância" />
+                        <p>{trilha.extensao}</p>
+                    </div>
 
+                    <div className="horizontal gap5">
+                        <img src={Tempo} alt="Duração" />
+                        <p>{trilha.duracao}</p>
+                    </div>
+                </div>
+            </div>
+        </Link>
+    );
+}

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { usePageTitle } from "../../../lib/hooks/usePageTitle";
 
 import { db, type PontoInteresseDB } from "../../../lib/dexie";
+import { obterImagensPorTrilha } from "../../../lib/services/sync";
 
 import NotFound from "../../_components/NotFound";
 import type TrilhaType from "../../Trilhas/TrilhaInfo";
@@ -15,89 +16,90 @@ import Switch from "../../../components/ui/buttons/Switch";
 import GaleriaImagens from "../../../components/ui/GaleriaImagens";
 import Map from "../../../components/ui/Map/Map";
 
-
-
 export default function Trilha() {
     const { Distancia, Tempo, Dificuldade } = icons.default;
 
     const { id: paramsId } = useParams();
     const id = Number(paramsId);
     const [searchParams] = useSearchParams();
-    let from = searchParams.get('from') || 'Mapa';
+    const from = searchParams.get('from') || 'Mapa';
 
-    const goBack = () => {
-            return (
-                <>
-                    <SimpleButton path={`/${from}`} type='back' icon='setaBack'>Voltar para {(from).charAt(0).toUpperCase() + (from).slice(1)}</SimpleButton>
-                </>
-            )
-        };
+    const goBack = () => (
+        <SimpleButton path={`/${from}`} type='back' icon='setaBack'>
+            Voltar para {(from).charAt(0).toUpperCase() + (from).slice(1)}
+        </SimpleButton>
+    );
 
     const [trilha, setTrilha] = useState<TrilhaType | null>(null);
     const [loading, setLoading] = useState(true);
 
     const [aba, setAba] = useState("Descrição");
-
     const [hl, setHl] = useState<(number | string)[]>([id]);
-
     const [imagens, setImagemArray] = useState<string[]>();
-
     const [pontosDados, setPontosDados] = useState<PontoInteresseDB[]>();
     const [pontoSelecionado, setPontoSelecionado] = useState<string>();
 
     usePageTitle(trilha?.nome);
 
     useEffect(() => {
-    async function carregar() {
-        try {
-            const resultado = await db.trilhas.get(id);
+        let isMounted = true;
+        let urlsCriadas: string[] = [];
 
-            if (!resultado) {
-                return;
+        async function carregar() {
+            try {
+                const resultado = await db.trilhas.get(id);
+
+                if (!resultado || !isMounted) {
+                    return;
+                }
+
+                const trilhaConvertida: TrilhaType = {
+                    ...resultado,
+                    id: resultado.id ?? 0,
+                    pontos_interesse:
+                        typeof resultado.pontos_interesse === "string"
+                            ? JSON.parse(resultado.pontos_interesse)
+                            : resultado.pontos_interesse ?? [],
+                    ramais:
+                        typeof resultado.ramais === "string"
+                            ? JSON.parse(resultado.ramais)
+                            : resultado.ramais ?? [],
+                    pontos_no_mapa: Array.isArray(resultado.pontos_no_mapa)
+                        ? resultado.pontos_no_mapa
+                        : [],
+                } as TrilhaType;
+
+                const pontos = await db.pontos_interesse.where('trilha_id').equals(Number(id)).toArray();
+                if (isMounted) setPontosDados(pontos);
+
+                // Busca as imagens no Dexie ou isoladamente via Supabase
+                const urls = await obterImagensPorTrilha(id);
+                urlsCriadas = urls;
+
+                if (isMounted) {
+                    setImagemArray(urls);
+                    setTrilha(trilhaConvertida);
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                if (isMounted) setLoading(false);
             }
-
-            const trilhaConvertida: TrilhaType = {
-                ...resultado,
-                id: resultado.id ?? 0,
-                pontos_interesse:
-                    typeof resultado.pontos_interesse === "string"
-                        ? JSON.parse(resultado.pontos_interesse)
-                        : resultado.pontos_interesse ?? [],
-                ramais:
-                    typeof resultado.ramais === "string"
-                        ? JSON.parse(resultado.ramais)
-                        : resultado.ramais ?? [],
-                pontos_no_mapa: Array.isArray(resultado.pontos_no_mapa)
-                    ? resultado.pontos_no_mapa
-                    : [],
-            } as TrilhaType;
-
-            const pontos = await db.pontos_interesse.where('trilha_id').equals(Number(id)).toArray();
-            setPontosDados(pontos);
-
-            const imagens = await db.imagens.where('trilha_id').equals(Number(id)).toArray();
-            const urls = imagens
-                .filter(img => img.arquivo instanceof Blob)
-                .map(img => URL.createObjectURL(img.arquivo!));
-
-            setImagemArray(urls);
-
-            setTrilha(trilhaConvertida);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
         }
-    }
 
-    carregar();
-}, [id]);
+        carregar();
+
+        // Limpeza de memória para PWA/Navegador ao desmontar ou trocar de trilha
+        return () => {
+            isMounted = false;
+            urlsCriadas.forEach((url) => URL.revokeObjectURL(url));
+        };
+    }, [id]);
 
     if (loading) {
         return (
             <>
                 <div className="paddingHeader"></div>
-
                 <section className="conteudo">
                     <p>Carregando...</p>
                 </section>
@@ -108,15 +110,14 @@ export default function Trilha() {
     if (!trilha) {
         return <NotFound />;
     }
-    const pontosList = (pontosDados ?? []).map(
-        (ponto) => (
-            <CardPonto
-                key={ponto.id}
-                ponto={ponto}
-                trilhaId={trilha.id}
-            />
-        )
-    );
+
+    const pontosList = (pontosDados ?? []).map((ponto) => (
+        <CardPonto
+            key={ponto.id}
+            ponto={ponto}
+            trilhaId={trilha.id}
+        />
+    ));
 
     const normalize = (str: string) =>
         str.toLowerCase().replace(".", "").trim();
@@ -129,18 +130,14 @@ export default function Trilha() {
 
         return list.find(
             (ponto: PontoInteresseDB) =>
-                normalize(String(ponto.nome)) ===
-                normalizedTarget
+                normalize(String(ponto.nome)) === normalizedTarget
         )?.nome;
     };
 
     const options = {
         "Mapa completo": id,
         ...Object.fromEntries(
-            (trilha.ramais ?? []).map((r) => [
-                r.nome,
-                r.id,
-            ])
+            (trilha.ramais ?? []).map((r) => [r.nome, r.id])
         ),
     } as Record<string, number | string>;
 
@@ -164,7 +161,7 @@ export default function Trilha() {
                             <div className="horizontal destaquesTrilha">
                                 <div className="vertical gap5">
                                     <div className="horizontal gap5">
-                                        <img src={Distancia} />
+                                        <img src={Distancia} alt="Distância" />
                                         <p>Distância</p>
                                     </div>
                                     <p>{trilha.extensao}</p>
@@ -172,7 +169,7 @@ export default function Trilha() {
                                 <div className="linhaVertical"></div>
                                 <div className="vertical gap5">
                                     <div className="horizontal gap5">
-                                        <img src={Tempo} />
+                                        <img src={Tempo} alt="Tempo" />
                                         <p>Duração</p>
                                     </div>
                                     <p>{trilha.duracao}</p>
@@ -180,22 +177,16 @@ export default function Trilha() {
                                 <div className="linhaVertical"></div>
                                 <div className="vertical gap5">
                                     <div className="horizontal gap5">
-                                        <img src={Dificuldade} />
+                                        <img src={Dificuldade} alt="Dificuldade" />
                                         <p>Dificuldade</p>
                                     </div>
                                     <p>{trilha.dificuldade}</p>
                                 </div>
                             </div>
                         </div>
-                        <div
-                            className="vertical gap5"
-                            id="trilhaSwitch"
-                        >
+                        <div className="vertical gap5" id="trilhaSwitch">
                             <Switch
-                                options={[
-                                    "Descrição",
-                                    "Mapa da trilha",
-                                ]}
+                                options={["Descrição", "Mapa da trilha"]}
                                 value={aba}
                                 onChange={setAba}
                                 style="light"
@@ -210,36 +201,28 @@ export default function Trilha() {
                             )}
                             {aba === "Mapa da trilha" && (
                                 <div className="vertical card gap15 switchCard">
-
-
-                                    {(trilha.ramais ?? []).length >
-                                        0 && (
-                                            <Switch
-                                                options={Object.keys(
-                                                    options
-                                                )}
-                                                value={Object.keys(options).find((key) =>
-                                                    options[key] === hl[0]
-                                                ) ??
-                                                    "Mapa completo"
-                                                }
-                                                onChange={(valor: string) => setHl([options[valor] as string])
-                                                }
-                                            />
-                                        )
-                                    }
-
+                                    {(trilha.ramais ?? []).length > 0 && (
+                                        <Switch
+                                            options={Object.keys(options)}
+                                            value={
+                                                Object.keys(options).find(
+                                                    (key) => options[key] === hl[0]
+                                                ) ?? "Mapa completo"
+                                            }
+                                            onChange={(valor: string) =>
+                                                setHl([options[valor] as string])
+                                            }
+                                        />
+                                    )}
 
                                     <div className="desktopWrap gap30">
                                         <div className="vertical gap5">
                                             <h1>Mapa da trilha</h1>
                                             <div className="mapa">
                                                 <Map
-                                                     highlight={hl}
+                                                    highlight={hl}
                                                     id={id}
-                                                    onPointClick={(
-                                                        nome
-                                                    ) =>
+                                                    onPointClick={(nome) =>
                                                         setPontoSelecionado(
                                                             findCarousselID(
                                                                 nome,
@@ -251,18 +234,12 @@ export default function Trilha() {
                                             </div>
                                         </div>
                                         <div className="vertical gap5">
-                                            <h1>
-                                                Pontos de Interesse
-                                            </h1>
+                                            <h1>Pontos de Interesse</h1>
                                             <DraggableCarousel
                                                 items={pontosList}
-                                                activeId={
-                                                    pontoSelecionado
-                                                }
+                                                activeId={pontoSelecionado}
                                                 onChange={(id) =>
-                                                    setPontoSelecionado(
-                                                        String(id)
-                                                    )
+                                                    setPontoSelecionado(String(id))
                                                 }
                                             />
                                         </div>

@@ -9,12 +9,28 @@ export function useSync() {
       try {
         await sincronizarTrilhas();
         await sincronizarPontos();
-        await sincronizarImagens();
+        //await sincronizarImagens();
       } catch (err) {
         console.error("Erro na sincronização:", err);
       }
     }
 
+    run();
+  }, []);
+}
+
+export function syncImages() {
+  useEffect(() => {
+    async function run() {
+      if (!navigator.onLine) return;
+
+      try {
+        await sincronizarImagens();
+      } 
+      catch (err) {
+        console.error("Erro na sincronização de imagens:", err);
+      }
+    } 
     run();
   }, []);
 }
