@@ -62,7 +62,7 @@ export default function Map({
   previewGeoJson,
   previewColor = "#000000",
   onDeleteLine,
-  center
+  center,
 }: MapProps) {
   const currentCenter = center || MAP_CENTER;
 

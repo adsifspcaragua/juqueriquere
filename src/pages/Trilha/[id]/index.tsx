@@ -41,6 +41,21 @@ export default function Trilha() {
 
     usePageTitle(trilha?.nome);
 
+    // Atualiza 'hl' caso o ID mude na navegação
+    useEffect(() => {
+        setHl([id]);
+    }, [id]);
+
+    // Força o mapa a recalcular seu tamanho quando a aba "Mapa da trilha" fica visível
+    useEffect(() => {
+        if (aba === "Mapa da trilha") {
+            const timer = setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+    }, [aba]);
+
     useEffect(() => {
         let isMounted = true;
 
@@ -49,6 +64,7 @@ export default function Trilha() {
                 const resultado = await db.trilhas.get(id);
 
                 if (!resultado || !isMounted) {
+                    if (isMounted) setLoading(false);
                     return;
                 }
 
@@ -218,6 +234,7 @@ export default function Trilha() {
                                         <h1>Mapa da trilha</h1>
                                         <div className="mapa">
                                             <Map
+                                                key={`${id}-${aba}`}
                                                 highlight={hl}
                                                 id={id}
                                                 onPointClick={(nome) =>
