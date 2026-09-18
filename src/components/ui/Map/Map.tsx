@@ -7,6 +7,7 @@ import { useMapData } from './useMapData';
 import TrailsLayer from './TrailsLayer';
 import PointsLayer from './PointsLayer';
 import { RecenterButton } from './RecenterButton';
+import { useAutoCacheMap } from './useAutoCacheMap'; // 1. Importe o hook
 
 interface MapProps {
   id?: number | string | (number | string)[];
@@ -18,13 +19,12 @@ interface MapProps {
   highlight?: number | string | (number | string)[]; 
   previewGeoJson?: any;
   previewColor?: string;
-  onDeleteLine?: (featureIndex: number) => void; // Callback para deleção;
+  onDeleteLine?: (featureIndex: number) => void;
   center?: [number, number];
 }
 
 const MAP_CENTER: [number, number] = [-23.678, -45.4395]; 
 const zoom = 18;
-
 
 const isLine = (feature: any) => {
   const type = feature?.geometry?.type;
@@ -64,6 +64,11 @@ export default function Map({
   onDeleteLine,
   center
 }: MapProps) {
+  const currentCenter = center || MAP_CENTER;
+
+  // 2. Chama o auto-cache de 500 metros em volta das coordenadas fornecidas
+  useAutoCacheMap(currentCenter, 500);
+
   const { filteredData, isLineHighlighted, isPointHighlighted } = useMapData(id, highlight, pointId);
   const handleEachFeature = (feature: any, layer: L.Layer) => {
     layer.on({
@@ -92,13 +97,13 @@ export default function Map({
   return (
     <div style={{ height: '100%', width: '100%', minHeight: '350px', borderRadius: '8px', overflow: 'hidden' }}>
       <MapContainer 
-        center={center || MAP_CENTER} 
+        center={currentCenter} 
         zoom={zoom} 
         scrollWheelZoom={false}
         dragging={!L.Browser.mobile}
         style={{ height: '100%', width: '100%' }}
       >
-        <RecenterButton center={center || MAP_CENTER} zoom={zoom} />
+        <RecenterButton center={currentCenter} zoom={zoom} />
         
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
@@ -118,7 +123,6 @@ export default function Map({
           </>
         ) : (
           <>
-            
             <TrailsLayer 
               lines={filteredData.lines}
               isLineHighlighted={isLineHighlighted}

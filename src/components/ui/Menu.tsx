@@ -2,12 +2,18 @@ import type Trilha from '../../pages/Trilhas/TrilhaInfo.tsx';
 import SimpleButton from '../../components/ui/buttons/SimpleButton.tsx';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { db, type PontoInteresseDB } from '../../lib/dexie.ts'
+import { db, type PontoInteresseDB } from '../../lib/dexie.ts';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/Menu.css';
 
 import { logout } from '../../lib/auth';
 import { solicitarPersistencia } from '../../utils/InstallPrompt.tsx';
+
+// Tipagem do evento de instalação do PWA
+interface BeforeInstallPromptEvent extends Event {
+    prompt: () => Promise<void>;
+    userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
 
 interface menuProps {
     ativo: boolean;
@@ -16,34 +22,50 @@ interface menuProps {
 
 export default function Menu({ ativo, onChoice }: menuProps) {
     /* Começo da Função Instalar App */
-    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+    const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+    const [isStandalone, setIsStandalone] = useState<boolean>(false);
 
     useEffect(() => {
+        // Verifica se o aplicativo já está rodando instalado (modo Standalone)
+        const isInstalled = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone;
+        setIsStandalone(!!isInstalled);
+
         const handleBeforeInstallPrompt = (e: Event) => {
-            setDeferredPrompt(e);
+            e.preventDefault(); // Impede o prompt automático do navegador
+            setDeferredPrompt(e as BeforeInstallPromptEvent);
+        };
+
+        const handleAppInstalled = () => {
+            setDeferredPrompt(null);
+            setIsStandalone(true);
+            console.log('App instalado com sucesso');
         };
 
         window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        window.addEventListener('appinstalled', handleAppInstalled);
 
         return () => {
             window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+            window.removeEventListener('appinstalled', handleAppInstalled);
         };
     }, []);
 
     const handleInstallClick = async () => {
-        window.dispatchEvent(new CustomEvent('fecharBannerPWA'));
         if (!deferredPrompt) return;
 
-        deferredPrompt.prompt();
+        // Fecha o banner PWA antes do prompt
+        window.dispatchEvent(new CustomEvent('fecharBannerPWA'));
+
+        // Exibe o prompt de instalação nativo
+        await deferredPrompt.prompt();
 
         const { outcome } = await deferredPrompt.userChoice;
 
-		if (outcome === 'accepted') {
-			console.log('Usuário aceitou a instalação');
-			solicitarPersistencia();
-		} else {
-			console.log('Usuário recusou a instalação');
-            window.dispatchEvent(new CustomEvent('fecharBannerPWA'));
+        if (outcome === 'accepted') {
+            console.log('Usuário aceitou a instalação');
+            solicitarPersistencia();
+        } else {
+            console.log('Usuário recusou a instalação');
         }
 
         setDeferredPrompt(null);
@@ -52,7 +74,6 @@ export default function Menu({ ativo, onChoice }: menuProps) {
     /* Fim da Função Instalar App */
 
     /* Restante do Menu */
-
     const [trilhas, setTrilhas] = useState<Trilha[]>([]);
     const [pontos, setPontos] = useState<PontoInteresseDB[]>([]);
 
@@ -61,22 +82,11 @@ export default function Menu({ ativo, onChoice }: menuProps) {
             const data = (await db.trilhas.toArray()).slice(0, 5);
             const pontos = (await db.pontos_interesse.toArray()).slice(0, 5);
             if (data) setTrilhas(data as Trilha[]);
-            if (pontos) setPontos(pontos)
-
+            if (pontos) setPontos(pontos);
         }
 
         loadData();
     }, []);
-
-    /*
-    const pontos = trilhas
-        .flatMap((trilha) =>
-            trilha.pontos_interesse.map((ponto) => ({
-                ...ponto,
-                trilhaId: trilha.id
-            }))
-        )
-        .slice(0, 5);*/
 
     const [trilhasShow, setTrilhasShow] = useState(false);
     const [pontosShow, setPontosShow] = useState(false);
@@ -86,12 +96,10 @@ export default function Menu({ ativo, onChoice }: menuProps) {
     const location = useLocation();
 
     useEffect(() => {
-        // pega sessão inicial
         supabase.auth.getUser().then(({ data }) => {
             setUser(data.user);
         });
 
-        // escuta mudanças (LOGIN / LOGOUT)
         const { data: listener } = supabase.auth.onAuthStateChange(
             (_event, session) => {
                 setUser(session?.user ?? null);
@@ -128,15 +136,17 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                 className={`menuWeb ${ativo ? 'open' : ''}`}
                 onClick={(e) => e.stopPropagation()}
             >
-
                 <div className="menuLista vertical gap15">
-
                     <h1>Menu</h1>
 
-                    {/* INSTALAR APP */}
-                    <div className="menuLinks">
-                        <SimpleButton raio='0' icon='download' onClick={handleInstallClick}>Instalar o app</SimpleButton>
-                    </div>
+                    {/* INSTALAR APP - Exibe apenas se o prompt estiver disponível e o app não estiver instalado */}
+                    {!isStandalone && deferredPrompt && (
+                        <div className="menuLinks">
+                            <SimpleButton raio='0' icon='download' onClick={handleInstallClick}>
+                                Instalar o app
+                            </SimpleButton>
+                        </div>
+                    )}
 
                     {/* BOTÕES BÁSICOS */}
                     <div className="menuLinks">
@@ -176,7 +186,6 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                                     <b>Ver todas as Trilhas</b>
                                 </SimpleButton>
                             </div>
-
                         </div>
 
                         {/* PONTOS */}
@@ -210,24 +219,21 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                                 </SimpleButton>
                             </div>
                         </div>
-
-
                     </div>
+
                     <div className="menuLinks">
                         {/* ADMIN / LOGOUT */}
                         {user ? (
                             <div className='MenuGroup'>
                                 <SimpleButton path='/admin' raio='0'>
                                     Administração do Site
-                                </SimpleButton><SimpleButton raio="0" onClick={handleLogout}>
+                                </SimpleButton>
+                                <SimpleButton raio="0" onClick={handleLogout}>
                                     Logout
-                                </SimpleButton></div>
-                        ) : (
-                            null
-                        )}
-
+                                </SimpleButton>
+                            </div>
+                        ) : null}
                     </div>
-
                 </div>
             </div>
         </div>

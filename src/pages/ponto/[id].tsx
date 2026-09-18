@@ -1,20 +1,20 @@
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
-import { usePageTitle } from "../../lib/hooks/usePageTitle.ts";
+import { usePageTitle } from "../../lib/hooks/usePageTitle";
 
 import {
     db,
     type PontoInteresseDB,
     type TrilhaDB
-} from '../../lib/dexie.ts';
-import { obterImagensPorPonto } from '../../lib/services/sync.ts';
+} from '../../lib/dexie';
+import { obterImagensPorPonto } from '../../lib/services/sync';
 
-import NotFound from '../_components/NotFound.tsx';
+import NotFound from '../_components/NotFound';
+import SimpleButton from '../../components/ui/buttons/SimpleButton';
+import GaleriaImagens from '../../components/ui/GaleriaImagens';
+import Map from '../../components/ui/Map/Map';
 
-import SimpleButton from '../../components/ui/buttons/SimpleButton.tsx';
 import '../_styles/ponto.css';
-import GaleriaImagens from '../../components/ui/GaleriaImagens.tsx';
-import Map from '../../components/ui/Map/Map.tsx';
 
 export default function Ponto() {
     const { id } = useParams<{ id: string }>();
@@ -22,6 +22,7 @@ export default function Ponto() {
     const [searchParams] = useSearchParams();
     const from = searchParams.get('from') || 'Mapa';
     
+    const [loading, setLoading] = useState(true);
     const [trilhas, setTrilhas] = useState<TrilhaDB[]>([]);
     const [ponto, setPontoDados] = useState<PontoInteresseDB>();
     const [imagens, setImagens] = useState<string[]>([]);
@@ -30,25 +31,27 @@ export default function Ponto() {
 
     useEffect(() => {
         let isMounted = true;
-        let urlsCriadas: string[] = [];
 
         async function carregar() {
-            if (!id) return;
+            if (!id) {
+                setLoading(false);
+                return;
+            }
 
             const idPontoNumerico = Number(id);
 
             try {
-                // Carrega os dados do ponto e as imagens (via Dexie + Supabase Fallback) em paralelo
+                // Carrega os dados do ponto e as imagens em paralelo via Dexie/Cache Local
                 const [pontoDB, urls] = await Promise.all([
                     db.pontos_interesse.get(idPontoNumerico),
                     obterImagensPorPonto(idPontoNumerico)
                 ]);
 
-                if (!pontoDB || !isMounted) return;
+                if (!pontoDB || !isMounted) {
+                    if (isMounted) setLoading(false);
+                    return;
+                }
 
-                urlsCriadas = urls;
-
-                // Suporte para 0, 1 ou múltiplas trilhas associadas
                 let trilhasEncontradas: TrilhaDB[] = [];
 
                 const idsTrilhas: number[] = Array.isArray((pontoDB as any).trilha_ids)
@@ -73,6 +76,8 @@ export default function Ponto() {
                 setImagens(urls);
             } catch (error) {
                 console.error("Erro ao carregar dados do ponto:", error);
+            } finally {
+                if (isMounted) setLoading(false);
             }
         }
 
@@ -80,13 +85,19 @@ export default function Ponto() {
 
         return () => {
             isMounted = false;
-            urlsCriadas.forEach((url) => {
-                if (url.startsWith("blob:")) {
-                    URL.revokeObjectURL(url);
-                }
-            });
         };
     }, [id]);
+
+    if (loading) {
+        return (
+            <>
+                <div className="paddingHeader"></div>
+                <section className="conteudo">
+                    <p>Carregando ponto de interesse...</p>
+                </section>
+            </>
+        );
+    }
 
     if (!ponto) {
         return <NotFound />;
@@ -111,7 +122,7 @@ export default function Ponto() {
 
         return (
             <SimpleButton
-                path={`/${from.toLowerCase()}/`}
+                path={`/${from.toLowerCase()}`}
                 type="back"
                 icon="setaBack"
             >
@@ -125,7 +136,6 @@ export default function Ponto() {
             <div className="paddingHeader"></div>
 
             <section className="conteudo vertical gap15">
-
                 <div className="vertical gap15">
                     <div className="horizontal gap5">
                         {goBack()}
@@ -133,7 +143,6 @@ export default function Ponto() {
                 </div>
 
                 <div className="desktopWrap">
-
                     <div className="vertical">
                         <div className="vertical">
                             <GaleriaImagens imagens={imagens} />
@@ -141,35 +150,25 @@ export default function Ponto() {
                     </div>
 
                     <div className="vertical gap15">
-
                         <div className="vertical gap15">
-
                             <div className="vertical gap5">
-
                                 <h1>{ponto.nome}</h1>
-
-                                <div className="vertical gap5">
-                                    {ponto.planta && (
+                                {ponto.planta && (
+                                    <div className="vertical gap5">
                                         <i>{ponto.planta}</i>
-                                    )}
-                                </div>
-
+                                    </div>
+                                )}
                             </div>
 
                             <div className="card vertical gap5">
-
                                 <h2>Descrição</h2>
-
                                 {ponto.descricao && (
                                     <p>{ponto.descricao}</p>
                                 )}
-
                             </div>
-
                         </div>
 
                         <div className="card desktopWrap gap15">
-
                             {ponto.latitude && ponto.longitude && (
                                 <div className="mapa">
                                     <Map
@@ -181,9 +180,7 @@ export default function Ponto() {
                             )}
 
                             <div className="vertical gap5">
-
                                 <p>Aparece em:</p>
-
                                 {trilhas.length > 0 ? (
                                     <div className="vertical gap5">
                                         {trilhas.map((trilha) => (
@@ -207,15 +204,10 @@ export default function Ponto() {
                                         {ponto.longitude}
                                     </p>
                                 )}
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </section>
         </>
     );

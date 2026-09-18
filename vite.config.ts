@@ -13,14 +13,14 @@ export default defineConfig({
   preview: {
     allowedHosts: ['frontend_web', 'my-custom-domain.com']
   },
-  plugins: [react(),
+  plugins: [
+    react(),
     Pages({
       dirs: 'src/pages', // Define a pasta base do routing
       extensions: ['tsx', 'ts', 'jsx', 'js'],
       exclude: [
         '**/_*/**/*',         // Ignora pastas que começam com underline
       ],
-      
     }),
     VitePWA({
       registerType: 'autoUpdate',
@@ -73,7 +73,6 @@ export default defineConfig({
         clientsClaim: true,
         skipWaiting: true,
 
-
         navigateFallback: '/index.html',
         runtimeCaching: [
           // 1. Cache para o arquivo CSS do Google Fonts (StaleWhileRevalidate)
@@ -96,7 +95,22 @@ export default defineConfig({
               },
             },
           },
-          // 3. Cache para as páginas de navegação (NetworkFirst)
+          // 3. Cache para os TILES DO MAPA Esri ArcGIS (CacheFirst)
+          {
+            urlPattern: /^https:\/\/server\.arcgisonline\.com\/ArcGIS\/rest\/services\/World_Imagery\/MapServer\/tile\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'esri-map-tiles',
+              expiration: {
+                maxEntries: 5000,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 dias
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          // 4. Cache para as páginas de navegação (NetworkFirst)
           {
             urlPattern: ({ request }) => request.mode === 'navigate',
             handler: 'NetworkFirst',

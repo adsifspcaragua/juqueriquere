@@ -29,22 +29,22 @@ export default function CardPonto({ ponto }: Props) {
 
     useEffect(() => {
         let isMounted = true;
-        let urlBlobCriada: string | null = null;
 
         async function carregarImagem() {
             if (!ponto.id) return;
 
-            const url = await obterCapa('ponto', Number(ponto.id));
+            try {
+                const url = await obterCapa('ponto', Number(ponto.id));
 
-            if (isMounted) {
-                if (url) {
-                    if (url.startsWith("blob:")) urlBlobCriada = url;
-                    setImagem(url);
-                } else {
-                    setImagem(trilhaGeneric);
+                if (isMounted) {
+                    if (url) {
+                        setImagem(url);
+                    } else {
+                        setImagem(trilhaGeneric);
+                    }
                 }
-            } else if (url && url.startsWith("blob:")) {
-                URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error("Erro ao carregar capa do ponto:", error);
             }
         }
 
@@ -52,9 +52,6 @@ export default function CardPonto({ ponto }: Props) {
 
         return () => {
             isMounted = false;
-            if (urlBlobCriada) {
-                URL.revokeObjectURL(urlBlobCriada);
-            }
         };
     }, [ponto.id]);
 

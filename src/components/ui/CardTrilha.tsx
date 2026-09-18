@@ -15,7 +15,7 @@ type Props = {
     getImg?: (img: string | undefined) => void;
 };
 
-export default function CardTrilha({ trilha, id }: Props): JSX.Element {
+export default function CardTrilha({ trilha, id, getImg }: Props): JSX.Element {
     const { Dificuldade, Distancia, Tempo } = icons.dark;
 
     const [imagem, setImagem] = useState<string>(`url(${trilhaGeneric})`);
@@ -25,23 +25,25 @@ export default function CardTrilha({ trilha, id }: Props): JSX.Element {
 
     useEffect(() => {
         let isMounted = true;
-        let urlBlobCriada: string | null = null;
 
         async function carregarCapa() {
             const targetId = id ?? trilha.id;
             if (!targetId) return;
 
-            const url = await obterCapa('trilha', Number(targetId));
+            try {
+                const url = await obterCapa('trilha', Number(targetId));
 
-            if (isMounted) {
-                if (url) {
-                    if (url.startsWith("blob:")) urlBlobCriada = url;
-                    setImagem(`url(${url})`);
-                } else {
-                    setImagem(`url(${trilhaGeneric})`);
+                if (isMounted) {
+                    if (url) {
+                        setImagem(`url(${url})`);
+                        if (getImg) getImg(url);
+                    } else {
+                        setImagem(`url(${trilhaGeneric})`);
+                        if (getImg) getImg(trilhaGeneric);
+                    }
                 }
-            } else if (url && url.startsWith("blob:")) {
-                URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error("Erro ao carregar capa da trilha:", error);
             }
         }
 
@@ -49,11 +51,8 @@ export default function CardTrilha({ trilha, id }: Props): JSX.Element {
 
         return () => {
             isMounted = false;
-            if (urlBlobCriada) {
-                URL.revokeObjectURL(urlBlobCriada);
-            }
         };
-    }, [id, trilha.id]);
+    }, [id, trilha.id, getImg]);
 
     return (
         <Link

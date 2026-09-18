@@ -7,16 +7,61 @@ function getCampoBusca(tipo: TipoEntidade): "trilha_id" | "ponto_interesse_id" {
   return tipo === "trilha" ? "trilha_id" : "ponto_interesse_id";
 }
 
+// Cache em memória para reutilizar URLs de Blob e evitar vazamento de memória
+const objectUrlCache = new WeakMap<Blob, string>();
+
+function obterUrlDoBlob(blob: Blob): string {
+  if (objectUrlCache.has(blob)) {
+    return objectUrlCache.get(blob)!;
+  }
+  const url = URL.createObjectURL(blob);
+  objectUrlCache.set(blob, url);
+  return url;
+}
+
+// Converte caminho relativo de arquivo no Supabase para URL pública válida
+export function getPublicUrl(caminhoArquivo: string): string {
+  if (!caminhoArquivo) return "";
+  if (
+    caminhoArquivo.startsWith("http://") ||
+    caminhoArquivo.startsWith("https://") ||
+    caminhoArquivo.startsWith("data:")
+  ) {
+    return caminhoArquivo;
+  }
+  const { data } = supabase.storage.from("imagens").getPublicUrl(caminhoArquivo);
+  return data.publicUrl;
+}
+
+// Extrai a URL final da imagem com prioridade para o Blob local
+function extrairUrlImagem(img: { arquivo?: Blob; caminho_arquivo?: string }): string | null {
+  if (img.arquivo instanceof Blob && img.arquivo.size > 0) {
+    return obterUrlDoBlob(img.arquivo);
+  }
+  if (img.caminho_arquivo) {
+    return getPublicUrl(img.caminho_arquivo);
+  }
+  return null;
+}
+
 async function baixarImagem(
   caminhoArquivo: string
 ): Promise<Blob | undefined> {
+  if (!caminhoArquivo || !navigator.onLine) return undefined;
+
   try {
     if (caminhoArquivo.startsWith("data:")) {
       console.warn(
-        "Imagem ignorada: caminho_arquivo contém Base64:",
+        "Imagem ignorada por conter Base64:",
         caminhoArquivo.substring(0, 50)
       );
       return undefined;
+    }
+
+    if (caminhoArquivo.startsWith("http://") || caminhoArquivo.startsWith("https://")) {
+      const response = await fetch(caminhoArquivo);
+      if (!response.ok) return undefined;
+      return await response.blob();
     }
 
     const { data, error } = await supabase.storage
@@ -35,75 +80,122 @@ async function baixarImagem(
   }
 }
 
+// Processador de tarefas em lotes concorrentes
+async function processarEmLotes<T, R>(
+  items: T[],
+  limiteConcorrencia: number,
+  fn: (item: T) => Promise<R>
+): Promise<R[]> {
+  const resultados: R[] = new Array(items.length);
+  let index = 0;
+
+  async function worker() {
+    while (index < items.length) {
+      const currentIndex = index++;
+      resultados[currentIndex] = await fn(items[currentIndex]);
+    }
+  }
+
+  const workers = Array.from(
+    { length: Math.min(limiteConcorrencia, items.length) },
+    () => worker()
+  );
+  await Promise.all(workers);
+  return resultados;
+}
+
+// Abstração genérica para sincronizar tabelas simples mantendo resiliência offline
+async function sincronizarTabela<T>(
+  nomeTabela: string,
+  tabelaDexie: { clear: () => Promise<void>; bulkPut: (items: T[]) => Promise<unknown> }
+) {
+  if (!navigator.onLine) return;
+
+  try {
+    const { data, error } = await supabase.from(nomeTabela).select("*");
+    if (error) throw error;
+
+    if (data) {
+      await tabelaDexie.clear();
+      await tabelaDexie.bulkPut(data);
+    }
+  } catch (error) {
+    console.error(`Erro ao sincronizar tabela ${nomeTabela}:`, error);
+  }
+}
+
 // Funções de Sincronização Geral
 export async function sincronizarTrilhas() {
-  const { data, error } = await supabase.from("trilhas").select("*");
-  if (error) throw error;
-
-  await db.trilhas.clear();
-  await db.trilhas.bulkPut(data ?? []);
+  await sincronizarTabela("trilhas", db.trilhas);
 }
 
 export async function sincronizarPontos() {
-  const { data, error } = await supabase.from("pontos_interesse").select("*");
-  if (error) throw error;
-
-  await db.pontos_interesse.clear();
-  if (data) {
-    await db.pontos_interesse.bulkPut(data);
-  }
+  await sincronizarTabela("pontos_interesse", db.pontos_interesse);
 }
 
 export async function sincronizarImagens() {
-  const { data: remoteImages, error } = await supabase.from("imagens").select("*");
+  if (!navigator.onLine) return;
 
-  if (error) {
-    console.error("Erro ao buscar imagens remotas:", error);
-    throw error;
-  }
+  try {
+    const { data: remoteImages, error } = await supabase.from("imagens").select("*");
 
-  if (!remoteImages) return;
+    if (error || !remoteImages) return;
 
-  const localImages = await db.imagens.toArray();
-  const localMap = new Map(localImages.map((img) => [img.id, img]));
+    const localImages = await db.imagens.toArray();
+    const localMap = new Map(localImages.map((img) => [img.id, img]));
 
-  const remoteIds = new Set(remoteImages.map((img) => img.id));
-  const idsToDelete = localImages
-    .filter((img) => !remoteIds.has(img.id))
-    .map((img) => img.id);
+    const remoteIds = new Set(remoteImages.map((img) => img.id));
+    const idsToDelete = localImages
+      .filter((img) => !remoteIds.has(img.id))
+      .map((img) => img.id);
 
-  if (idsToDelete.length > 0) {
-    await db.imagens.bulkDelete(idsToDelete);
-  }
+    if (idsToDelete.length > 0) {
+      await db.imagens.bulkDelete(idsToDelete);
+    }
 
-  if (remoteImages.length === 0) return;
+    if (remoteImages.length === 0) return;
 
-  const imagensParaDexie = await Promise.all(
-    remoteImages.map(async (remoteImg) => {
-      const localImg = localMap.get(remoteImg.id);
-      const mesmoCaminho = localImg?.caminho_arquivo === remoteImg.caminho_arquivo;
-      const temBlobValido = Boolean(localImg?.arquivo && localImg.arquivo.size > 0);
+    const limiteConcorrencia = 3;
 
-      if (mesmoCaminho && temBlobValido) {
+    const imagensParaDexie = await processarEmLotes(
+      remoteImages,
+      limiteConcorrencia,
+      async (remoteImg) => {
+        const localImg = localMap.get(remoteImg.id);
+        const mesmoCaminho = localImg?.caminho_arquivo === remoteImg.caminho_arquivo;
+        const temBlobValido = Boolean(localImg?.arquivo && localImg.arquivo.size > 0);
+
+        if (mesmoCaminho && temBlobValido) {
+          return {
+            ...remoteImg,
+            arquivo: localImg!.arquivo,
+          };
+        }
+
+        const arquivo = await baixarImagem(remoteImg.caminho_arquivo);
+
         return {
           ...remoteImg,
-          arquivo: localImg!.arquivo,
+          arquivo,
         };
       }
+    );
 
-      const arquivo = await baixarImagem(remoteImg.caminho_arquivo);
-
-      return {
-        ...remoteImg,
-        arquivo,
-      };
-    })
-  );
-
-  await db.imagens.bulkPut(imagensParaDexie);
+    await db.imagens.bulkPut(imagensParaDexie);
+  } catch (error) {
+    console.error("Erro ao sincronizar imagens remotas:", error);
+  }
 }
 
-// Lógica Unificada de Busca de Imagens
+// Executa a sincronização completa de todas as entidades
+export async function sincronizarTudo() {
+  if (!navigator.onLine) return;
+  await sincronizarTrilhas();
+  await sincronizarPontos();
+  await sincronizarImagens();
+}
+
+// Lógica Unificada de Busca de Imagens com suporte Offline-First
 async function obterImagensPorEntidade(
   tipo: TipoEntidade,
   id: number
@@ -112,34 +204,28 @@ async function obterImagensPorEntidade(
   const idNumerico = Number(id);
 
   try {
-    // 1. Tenta buscar no Dexie primeiro
+    // Tenta buscar no banco local Dexie primeiro
     const imagensLocais = await db.imagens
       .where(campoBusca)
       .equals(idNumerico)
       .toArray();
 
-    const urlsLocais = imagensLocais
-      .map((img) => {
-        if (img.arquivo instanceof Blob && img.arquivo.size > 0) {
-          return URL.createObjectURL(img.arquivo);
-        }
-        if (
-          img.caminho_arquivo &&
-          (img.caminho_arquivo.startsWith("http://") ||
-            img.caminho_arquivo.startsWith("https://") ||
-            img.caminho_arquivo.startsWith("data:"))
-        ) {
-          return img.caminho_arquivo;
-        }
-        return null;
-      })
-      .filter((url): url is string => url !== null);
+    if (imagensLocais.length > 0) {
+      const urlsLocais = imagensLocais
+        .map(extrairUrlImagem)
+        .filter((url): url is string => url !== null);
 
-    if (urlsLocais.length > 0) {
-      return urlsLocais;
+      if (urlsLocais.length > 0) {
+        return urlsLocais;
+      }
     }
 
-    // 2. Se não existir no Dexie, busca no Supabase APENAS para esta entidade
+    // Se não existir localmente e estiver offline, encerra para evitar erros
+    if (!navigator.onLine) {
+      return [];
+    }
+
+    // Busca no Supabase apenas se necessário
     const { data: remoteImages, error } = await supabase
       .from("imagens")
       .select("*")
@@ -149,38 +235,27 @@ async function obterImagensPorEntidade(
       return [];
     }
 
-    // 3. Baixa e grava no Dexie
-    const imagensParaDexie = await Promise.all(
-      remoteImages.map(async (remoteImg) => {
+    const limiteConcorrencia = 3;
+
+    const imagensParaDexie = await processarEmLotes(
+      remoteImages,
+      limiteConcorrencia,
+      async (remoteImg) => {
         const arquivo = await baixarImagem(remoteImg.caminho_arquivo);
         return {
           ...remoteImg,
           arquivo,
         };
-      })
+      }
     );
 
     await db.imagens.bulkPut(imagensParaDexie);
 
-    // 4. Retorna URLs criadas
     return imagensParaDexie
-      .map((img) => {
-        if (img.arquivo instanceof Blob && img.arquivo.size > 0) {
-          return URL.createObjectURL(img.arquivo);
-        }
-        if (
-          img.caminho_arquivo &&
-          (img.caminho_arquivo.startsWith("http://") ||
-            img.caminho_arquivo.startsWith("https://") ||
-            img.caminho_arquivo.startsWith("data:"))
-        ) {
-          return img.caminho_arquivo;
-        }
-        return null;
-      })
+      .map(extrairUrlImagem)
       .filter((url): url is string => url !== null);
   } catch (error) {
-    console.error(`Erro ao buscar imagens do(a) ${tipo} (${id}):`, error);
+    console.error(`Erro ao buscar imagens da entidade ${tipo} (${id}):`, error);
     return [];
   }
 }

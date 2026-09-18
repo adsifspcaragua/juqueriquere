@@ -53,6 +53,8 @@ export function InstallPrompt() {
 		if (outcome === 'accepted') {
 			console.log('Usuário aceitou a instalação');
 			solicitarPersistencia();
+			// Dispara o download de todas as imagens imediatamente!
+			window.dispatchEvent(new CustomEvent('iniciarSincronizacaoOffline'));
 		}
 
 		setDeferredPrompt(null);
