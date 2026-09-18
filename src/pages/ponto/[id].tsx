@@ -142,11 +142,10 @@ export default function Ponto() {
                     </div>
                 </div>
 
-                <div className="desktopWrap">
-                    <div className="vertical">
-                        <div className="vertical">
-                            <GaleriaImagens imagens={imagens} />
-                        </div>
+                <div className="desktopWrap gap30">
+
+                    <div className="vertical" id='carrosselNoFade'>
+                        <GaleriaImagens imagens={imagens} />
                     </div>
 
                     <div className="vertical gap15">

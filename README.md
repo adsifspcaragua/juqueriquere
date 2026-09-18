@@ -11,6 +11,8 @@ O site do parque conta com diversas informações úteis para os que desejam vis
 
 Desde pontos interessantes até dificuldades a serem enfrentadas, o sistema busca auxiliar e enriquecer ao máximo a visita ao parque, aprimorando ainda mais a experiência das belezas naturais brasileiras.
 
+[link do site](https://juqueriquere.vercel.app)
+
 ## Funcionalidades principais
 
 - **Trilhas Didáticas:** Exibição das trilhas do parque de forma interativa, mostrando caminhos e pontos de interesse.
