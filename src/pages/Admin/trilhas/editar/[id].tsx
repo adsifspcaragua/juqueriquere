@@ -29,9 +29,10 @@ export default function EditarTrilha() {
     const [imagensSalvas, setImagensSalvas] = useState<ImagemDB[]>([]);
     const [imagensSalvasUrls, setImagensSalvasUrls] = useState<Record<number, string>>({});
     const [imagensDeletadasIds, setImagensDeletadasIds] = useState<number[]>([]);
-    
+
     const [novasImagens, setNovasImagens] = useState<File[]>([]);
     const [novasImagensBase64, setNovasImagensBase64] = useState<string[]>([]);
+    const [novasImagensLegendas, setNovasImagensLegendas] = useState<string[]>([]);
 
     useEffect(() => {
         async function load() {
@@ -145,6 +146,10 @@ export default function EditarTrilha() {
             const novosBase64 = await Promise.all(files.map(fileToBase64));
             setNovasImagens((prev) => [...prev, ...files]);
             setNovasImagensBase64((prev) => [...prev, ...novosBase64]);
+            setNovasImagensLegendas((prev) => [
+                ...prev,
+                ...files.map(() => "Texto alternativo")
+            ]);
         } catch (error) {
             console.error(error);
             alert("Erro ao carregar a visualização das imagens.");
@@ -171,6 +176,25 @@ export default function EditarTrilha() {
     function handleRemoveNewImage(indexToRemove: number) {
         setNovasImagens((prev) => prev.filter((_, idx) => idx !== indexToRemove));
         setNovasImagensBase64((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+        setNovasImagensLegendas((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+    }
+
+    function handleSavedImageLegendChange(imageId: number, value: string) {
+        setImagensSalvas((prev) =>
+            prev.map((img) =>
+                img.id === imageId
+                    ? { ...img, legenda: value }
+                    : img
+            )
+        );
+    }
+
+    function handleNewImageLegendChange(index: number, value: string) {
+        setNovasImagensLegendas((prev) => {
+            const novas = [...prev];
+            novas[index] = value;
+            return novas;
+        });
     }
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -225,7 +249,25 @@ export default function EditarTrilha() {
                 setImagensDeletadasIds([]);
             }
 
-            // 4. Processa novas imagens
+            // 4. Atualiza as legendas das imagens já salvas
+            if (imagensSalvas.length > 0) {
+                for (const imagem of imagensSalvas) {
+                    if (imagem.id == null) continue;
+
+                    const { error: erroLegenda } = await supabase
+                        .from("imagens")
+                        .update({ legenda: imagem.legenda })
+                        .eq("id", imagem.id);
+
+                    if (erroLegenda) throw erroLegenda;
+
+                    await db.imagens.update(imagem.id, {
+                        legenda: imagem.legenda
+                    });
+                }
+            }
+
+            // 5. Processa novas imagens
             if (novasImagens.length > 0) {
                 const dadosImagens = [];
                 const imagensConvertidas: Blob[] = [];
@@ -234,7 +276,7 @@ export default function EditarTrilha() {
                 for (let index = 0; index < novasImagens.length; index++) {
                     const file = novasImagens[index];
                     const blobWebP = await convertToWebP(file, 0.8);
-                    
+
                     imagensConvertidas.push(blobWebP);
 
                     const nomeArquivo = `${crypto.randomUUID()}.webp`;
@@ -246,7 +288,7 @@ export default function EditarTrilha() {
                         trilha_id: idNumerico,
                         ponto_interesse_id: null,
                         caminho_arquivo: caminho,
-                        legenda: `Imagem ${totalExistentes + index + 1} da trilha ${trilhaAtualizada.nome}`,
+                        legenda: novasImagensLegendas[index] || "Texto alternativo",
                     });
                 }
 
@@ -279,6 +321,7 @@ export default function EditarTrilha() {
 
                 setNovasImagens([]);
                 setNovasImagensBase64([]);
+                setNovasImagensLegendas([]);
             }
 
             alert("Trilha atualizada com sucesso!");
@@ -409,7 +452,20 @@ export default function EditarTrilha() {
                                                         <button type="button" className="btn-red" onClick={() => handleRemoveSavedImage(img, idx)} disabled={carregando}>
                                                             Excluir
                                                         </button>
-                                                        <p>{img.legenda}</p>
+                                                        <div className="vertical gap5">
+                                                            <label>Texto alternativo:</label>
+                                                            <input
+                                                                value={img.legenda ?? ""}
+                                                                onChange={(e) =>
+                                                                    handleSavedImageLegendChange(
+                                                                        img.id!,
+                                                                        e.target.value
+                                                                    )
+                                                                }
+                                                                required
+                                                                disabled={carregando}
+                                                            />
+                                                        </div>
                                                     </div>
                                                 )),
                                                 ...novasImagens.map((file, idx) => (
@@ -418,6 +474,20 @@ export default function EditarTrilha() {
                                                         <button type="button" onClick={() => handleRemoveNewImage(idx)} disabled={carregando}>
                                                             Remover
                                                         </button>
+                                                        <div className="vertical gap5">
+                                                            <label>Texto alternativo:</label>
+                                                            <input
+                                                                value={novasImagensLegendas[idx] ?? ""}
+                                                                onChange={(e) =>
+                                                                    handleNewImageLegendChange(
+                                                                        idx,
+                                                                        e.target.value
+                                                                    )
+                                                                }
+                                                                required
+                                                                disabled={carregando}
+                                                            />
+                                                        </div>
                                                         <p>{file.name} (Nova)</p>
                                                     </div>
                                                 ))
