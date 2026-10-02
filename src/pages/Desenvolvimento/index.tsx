@@ -6,69 +6,97 @@ export default function Trilhas() {
 
     return (
         <>
-            <div className="paddingHeader"></div>
-            <section className="conteudo desktopWrap1-2 gap15">
-                <div className="vertical gap15">
-                    <SimpleButton type="back" icon="setaBack" path="/">Voltar</SimpleButton>
-                    <h1>Desenvolvimento</h1>
-                    <p>
-                        O sistema foi desenvolvido por estudantes do Curso Superior de Tecnologia em Análise e Desenvolvimento de Sistemas no Instituto Federal de Ciência, Educação e Tecnologia de São Paulo - Campus Caraguatatuba.
-                    </p>
-                    <p>Mais em breve...</p>
-                </div>
-                <div className="desktopWrap gap15">
-                    <div className="card horizontal gap15">
-                        <img src="https://github.com/Kauangithub.png" alt="" className="devImg"/>
+            <div className="vertical gap30">
+                <div className="bannerInicio horizontal" id="devBg">
+                    <div className="conteudo vertical">
+                        <div className="paddingHeader"></div>
                         <div className="vertical gap15">
+                            <SimpleButton type="back" icon="setaBack" path="/">Voltar</SimpleButton>
                             <div className="vertical gap5">
-                                <h3>Kauan Machado</h3>
-                                <p>Função</p>
+                                <h1>SOBRE O PROJETO</h1>
+                                <p>
+                                    Este projeto foi desenvolvido por estudantes do curso de Tecnologia em Análise e Desenvolvimento de Sistemas do IFSP — Câmpus Caraguatatuba, como parte das atividades de extensão do curso.
+                                </p>
                             </div>
-                            <SimpleButton tema='dark' raio="10" path="https://github.com/Kauangithub">GitHub</SimpleButton>
-                        </div>
-                    </div>
-                    <div className="card horizontal gap15">
-                        <img src="https://github.com/lucashirotsu.png" alt="" className="devImg"/>
-                        <div className="vertical gap15">
-                            <div className="vertical gap5">
-                                <h3>Lucas Hirotsu</h3>
-                                <p>Função</p>
-                            </div>
-                            <SimpleButton tema='dark' raio="10" path="https://github.com/lucashirotsu">GitHub</SimpleButton>
-                        </div>
-                    </div>
-                    <div className="card horizontal gap15">
-                        <img src="https://github.com/MRC0sta.png" alt="" className="devImg"/>
-                        <div className="vertical gap15">
-                            <div className="vertical gap5">
-                                <h3>Matheus Costa</h3>
-                                <p>Função</p>
-                            </div>
-                            <SimpleButton tema='dark' raio="10" path="https://github.com/MRC0sta">GitHub</SimpleButton>
-                        </div>
-                    </div>
-                    <div className="card horizontal gap15">
-                        <img src="https://github.com/RafaelRibeiro398.png" alt="" className="devImg"/>
-                        <div className="vertical gap15">
-                            <div className="vertical gap5">
-                                <h3>Rafael Ribeiro</h3>
-                                <p>Função</p>
-                            </div>
-                            <SimpleButton tema='dark' raio="10" path="https://github.com/RafaelRibeiro398">GitHub</SimpleButton>
-                        </div>
-                    </div>
-                    <div className="card horizontal gap15">
-                        <img src="https://github.com/FatalRestart.png" alt="" className="devImg"/>
-                        <div className="vertical gap15">
-                            <div className="vertical gap5">
-                                <h3>Ygor Prado</h3>
-                                <p>Função</p>
-                            </div>
-                            <SimpleButton tema='dark' raio="10" path="https://github.com/FatalRestart">GitHub</SimpleButton>
                         </div>
                     </div>
                 </div>
-            </section>
+
+                <section className="conteudo vertical gap15">
+                    <div className="vertical gap5">
+                        <h1>Quem fez parte do projeto?</h1>
+                        <p>O desenvolvimento deste Catálogo Digital foi realizado de forma colaborativa, envolvendo diferentes etapas de pesquisa, design, desenvolvimento e organização do conteúdo.</p>
+                    </div>
+
+                    <div className="horizontal gap15 carrossel" id="carrosselDevs">
+                        <div className="card vertical center gap15 w100">
+                            <img src="https://github.com/Kauangithub.png" alt="" className="devImg"/>
+                            <div className="vertical gap15 btnFull">
+                                <div className="vertical gap5">
+                                    <h3>Kauan Machado</h3>
+                                    <p> • Banco de Dados<br/>
+                                        • Back-End<br/>
+                                        • Performance
+                                    </p>
+                                </div>
+                                <SimpleButton tema='dark' raio="10" path="https://github.com/Kauangithub">GitHub</SimpleButton>
+                            </div>
+                        </div>
+                        <div className="card vertical center gap15 w100">
+                            <img src="https://github.com/lucashirotsu.png" alt="" className="devImg"/>
+                            <div className="vertical gap15 btnFull">
+                                <div className="vertical gap5">
+                                    <h3>Lucas Hirotsu</h3>
+                                    <p> • Experiência do Usuário<br />
+                                        • Interfaces e Protótipos<br />
+                                        • Conteúdo Visual
+                                    </p>
+                                </div>
+                                <SimpleButton tema='dark' raio="10" path="https://github.com/lucashirotsu">GitHub</SimpleButton>
+                            </div>
+                        </div>
+                        <div className="card vertical center gap15 w100">
+                            <img src="https://github.com/MRC0sta.png" alt="" className="devImg"/>
+                            <div className="vertical gap15 btnFull">
+                                <div className="vertical gap5">
+                                    <h3>Matheus Costa</h3>
+                                    <p> • Dados e Informações<br />
+                                        • Requisitos<br />
+                                        • Suporte Técnico
+                                    </p>
+                                </div>
+                                <SimpleButton tema='dark' raio="10" path="https://github.com/MRC0sta">GitHub</SimpleButton>
+                            </div>
+                        </div>
+                        <div className="card vertical center gap15 w100">
+                            <img src="https://github.com/RafaelRibeiro398.png" alt="" className="devImg"/>
+                            <div className="vertical gap15 btnFull">
+                                <div className="vertical gap5">
+                                    <h3>Rafael Ribeiro</h3>
+                                    <p> • Front-End<br />
+                                        • PWA<br />
+                                        • Qualidade e Testes
+                                    </p>
+                                </div>
+                                <SimpleButton tema='dark' raio="10" path="https://github.com/RafaelRibeiro398">GitHub</SimpleButton>
+                            </div>
+                        </div>
+                        <div className="card vertical center gap15 w100">
+                            <img src="https://github.com/FatalRestart.png" alt="" className="devImg"/>
+                            <div className="vertical gap15 btnFull">
+                                <div className="vertical gap5">
+                                    <h3>Ygor Prado</h3>
+                                    <p> • <br />
+                                        • <br />
+                                        • 
+                                    </p>
+                                </div>
+                                <SimpleButton tema='dark' raio="10" path="https://github.com/FatalRestart">GitHub</SimpleButton>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </>
     );
 }

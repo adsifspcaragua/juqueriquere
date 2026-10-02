@@ -154,6 +154,10 @@ body{
     }
 }
 
+#devBg{
+    background-image:  linear-gradient(rgba(0, 0, 0, 0.6)), url(assets/img/devbg.webp);
+}
+
 #CarrosselInicio .carrosselCard{
     height: 250px !important;
 }
@@ -623,6 +627,11 @@ ul{
     object-fit: cover;
 }
 
+#carrosselDevs .w100{
+    min-width: 250px;
+    scroll-snap-align: start;
+}
+
 @media (width > 850px) {
     body{
         padding-top: 0;
@@ -643,6 +652,7 @@ ul{
         margin: 0;
         border-radius: 0;
         padding: 5%;
+        min-height: 70dvh;
 
         .paddingHeader{
             display: flex;
@@ -672,7 +682,7 @@ ul{
         }
     }
     .conteudo#capivaraDesktop{
-        height: 80dvh;
+        height: 100dvh;
     }
     #scannercard{
         height: 100%;

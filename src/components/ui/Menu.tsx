@@ -152,7 +152,7 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                     <div className="menuLinks">
                         <SimpleButton path='/' raio='0' onClick={closeMenu}>Início</SimpleButton>
                         <SimpleButton path='/Mapa' raio='0' onClick={closeMenu}>Mapa</SimpleButton>
-                        <SimpleButton path='/sobre' raio='0' onClick={closeMenu}>Sobre</SimpleButton>
+                        <SimpleButton path='/sobre' raio='0' onClick={closeMenu}>Sobre o parque</SimpleButton>
                     </div>
 
                     {/* TRILHAS */}
@@ -219,6 +219,10 @@ export default function Menu({ ativo, onChoice }: menuProps) {
                                 </SimpleButton>
                             </div>
                         </div>
+                    </div>
+
+                    <div className="menuLinks">
+                        <SimpleButton path='/desenvolvimento' raio='0' onClick={closeMenu}>Sobre o projeto</SimpleButton>
                     </div>
 
                     <div className="menuLinks">
