@@ -23,7 +23,13 @@ export default function Footer(){
                         <div className="vertical gap5 left">
                             <h5>Categorias</h5>
                             <Link to={"/trilhas"}>Trilhas</Link>
-                            <Link to={"/pontos"}>Pontos de Interesse</Link>
+                            <Link to={"/pontos"}>Pontos</Link>
+                        </div>
+                        <div className="vertical gap5 left">
+                            <h5>Contato</h5>
+                            <Link to={`mailto:pnm.juqueriquere@caraguatatuba.sp.gov.br`}>E-mail</Link>
+                            <Link to={"http://wa.me/5512997313619"}>WhatsApp</Link>
+                            <Link to={"https://www.instagram.com/parque_municipal_juqueriquere/"}>Instagram</Link>
                         </div>
                     </div>
                 </div>
