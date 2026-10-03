@@ -36,6 +36,18 @@ export default function Header() {
         setOpenMenu(false);
     }, [location.pathname]);
 
+    useEffect(() => {
+		if (openScanner) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "";
+		}
+
+		return () => {
+			document.body.style.overflow = "";
+		};
+	}, [openScanner]);
+
     return (
         <>
             <header className="horizontal">
@@ -118,9 +130,10 @@ export default function Header() {
                 onChoice={() => setOpenMenu(false)}
             />
 
-            {openScanner && (
-                <Scanner onClose={() => setOpenScanner(false)} />
-            )}
+            <Scanner
+                open={openScanner}
+                onClose={() => setOpenScanner(false)}
+            />
         </>
     );
 }

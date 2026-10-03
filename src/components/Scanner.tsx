@@ -1,9 +1,10 @@
 import { useEffect, useRef, useCallback } from "react";
 import { Html5Qrcode } from "html5-qrcode";
+import { createPortal } from "react-dom";
 import SimpleButton from "./ui/buttons/SimpleButton";
 import './styles/Scanner.css';
 
-export default function Scanner({ onClose }: { onClose: () => void }) {
+export default function Scanner({open, onClose}: {open: boolean;onClose: () => void;}) {
   const qrRef = useRef<Html5Qrcode | null>(null);
   const isStartingRef = useRef(false);
   const onCloseRef = useRef(onClose);
@@ -36,10 +37,11 @@ export default function Scanner({ onClose }: { onClose: () => void }) {
 
   const handleClose = useCallback(async () => {
     await stopScanner();
-    setTimeout(() => {onCloseRef.current();}, 100);
+    onCloseRef.current();
   }, [stopScanner]);
 
   useEffect(() => {
+    if (!open) return;
     if (qrRef.current || isStartingRef.current) return;
 
     isStartingRef.current = true;
@@ -49,17 +51,12 @@ export default function Scanner({ onClose }: { onClose: () => void }) {
       { facingMode: "environment" },
       { fps: 10, qrbox: { width: 250, height: 250 } },
       async (decodedText) => {
-        const path = decodedText.startsWith("/") ? decodedText : `/${decodedText}`;
-
-        // if (/^\/trilha\/\d+\/?$/.test(path)) {
-        // } else {
-        //   alert("QR inválido");
-        // }
-        window.location.href = path;
-
+        const path = decodedText.startsWith("/") ? decodedText: `/${decodedText}`;
         await stopScanner();
         onCloseRef.current();
-      }, () => {}
+        window.location.href = path;
+      },
+      () => { }
     ).finally(() => {
       isStartingRef.current = false;
     });
@@ -67,17 +64,22 @@ export default function Scanner({ onClose }: { onClose: () => void }) {
     return () => {
       stopScanner();
     };
-  }, [stopScanner]);
+  }, [open, stopScanner]);
 
   return (
-    <div className="leitorQR" onClick={handleClose}>
-      <div className="QRcontainer vertical" onClick={(e) => e.stopPropagation()}>
-        <h1>Aponte a câmera<br />para um código QR</h1>
-        <div id="reader" />
-        <SimpleButton onClick={handleClose} tema="dark" icon="X" raio="10">
-          Fechar
-        </SimpleButton>
-      </div>
-    </div>
+    <>
+      {createPortal(
+        <div className={`leitorQR ${open ? "aberto" : ""}`} onClick={handleClose}>
+          <div className="QRcontainer vertical" onClick={(e) => e.stopPropagation()}>
+            <h1>Aponte a câmera<br />para um código QR</h1>
+            <div id="reader" />
+            <SimpleButton onClick={handleClose} tema="dark" icon="X" raio="10">
+              Fechar
+            </SimpleButton>
+          </div>
+        </div>,
+        document.body
+      )}
+    </>
   );
-}
+  }
