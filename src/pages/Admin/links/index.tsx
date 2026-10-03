@@ -63,7 +63,7 @@ export default function AdminLinks() {
             );
 
             setWhatsapp(
-                registro.Whatsapp ?? ""
+                registro.Whatsapp.trim() ?? ""
             );
 
             setEmail(
@@ -163,7 +163,7 @@ export default function AdminLinks() {
             );
 
             setWhatsapp(
-                registroAtualizado.Whatsapp ?? ""
+                registroAtualizado.Whatsapp.trim() ?? ""
             );
 
             setEmail(
@@ -276,7 +276,7 @@ export default function AdminLinks() {
                                 value={whatsapp}
                                 onChange={(event) =>
                                     setWhatsapp(
-                                        event.target.value
+                                        event.target.value.trim()
                                     )
                                 }
                                 placeholder="https://wa.me/..."

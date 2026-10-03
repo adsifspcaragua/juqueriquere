@@ -37,7 +37,7 @@ export default function Footer() {
             if (data) {
                 setLinks({
                     Instagram: data.Instagram ?? null,
-                    Whatsapp: data.Whatsapp ?? null,
+                    Whatsapp: data.Whatsapp?.replace(/\D/g, "") ?? null,
                     email: data.email ?? null,
                 });
             }
@@ -120,7 +120,6 @@ export default function Footer() {
                             >
                                 E-mail
                             </a>
-
                             <a
                                 href={
                                     links.Whatsapp
