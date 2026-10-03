@@ -8,7 +8,11 @@
     align-items: center;
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(7px);
-    z-index: 2;
+    inset: 0;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
 
     .QRcontainer{
         background-color: var(--verdeClaro);
@@ -37,4 +41,18 @@
             border-radius: 10px;
         }
     }
+}
+
+.leitorQR.aberto {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.QRcontainer {
+    transform: translateY(300%);
+    transition: transform 0.3s ease;
+}
+
+.leitorQR.aberto .QRcontainer {
+    transform: translateY(0);
 }

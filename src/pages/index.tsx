@@ -1,6 +1,6 @@
 // PÁGINA INICIAL
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePageTitle } from "../lib/hooks/usePageTitle.ts";
 
 import SimpleButton from "../components/ui/buttons/SimpleButton.tsx";
@@ -16,6 +16,18 @@ export default function index(){
     usePageTitle("Início");
 	
 	const [openScanner, setOpenScanner] = useState(false);
+
+	useEffect(() => {
+		if (openScanner) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "";
+		}
+
+		return () => {
+			document.body.style.overflow = "";
+		};
+	}, [openScanner]);
 
 	return (
         <>
@@ -86,9 +98,10 @@ export default function index(){
 				<br />
 			</div>
 
-			{openScanner && (
-				<Scanner onClose={() => setOpenScanner(false)} />
-			)}
+			<Scanner
+				open={openScanner}
+				onClose={() => setOpenScanner(false)}
+			/>
         </>
 	);
 }
