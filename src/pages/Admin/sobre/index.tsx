@@ -280,8 +280,12 @@ export default function EditarSobre() {
         const imagem = await cadastrarImagem(caminho, legendaGaleria);
 
         setImagensGaleria((prev) => [...prev, imagem]);
-        if (db.imagens) await db.imagens.put(imagem);
-        alert("Imagem adicionada à galeria com sucesso!");
+        if (db.imagens) {
+          await db.imagens.put({
+            ...imagem,
+            legenda: imagem.legenda ?? undefined,
+          });
+        } alert("Imagem adicionada à galeria com sucesso!");
       } else {
         // Fallback offline: salva em base64 localmente no Dexie
         const base64 = await converterArquivoParaBase64(novaImagemGaleria);
@@ -292,8 +296,12 @@ export default function EditarSobre() {
         };
 
         setImagensGaleria((prev) => [...prev, imagemOffline]);
-        if (db.imagens) await db.imagens.put(imagemOffline);
-        alert("Imagem adicionada localmente! Ela será sincronizada quando houver conexão.");
+        if (db.imagens) {
+          await db.imagens.put({
+            ...imagemOffline,
+            legenda: imagemOffline.legenda ?? undefined,
+          });
+        } alert("Imagem adicionada localmente! Ela será sincronizada quando houver conexão.");
       }
 
       setNovaImagemGaleria(null);

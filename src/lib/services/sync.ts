@@ -220,7 +220,7 @@ async function obterImagensPorEntidade(
       }
     }
 
-    // Se não existir localmente e estiver offline, encerra para evitar erros
+    // Se não existir localmente e estiver offline, encerra para evitar erros 
     if (!navigator.onLine) {
       return [];
     }
