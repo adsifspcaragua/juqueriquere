@@ -115,6 +115,13 @@ export default function Admin() {
                         <p>Atualize as informações do parque, garantindo que os visitantes tenham acesso a conteúdos claros e relevantes sobre a plataforma.</p>
                         <SimpleButton path="/admin/sobre" tema="dark" raio="10">Gerenciar Informações</SimpleButton>
                     </div>
+
+                    <div className="card vertical gap5">
+                        <h2>Links úteis</h2>
+                        <p>Atualize as informações do parque, garantindo que os visitantes tenham acesso a conteúdos claros e relevantes sobre a plataforma.</p>
+                        <SimpleButton path="/admin/links" tema="dark" raio="10">Gerenciar Informações</SimpleButton>
+                    </div>
+                    
                     {tipoUsuario === "MASTER" && (
                         <div className="card vertical gap5">
                             <h2>Usuários</h2>
@@ -123,6 +130,7 @@ export default function Admin() {
                         </div>
                     )}
                 </div>
+                
                 <div className="card vertical gap15 btnFull outrasOpcoes">
                     <h4>Outras opções:</h4>
                     <div className="vertical gap5">

@@ -123,7 +123,8 @@ export default function Footer() {
 
                             <a
                                 href={
-                                    links.Whatsapp || undefined
+                                    links.Whatsapp
+                                    ? `https://wa.me/55${links.Whatsapp}` : undefined
                                 }
                                 target="_blank"
                                 rel="noopener noreferrer"
