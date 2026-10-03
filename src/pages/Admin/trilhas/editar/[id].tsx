@@ -271,7 +271,6 @@ export default function EditarTrilha() {
             if (novasImagens.length > 0) {
                 const dadosImagens = [];
                 const imagensConvertidas: Blob[] = [];
-                const totalExistentes = imagensSalvas.length;
 
                 for (let index = 0; index < novasImagens.length; index++) {
                     const file = novasImagens[index];

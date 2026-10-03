@@ -162,40 +162,6 @@ async function obterImagemOffline(
   }
 }
 
-/**
- * Remove uma imagem do Cache Storage.
- *
- * Essa função pode ser utilizada futuramente
- * quando uma imagem for removida pelo painel admin.
- */
-async function removerImagemDoCache(
-  caminho?: string | null
-) {
-  if (!caminho) return;
-
-  if (
-    caminho.startsWith("data:") ||
-    caminho.startsWith("blob:")
-  ) {
-    return;
-  }
-
-  const url = resolverUrlImagem(caminho);
-
-  if (!url || url === imgNotFound) return;
-
-  try {
-    const cache = await caches.open(CACHE_IMAGENS);
-    await cache.delete(url);
-  } catch (error) {
-    console.warn(
-      "Erro ao remover imagem do cache:",
-      caminho,
-      error
-    );
-  }
-}
-
 /*
 |--------------------------------------------------------------------------
 | SINCRONIZAÇÃO DO SOBRE
@@ -325,7 +291,10 @@ async function sincronizarGaleria(
            * Salva os metadados no Dexie.
            */
           if (db.imagens) {
-            await db.imagens.put(imagem);
+            await db.imagens.put({
+              ...imagem,
+              legenda: imagem.legenda ?? undefined,
+            });
           }
         }
 
@@ -537,7 +506,10 @@ async function sincronizarEspacos(
           imagensData.length > 0
         ) {
           for (const imagem of imagensData) {
-            await db.imagens.put(imagem);
+            await db.imagens.put({
+              ...imagem,
+              legenda: imagem.legenda ?? undefined,
+            });
           }
         }
       }
@@ -731,10 +703,9 @@ export default function Sobre() {
                     key={espaco.id}
                     className="carrosselCard espacoCard vertical"
                     style={{
-                      backgroundImage: `url(${
-                        espaco.imagemUrl ||
+                      backgroundImage: `url(${espaco.imagemUrl ||
                         imgNotFound
-                      })`,
+                        })`,
                     }}
                   >
                     <div className="fade vertical gap5">
