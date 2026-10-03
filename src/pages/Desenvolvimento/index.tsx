@@ -86,9 +86,9 @@ export default function Trilhas() {
                             <div className="vertical gap15 btnFull">
                                 <div className="vertical gap5">
                                     <h3>Ygor Prado</h3>
-                                    <p> • <br />
-                                        • <br />
-                                        • 
+                                    <p> • Front-End <br />
+                                        • Back-End <br />
+                                        • Performance
                                     </p>
                                 </div>
                                 <SimpleButton tema='dark' raio="10" path="https://github.com/FatalRestart">GitHub</SimpleButton>

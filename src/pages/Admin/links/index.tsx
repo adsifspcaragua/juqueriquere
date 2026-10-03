@@ -63,7 +63,7 @@ export default function AdminLinks() {
             );
 
             setWhatsapp(
-                registro.Whatsapp.trim() ?? ""
+                registro.Whatsapp?.trim() ?? ""
             );
 
             setEmail(
@@ -163,7 +163,7 @@ export default function AdminLinks() {
             );
 
             setWhatsapp(
-                registroAtualizado.Whatsapp.trim() ?? ""
+                registroAtualizado.Whatsapp?.trim() ?? ""
             );
 
             setEmail(
