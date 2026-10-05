@@ -11,6 +11,7 @@ import Footer from "./components/ui/Footer.tsx";
 import ScrollToTop from "./components/Scroll.tsx";
 
 import './style.css';
+import PageSkeleton from "./components/ui/PageSkeleton.tsx";
 
 interface NavigatorIOS extends Navigator {
   standalone?: boolean;
@@ -40,7 +41,7 @@ function AnimatedRoutes() {
         <ScrollToTop />
         <AnimatePresence mode="wait">
           <PageTransition key={location.pathname}>
-            <Suspense fallback={<div>Carregando...</div>}>
+            <Suspense fallback={<PageSkeleton type="map" />}>
               {element}
             </Suspense>
           </PageTransition>

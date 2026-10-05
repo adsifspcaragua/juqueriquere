@@ -1,0 +1,65 @@
+.skeleton {
+    flex-shrink: 0;
+
+    background: linear-gradient(
+        90deg,
+        #e8e8e880 25%,
+        #f3f3f3 50%,
+        #e8e8e880 75%
+    );
+
+    background-size: 200% 100%;
+
+    animation: skeleton-loading 1.5s infinite;
+}
+
+.pageSkeletonGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 30px;
+}
+
+.pageSkeletonCard {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.pageSkeletonFilters {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.pageSkeletonList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+@media (max-width: 900px) {
+
+    .pageSkeletonGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .pageSkeletonGrid {
+        grid-template-columns: 1fr;
+    }
+
+}
