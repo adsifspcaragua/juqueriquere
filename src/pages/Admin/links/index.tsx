@@ -3,6 +3,7 @@ import { supabase } from "../../../lib/supabase";
 import ProtectedRoute from "../../../components/Protected";
 import "../../_styles/admin.css";
 import "../../../style.css";
+import SimpleButton from "../../../components/ui/buttons/SimpleButton";
 
 interface LinksDB {
     id: number;
@@ -205,117 +206,115 @@ export default function AdminLinks() {
 
     return (
         <ProtectedRoute>
-            <div className="paddingHeader2"></div>
+            <div className="paddingHeader"/>
 
-            <section className="conteudo vertical gap30">
+            <section className="conteudo desktopWrap1-2 gap30">
 
-                <div className="vertical gap5">
-                    <h1>Links do site</h1>
-
-                    <p>
-                        Edite os links exibidos no
-                        rodapé do site.
-                    </p>
-                </div>
-
-                {mensagem && (
-                    <div className="card">
-                        <p>{mensagem}</p>
-                    </div>
-                )}
-
-                {erro && (
-                    <div className="card">
-                        <p>{erro}</p>
-                    </div>
-                )}
-
-                {!links ? (
-                    <div className="card">
+                <div className="vertical gap15">
+                    <SimpleButton
+                        path="/admin/"
+                        type="back"
+                        icon="setaBack"
+                    >
+                        Voltar
+                    </SimpleButton>
+                    <div className="card vertical gap5 adminCard" id="adminSobreCard">
+                        <h1>Links do site</h1>
                         <p>
-                            Nenhum registro encontrado
-                            na tabela links.
+                            Atualize as informações de contato do parque, garantindo que os visitantes
+                            possam encontrar e solicitar informações e ajuda.
                         </p>
                     </div>
-                ) : (
-                    <form
-                        onSubmit={salvarLinks}
-                        className="vertical gap30"
-                    >
+                </div>
 
-                        {/* INSTAGRAM */}
+                <div className="vertical gap15">
+                    <h1>Links cadastrados</h1>
 
-                        <div className="vertical gap5">
-                            <label htmlFor="instagram">
-                                Instagram
-                            </label>
-
-                            <input
-                                id="instagram"
-                                type="text"
-                                value={instagram}
-                                onChange={(event) =>
-                                    setInstagram(
-                                        event.target.value
-                                    )
-                                }
-                                placeholder="https://www.instagram.com/..."
-                            />
+                    {mensagem && (
+                        <div className="card">
+                            <p>{mensagem}</p>
                         </div>
-
-                        {/* WHATSAPP */}
-
-                        <div className="vertical gap5">
-                            <label htmlFor="whatsapp">
-                                WhatsApp
-                            </label>
-
-                            <input
-                                id="whatsapp"
-                                type="text"
-                                value={whatsapp}
-                                onChange={(event) =>
-                                    setWhatsapp(
-                                        event.target.value.trim()
-                                    )
-                                }
-                                placeholder="https://wa.me/..."
-                            />
+                    )}
+                    {erro && (
+                        <div className="card">
+                            <p>{erro}</p>
                         </div>
-
-                        {/* E-MAIL */}
-
-                        <div className="vertical gap5">
-                            <label htmlFor="email">
-                                E-mail
-                            </label>
-
-                            <input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={(event) =>
-                                    setEmail(
-                                        event.target.value
-                                    )
-                                }
-                                placeholder="email@exemplo.com"
-                            />
+                    )}
+                    {!links ? (
+                        <div className="card">
+                            <p>
+                                Nenhum registro encontrado
+                                na tabela links.
+                            </p>
                         </div>
-
-                        {/* BOTÃO */}
-
-                        <button
-                            type="submit"
-                            disabled={salvando}
+                    ) : (
+                        <form
+                            onSubmit={salvarLinks}
+                            className="card vertical gap15"
                         >
-                            {salvando
-                                ? "Salvando..."
-                                : "Salvar alterações"}
-                        </button>
-
-                    </form>
-                )}
+                            {/* INSTAGRAM */}
+                            <div className="vertical gap5">
+                                <label htmlFor="instagram">
+                                    Instagram
+                                </label>
+                                <input
+                                    id="instagram"
+                                    type="text"
+                                    value={instagram}
+                                    onChange={(event) =>
+                                        setInstagram(
+                                            event.target.value
+                                        )
+                                    }
+                                    placeholder="https://www.instagram.com/..."
+                                />
+                            </div>
+                            {/* WHATSAPP */}
+                            <div className="vertical gap5">
+                                <label htmlFor="whatsapp">
+                                    WhatsApp
+                                </label>
+                                <input
+                                    id="whatsapp"
+                                    type="text"
+                                    value={whatsapp}
+                                    onChange={(event) =>
+                                        setWhatsapp(
+                                            event.target.value.trim()
+                                        )
+                                    }
+                                    placeholder="https://wa.me/..."
+                                />
+                            </div>
+                            {/* E-MAIL */}
+                            <div className="vertical gap5">
+                                <label htmlFor="email">
+                                    E-mail
+                                </label>
+                                <input
+                                    id="email"
+                                    type="email"
+                                    value={email}
+                                    onChange={(event) =>
+                                        setEmail(
+                                            event.target.value
+                                        )
+                                    }
+                                    placeholder="email@exemplo.com"
+                                />
+                            </div>
+                            {/* BOTÃO */}
+                            <button
+                                type="submit"
+                                disabled={salvando}
+                            >
+                                {salvando
+                                    ? "Salvando..."
+                                    : "Salvar alterações"}
+                            </button>
+                        </form>
+                    )}
+                </div>
             </section>
         </ProtectedRoute>
     );
