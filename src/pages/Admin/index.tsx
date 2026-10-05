@@ -77,63 +77,35 @@ export default function Admin() {
                 <div className="vertical gap30">
                     <div className="vertical gap5">
                         <h1>Administração do Site</h1>
-                        <p>Gerencie conteúdos, trilhas, pontos de interesse, alertas e demais informações do Catálogo Digital PNMJ. Mantenha os dados atualizados para oferecer aos visitantes uma experiência informativa, acessível e segura.</p>
+                        <p>Gerencie os conteúdos do Catálogo Digital PNMJ e mantenha
+                             as informações do parque sempre atualizadas.</p>
                     </div>
-                    <div className="vertical gap15">
-                        <h3>Olá, {nomeUsuario}!</h3>
-                        <div className="horizontal center card userCard">
-                                <img src={fotoUsuario || defaultPfp} alt="Foto do usuário" className="userImg" />
-                                <div className="vertical w100 left gap15">
-                                    <div className="vertical left gap5 w100">
-                                        <div className="vertical">
-                                            <h2>{nomeUsuario || "Carregando..."}</h2>
-                                            <p>{tipoUsuario || "Carregando..."}</p>
-                                        </div>
-                                        <div className="linhaHorizontalDark"/>
-                                        <p>{emailUsuario || "Carregando..."}</p>
+
+                    <div className="card vertical gap15">
+                        <div className="horizontal center userCard gap15">
+                            <img src={fotoUsuario || defaultPfp} alt="Foto do usuário" className="userImg" />
+                            <div className="vertical w100 left gap15">
+                                <div className="vertical left gap5 w100">
+                                    <div className="vertical">
+                                        <h2>{nomeUsuario || "Carregando..."}</h2>
+                                        <p>{tipoUsuario || "Carregando..."}</p>
                                     </div>
+                                    <div className="linhaHorizontalDark" />
+                                    <p>{emailUsuario || "Carregando..."}</p>
                                 </div>
+                            </div>
                         </div>
+                        <div className="vertical gap5">
+                        <h4>Opções da conta:</h4>
                     </div>
-                </div>
-
-                <div className="gap15 desktopWrap">
-                    <div className="card vertical gap5">
-                        <h2>Trilhas</h2>
-                        <p>Cadastre, edite e organize as trilhas do parque, mantendo informações como descrição, dificuldade, distância e duração sempre atualizadas.</p>
-                        <SimpleButton path="/admin/trilhas" tema="dark" raio="10">Gerenciar Trilhas</SimpleButton>
-                    </div>
-
-                    <div className="card vertical gap5">
-                        <h2>Pontos de Interesse</h2>
-                        <p>Administre os pontos de interesse disponíveis no catálogo, incluindo informações, imagens e conteúdos educativos para os visitantes.</p>
-                        <SimpleButton path="/admin/pontos" tema="dark" raio="10">Gerenciar Pontos de Interesse</SimpleButton>
-                    </div>
-
-                    <div className="card vertical gap5">
-                        <h2>Sobre o Parque</h2>
-                        <p>Atualize as informações do parque, garantindo que os visitantes tenham acesso a conteúdos claros e relevantes sobre a plataforma.</p>
-                        <SimpleButton path="/admin/sobre" tema="dark" raio="10">Gerenciar Informações</SimpleButton>
-                    </div>
-
-                    <div className="card vertical gap5">
-                        <h2>Links úteis</h2>
-                        <p>Atualize as informações do parque, garantindo que os visitantes tenham acesso a conteúdos claros e relevantes sobre a plataforma.</p>
-                        <SimpleButton path="/admin/links" tema="dark" raio="10">Gerenciar Informações</SimpleButton>
-                    </div>
-                    
-                    {tipoUsuario === "MASTER" && (
-                        <div className="card vertical gap5">
-                            <h2>Usuários</h2>
-                            <p>Gerencie as contas administrativas do sistema, permitindo adicionar, editar ou remover usuários e controlar seus acessos e contribuições.</p>
-                            <SimpleButton path="/admin/usuario/list" tema="dark" raio="10">Gerenciar Informações</SimpleButton>
-                        </div>
-                    )}
-                </div>
-                
-                <div className="card vertical gap15 btnFull outrasOpcoes">
-                    <h4>Outras opções:</h4>
-                    <div className="vertical gap5">
+                    <div className="horizontal gap5">
+                        {user ? (
+                            <SimpleButton tema="red" icon="logout" raio="10" type="back" onClick={handleLogout}>
+                                Sair
+                            </SimpleButton>
+                        ) : (
+                            null
+                        )}
                         <SimpleButton
                             path="/admin/minha-conta"
                             raio="10"
@@ -141,12 +113,58 @@ export default function Admin() {
                         >
                             Gerenciar conta
                         </SimpleButton>
-                        {user ? (
-                            <SimpleButton tema="red" icon="logout" raio="10" onClick={handleLogout}>
-                                Sair
-                            </SimpleButton>
-                        ) : (
-                            null
+                    </div>
+
+                    </div>
+                </div>
+
+                <div className="vertical gap15">
+                    <div className="vertical gap5">
+                        <h1>Conteúdo do site:</h1>
+                        <p>Gerencie as principais informações disponibilizadas aos visitantes.</p>
+                    </div>
+                    <div className="gap15 desktopWrap">
+                        <div className="card vertical gap15">
+                            <div className="vertical gap5">
+                                <h2>Trilhas</h2>
+                                <p>Cadastre e atualize trilhas, descrições,
+                                dificuldade, distância e duração.</p>
+                            </div>
+                            <SimpleButton path="/admin/trilhas" tema="dark" raio="10">Gerenciar Trilhas</SimpleButton>
+                        </div>
+                        <div className="card vertical gap15">
+                            <div className="vertical gap5">
+                                <h2>Pontos de Interesse</h2>
+                                <p>Administre os pontos, imagens e conteúdos
+                                educativos disponíveis no catálogo.</p>
+                            </div>
+                            <SimpleButton path="/admin/pontos" tema="dark" raio="10">Gerenciar Pontos de Interesse</SimpleButton>
+                        </div>
+                        <div className="card vertical gap15">
+                            <div className="vertical gap5">
+                                <h2>Sobre o Parque</h2>
+                                <p>Gerencie as principais informações disponibilizadas aos visitantes.</p>
+                            </div>
+                            <SimpleButton path="/admin/sobre" tema="dark" raio="10">Gerenciar Informações</SimpleButton>
+                        </div>
+                        <div className="card vertical gap15">
+                            <div className="vertical gap5">
+                                <h2>Links úteis</h2>
+                                <p>Gerencie os links e referências externas
+                                disponibilizados aos visitantes.</p>
+                            </div>
+                            <SimpleButton path="/admin/links" tema="dark" raio="10">Gerenciar Informações</SimpleButton>
+                        </div>
+                    
+                        {tipoUsuario === "MASTER" && (
+                            <div className="card vertical gap15">
+                                <div className="vertical gap5">
+                                    <h2>Usuários</h2>
+                                    <p>Gerencie as contas administrativas e
+                                    suas permissões de acesso.</p>
+                                </div>
+                                <SimpleButton path="/admin/usuario/list" tema="dark" raio="10">Gerenciar Informações</SimpleButton>
+                            </div>
                         )}
                     </div>
                 </div>
