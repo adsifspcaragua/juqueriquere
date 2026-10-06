@@ -6,8 +6,7 @@ import ProtectedRoute from "../../components/Protected";
 import { logout } from '../../lib/auth';
 import { useNavigate } from 'react-router-dom';
 import defaultPfp from '../../assets/avatar.jpg';
-
-
+import { TextSkeleton } from "../../components/ui/PageSkeleton";
 
 export default function Admin() {
     const [tipoUsuario, setTipoUsuario] = useState<string | null>(null);
@@ -87,11 +86,11 @@ export default function Admin() {
                             <div className="vertical w100 left gap15">
                                 <div className="vertical left gap5 w100">
                                     <div className="vertical">
-                                        <h2>{nomeUsuario || "Carregando..."}</h2>
-                                        <p>{tipoUsuario || "Carregando..."}</p>
+                                        <h2 style={{width:"100%"}}>{nomeUsuario || <TextSkeleton lines={1}/>}</h2>
+                                        <p style={{width:"100%"}}>{tipoUsuario || <TextSkeleton lines={1}/>}</p>
                                     </div>
                                     <div className="linhaHorizontalDark" />
-                                    <p>{emailUsuario || "Carregando..."}</p>
+                                    <p style={{width:"100%", textAlign:"left"}}>{emailUsuario || <TextSkeleton lines={1}/>}</p>
                                 </div>
                             </div>
                         </div>

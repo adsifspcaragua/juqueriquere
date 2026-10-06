@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 
 import { supabase } from "../../lib/supabase";
+import PageSkeleton from "../../components/ui/PageSkeleton";
 
 export default function MasterRoute() {
   const [carregando, setCarregando] = useState(true);
@@ -38,7 +39,7 @@ export default function MasterRoute() {
   }
 
   if (carregando) {
-    return <div>Verificando permissões...</div>;
+    return <PageSkeleton/>;
   }
 
   if (!autorizado) {

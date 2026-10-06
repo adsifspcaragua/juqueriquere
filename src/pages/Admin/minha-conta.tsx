@@ -6,6 +6,7 @@ import ProtectedRoute from "../../components/Protected";
 import { logout } from '../../lib/auth';
 import { useNavigate } from 'react-router-dom';
 import defaultPfp from '../../assets/avatar.jpg';
+import PageSkeleton from "../../components/ui/PageSkeleton";
 
 interface Usuario {
     id: number;
@@ -64,7 +65,7 @@ export default function MinhaConta() {
                         <SimpleButton type="back" icon="setaBack" path="/admin">
                             Voltar para o Painel
                         </SimpleButton>
-                        <p>Carregando dados da conta...</p>
+                        <PageSkeleton type="map" />
                     </>
                 ) : !usuario ? (
                     <>

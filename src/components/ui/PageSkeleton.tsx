@@ -226,3 +226,21 @@ export default function PageSkeleton({
         </main>
     );
 }
+
+export function TextSkeleton({
+    lines = 3,
+}: {
+    lines?: number;
+}) {
+    return (
+        <>
+            {Array.from({ length: lines }).map((_, index) => (
+                <Skeleton
+                    key={index}
+                    width={index === lines - 1 ? "70%" : "100%"}
+                    height="14px"
+                />
+            ))}
+        </>
+    );
+}

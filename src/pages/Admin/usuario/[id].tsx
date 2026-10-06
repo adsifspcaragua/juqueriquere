@@ -6,6 +6,7 @@ import { getCurrentUserProfile, type LoggedUserProfile } from "../../../lib/auth
 import { deleteRecord, getById } from "../../../lib/services/crud";
 import "../../_styles/admin.css";
 import defaultPfp from '../../../assets/avatar.jpg';
+import PageSkeleton from "../../../components/ui/PageSkeleton";
 
 interface Usuario {
     id: number;
@@ -74,7 +75,7 @@ export default function Usuario() {
                     
                     <div className="card vertical left">
                         {loading ? (
-                            <p>Carregando dados do usuário...</p>
+                            <PageSkeleton type="list"/>
                         ) : !usuario ? (
                             <p>Usuário não encontrado.</p> 
                         ) : (

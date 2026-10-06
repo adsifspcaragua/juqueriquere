@@ -3,6 +3,7 @@ import SimpleButton from "../../../components/ui/buttons/SimpleButton";
 import ProtectedRoute from "../../../components/Protected";
 import { getAll } from "../../../lib/services/crud";
 import "../../_styles/admin.css";
+import PageSkeleton from "../../../components/ui/PageSkeleton";
 
 interface Usuario {
     id: number;
@@ -67,7 +68,7 @@ export default function AdminUsuarios() {
                     </div>
 
                     {loading ? (
-                        <p>Carregando usuários...</p>
+                        <PageSkeleton type="cards"/>
                     ) : usuarios.length === 0 ? (
                         <p>Nenhum usuário encontrado.</p>
                     ) : (

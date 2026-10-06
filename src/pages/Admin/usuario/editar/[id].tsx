@@ -8,6 +8,7 @@ import { getCurrentUserProfile } from "../../../../lib/auth";
 import { getById, updateById } from "../../../../lib/services/crud";
 import { processImageUpdate } from "../../../../lib/services/storage";
 import defaultPfp from '../../../../assets/avatar.jpg';
+import PageSkeleton from "../../../../components/ui/PageSkeleton";
 
 
 
@@ -185,7 +186,7 @@ export default function EditarUsuario() {
             <div className="paddingHeader"></div>
             <section className="conteudo vertical gap30">
                 {loading ? (
-                    <p>Verificando permissões...</p>
+                    <PageSkeleton type="map"/>
                 ) : !hasPermission ? (
                     <p>Acesso negado.</p>
                 ) : !usuario ? (
@@ -203,7 +204,7 @@ export default function EditarUsuario() {
                             <p>Visualize as informações de perfil e credenciais de acesso ao painel de administração.</p>
                         </div>
 
-                        <div className="desktopWrap1-2">
+                        <div className="desktopWrap1-2 gap30">
                             <div className="vertical gap15">
                                 <div className="card vertical gap15 userCard">
                                     <h3>Foto de perfil</h3>
@@ -244,6 +245,7 @@ export default function EditarUsuario() {
                             </div>
 
                             <div className="card vertical gap15">
+                                <h4>Informações da conta:</h4>
                                 <div className="vertical gap5">
                                     <label>Nome</label>
                                     <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
