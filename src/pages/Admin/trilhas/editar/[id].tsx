@@ -45,7 +45,7 @@ export default function EditarTrilha() {
                     return;
                 }
 
-                // 1. Busca trilha no Dexie ou Supabase
+                // Busca trilha no Dexie ou Supabase
                 let data = await db.trilhas.get(idNumerico);
 
                 if (!data) {
@@ -71,7 +71,7 @@ export default function EditarTrilha() {
                     setGeojsonTrilha(data.geometria);
                 }
 
-                // 2. Busca imagens vinculadas
+                // Busca imagens vinculadas
                 const imgs = await db.imagens
                     .where("trilha_id")
                     .equals(idNumerico)
