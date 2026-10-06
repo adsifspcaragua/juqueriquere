@@ -64,7 +64,7 @@ export default function AdminLinks() {
             );
 
             setWhatsapp(
-                registro.Whatsapp?.trim() ?? ""
+                formatarTelefone(registro.Whatsapp ?? "")
             );
 
             setEmail(
@@ -164,8 +164,10 @@ export default function AdminLinks() {
             );
 
             setWhatsapp(
-                registroAtualizado.Whatsapp?.trim() ?? ""
-            );
+                formatarTelefone(
+                    registroAtualizado.Whatsapp ?? ""
+                )
+);
 
             setEmail(
                 registroAtualizado.email ?? ""
@@ -202,6 +204,22 @@ export default function AdminLinks() {
                 </section>
             </ProtectedRoute>
         );
+    }
+
+    function formatarTelefone(value: string) {
+        const numeros = value.replace(/\D/g, "").slice(0, 11);
+
+        if (numeros.length <= 2) {
+            return numeros.length > 0
+                ? `(${numeros}`
+                : "";
+        }
+
+        if (numeros.length <= 7) {
+            return `(${numeros.slice(0, 2)}) ${numeros.slice(2)}`;
+        }
+
+        return `(${numeros.slice(0, 2)}) ${numeros.slice(2, 7)}-${numeros.slice(7)}`;
     }
 
     return (
@@ -276,14 +294,14 @@ export default function AdminLinks() {
                                 </label>
                                 <input
                                     id="whatsapp"
-                                    type="text"
+                                    type="tel"
                                     value={whatsapp}
                                     onChange={(event) =>
                                         setWhatsapp(
-                                            event.target.value.trim()
+                                            formatarTelefone(event.target.value)
                                         )
                                     }
-                                    placeholder="https://wa.me/..."
+                                    placeholder="12 99999-9999"
                                 />
                             </div>
                             {/* E-MAIL */}
